@@ -2,17 +2,21 @@ import { ReactNode, useEffect } from "react";
 import {
   FlatList,
   StyleSheet,
-  Text,
   TouchableNativeFeedbackProps,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import WebView from "react-native-webview";
 
 import { TravelScheduleResponseSuccess } from "@/apis/internal.api.type";
-import { Appbar, Loader, Snackbar, Typography, View } from "@/components";
+import {
+  Appbar,
+  Button,
+  Loader,
+  Snackbar,
+  Typography,
+  View,
+} from "@/components";
 import {
   IconCarSide,
   IconDoorThin,
@@ -42,6 +46,7 @@ export default function TravelOptionScreen() {
     from: travelBookingPayload?.from || "",
     to: travelBookingPayload?.to || "",
     date: travelBookingPayload?.date as Date,
+    qtyChair: 1,
   });
 
   const handleSelectSchedule = (
@@ -78,27 +83,49 @@ export default function TravelOptionScreen() {
     <View backgroundColor="paper" style={style.container}>
       <Appbar
         title={
-          <View style={style.headerWrapper}>
-            <Typography
-              fontFamily="Poppins-Bold"
-              fontSize={16}
-              style={{ flex: 1, textAlign: "right" }}
-              numberOfLines={1}
-            >
-              {travelBookingPayload?.from}
-            </Typography>
-            <IconIcArrowRight height={16} width={16} />
-            <Typography
-              fontFamily="Poppins-Bold"
-              fontSize={16}
-              style={{ flex: 1 }}
-              numberOfLines={1}
-            >
-              {travelBookingPayload?.to}
-            </Typography>
+          <View style={{ display: "flex", flexDirection: "column" }}>
+            <View style={style.headerWrapper}>
+              <Typography
+                fontFamily="Poppins-Bold"
+                fontSize={16}
+                style={{ textAlign: "left" }}
+                numberOfLines={1}
+              >
+                {travelBookingPayload?.from}
+              </Typography>
+              <IconIcArrowRight height={15} width={15} />
+              <Typography
+                fontFamily="Poppins-Bold"
+                fontSize={16}
+                style={{ marginEnd: "auto" }}
+                numberOfLines={1}
+              >
+                {travelBookingPayload?.to}
+              </Typography>
+            </View>
           </View>
         }
-        subtitle="1 Penumpang"
+        subtitle={
+          <View style={style.subtitleHeaderContainer}>
+            <Typography
+              fontFamily="OpenSans-Regular"
+              fontSize={14}
+              color="textsecondary"
+            >
+              {travelBookingPayload?.qtyChair} Kursi
+            </Typography>
+            <Button
+              style={{
+                borderRadius: 100,
+                paddingLeft: 10,
+                paddingEnd: 10,
+                minHeight: 10,
+              }}
+            >
+              Ubah
+            </Button>
+          </View>
+        }
         backIconPress={() => router.back()}
       />
       <View style={style.contentHeaderContainer}>
@@ -127,7 +154,7 @@ export default function TravelOptionScreen() {
             }
           />
           <TouchableWithIcon
-            icon={<IconPinSharp width={20} height={20} color="main" />}
+            icon={<IconPinSharp width={20} height={20} color="white" />}
             label="Point to Point"
             // disable point to point, since it need TBD
             disabled={
@@ -242,17 +269,16 @@ function TouchableWithIcon({
   return (
     <TouchableWithoutFeedback disabled={disabled} {...rest}>
       <View
-        backgroundColor={disabled ? "outlineborder" : "paper"}
-        style={[
-          style.touchableContainer,
-          { borderColor: Colors.outlineborder },
-        ]}
+        backgroundColor={disabled ? "paper" : "main"}
+        borderColor="main"
+        style={[style.touchableContainer]}
       >
         {icon}
         <Typography
           fontFamily="OpenSans-Light"
           fontSize={12}
-          color="textprimary"
+          color="white"
+          style={{ color: "white" }}
         >
           {label}
         </Typography>
@@ -325,5 +351,15 @@ const style = StyleSheet.create({
     height: 4,
     width: 4,
     borderRadius: 99,
+  },
+  subtitleHeaderContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 24,
+    paddingLeft: 60,
+    paddingRight: 20,
   },
 });

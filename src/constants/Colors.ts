@@ -21,6 +21,7 @@ export default {
 export const AppColor = {
   light: {
     // app theme color
+    white: "#FFFFFF",
     main: "#0705EC",
     secondary: "#e34c1d",
     thirtiary: "#ec7f00",
@@ -37,6 +38,7 @@ export const AppColor = {
   },
   dark: {
     // app theme color
+    white: "#FFFFF",
     main: "#0705EC",
     secondary: "#e34c1d",
     thirtiary: "#ec7f00",

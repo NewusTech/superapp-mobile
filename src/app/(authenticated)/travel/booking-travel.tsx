@@ -62,13 +62,15 @@ export default function BookingTravelScreen() {
     }));
   }, [travelBranchQuery.data]);
 
-  const { control, formState, handleSubmit, setValue, getValues } = useForm<TravelScheduleQuery>({
-    defaultValues: {
-      date: new Date(),
-    },
-    resolver: zodResolver(travelScheduleQuerySchema),
-    mode: "all",
-  });
+  const { control, formState, handleSubmit, setValue, getValues } =
+    useForm<TravelScheduleQuery>({
+      defaultValues: {
+        date: new Date(),
+        qtyChair: 1,
+      },
+      resolver: zodResolver(travelScheduleQuerySchema),
+      mode: "all",
+    });
 
   const handleSubmitForm = handleSubmit((data) => {
     setBookingPayload(data);

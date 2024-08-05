@@ -91,11 +91,12 @@ export const travelScheduleQuerySchema = z.object({
   from: z.string(),
   to: z.string(),
   date: z.date(),
+  qtyChair: z.number(),
 });
 export type TravelScheduleQuery = z.infer<typeof travelScheduleQuerySchema>;
 export type TravelScheduleResponseSuccess = {
   data: {
-    id: number,
+    id: number;
     img_url: string;
     availableSeat: number;
     carModel: string;
@@ -137,7 +138,7 @@ export type GetPaymentMethodResponseSuccess = {
 //   typeof postProcessPaymentSchema
 // >;
 export type PostProcessPaymentPayload = {
-  orderCode: string
+  orderCode: string;
 };
 
 export type OrderListResponseSuccess = {
