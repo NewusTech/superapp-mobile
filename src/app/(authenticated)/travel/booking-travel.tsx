@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
+  ImageBackground,
   ImageProps,
   ScrollView,
   StyleSheet,
@@ -28,14 +29,18 @@ import {
   IconArrowRight,
   IconCalendar,
   IconCarSide,
+  IconChevronDown,
+  IconSeat,
   IconSwap,
 } from "@/components/icons";
+import InputSwitch from "@/components/input-switch/InputSwitch";
 import { PromoItem } from "@/components/promo-item/PromoItem";
+import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
+import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { ArticleEmpty } from "@/features/article/components";
 import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
 import { useTravelActions } from "@/features/travel/store/travel-store";
-import { formatDate } from "@/utils/datetime";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const PromoItemList: { imgUrl: ImageProps["source"] }[] = [
@@ -48,6 +53,9 @@ export const PromoItemList: { imgUrl: ImageProps["source"] }[] = [
 export default function BookingTravelScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const maxChair = 8;
+
+  const [pulangPergi, setPulangPergi] = useState<boolean>(false);
 
   const { Colors } = useAppTheme();
 
@@ -62,11 +70,15 @@ export default function BookingTravelScreen() {
     }));
   }, [travelBranchQuery.data]);
 
+  const chairList = Array.from({ length: maxChair }, (v, i) => ({
+    title: i + 1,
+  }));
+
   const { control, formState, handleSubmit, setValue, getValues } =
     useForm<TravelScheduleQuery>({
       defaultValues: {
         date: new Date(),
-        qtyChair: 1,
+        seats: 1,
       },
       resolver: zodResolver(travelScheduleQuerySchema),
       mode: "all",
@@ -94,12 +106,17 @@ export default function BookingTravelScreen() {
       contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.paper }}
     >
       <View
-        backgroundColor="main"
-        style={[style.headerBack, { height: insets.top + 106 }]}
-      />
+        backgroundColor="dangerbase"
+        style={[style.headerBack, { height: insets.top + 130 }]}
+      >
+        <ImageBackground
+          source={require("@/assets/images/header_banner_travel.png")}
+          style={style.backgroundImage}
+        />
+      </View>
 
       <Appbar
-        title="Travel"
+        title={"Travel"}
         backgroundColor="transparent"
         hasBorder={false}
         colorSheme="dark"
@@ -108,81 +125,17 @@ export default function BookingTravelScreen() {
       />
 
       <View
-        backgroundColor="paper"
-        style={[style.orderBox, { borderColor: Colors.outlineborder }]}
+        style={{
+          backgroundColor: "white",
+          borderWidth: 0.5,
+          borderColor: AppColor.light.textsecondary,
+          borderRadius: 20,
+          margin: 20,
+        }}
       >
-        <View
-          style={[style.destinationBox, { borderColor: Colors.outlineborder }]}
-        >
-          <Controller
-            control={control}
-            name="from"
-            render={({ field }) => (
-              <SelectInputV2
-                placeholder="Berangkat dari..."
-                value={field.value}
-                data={branchList}
-                onSelect={(selectedItem) => field.onChange(selectedItem.title)}
-                leadingIcon={
-                  <View>
-                    <Typography fontFamily="OpenSans-Regular" fontSize={10}>
-                      Dari
-                    </Typography>
-                    <IconCarSide width={21} height={21} color="main" />
-                  </View>
-                }
-                withBorder={false}
-              />
-            )}
-          />
-          <Separator />
-          <Controller
-            control={control}
-            name="to"
-            render={({ field }) => (
-              <SelectInputV2
-                placeholder="Menuju..."
-                value={field.value}
-                data={branchList}
-                onSelect={(selectedItem) => field.onChange(selectedItem.title)}
-                leadingIcon={
-                  <View>
-                    <Typography fontFamily="OpenSans-Regular" fontSize={10}>
-                      Ke
-                    </Typography>
-                    <View style={{ transform: [{ scaleX: -1 }] }}>
-                      <IconCarSide width={21} height={21} color="main" />
-                    </View>
-                  </View>
-                }
-                withBorder={false}
-              />
-            )}
-          />
-
-          <TouchableWithoutFeedback onPress={handleSwap}>
-            <View backgroundColor="main" style={style.destinationIconSwap}>
-              <IconSwap width={20} height={20} color="paper" />
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-
-        <Controller
-          control={control}
-          name="date"
-          render={({ field }) => (
-            <DateInputV2
-              placeholder={formatDate(new Date())}
-              leadingIcon={<IconCalendar width={21} height={21} color="main" />}
-              onChange={(date) => field.onChange(date)}
-              value={field.value}
-            />
-          )}
+        <SelectTravelComponent
+          handleAfterSubmit={() => router.push("/travel/available-schedule")}
         />
-
-        <Button disabled={!formState.isValid} onPressIn={handleSubmitForm}>
-          Cari
-        </Button>
       </View>
 
       <SectionWrapper
@@ -223,6 +176,7 @@ const style = StyleSheet.create({
     position: "absolute",
     top: 0,
     width: "100%",
+    overflow: "hidden",
   },
   orderBox: {
     margin: 24,
@@ -230,11 +184,11 @@ const style = StyleSheet.create({
     padding: 16,
     gap: 16,
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 10,
   },
   destinationBox: {
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 10,
     padding: 12,
     gap: 12,
     justifyContent: "center",
@@ -259,5 +213,10 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     gap: 16,
     flexGrow: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

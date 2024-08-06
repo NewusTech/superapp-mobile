@@ -24,5 +24,6 @@ const styles = StyleSheet.create({
     height: 187,
     width: 326,
     resizeMode: "cover",
+    borderRadius: 10,
   },
 });

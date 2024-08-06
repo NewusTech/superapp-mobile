@@ -8,7 +8,7 @@ import { Typography } from "../typography/Typography";
 import { View } from "../view/View";
 
 type DataItem = {
-  title: string;
+  title: string | number;
 };
 export type SelectInputV2Props = {
   leadingIcon?: ReactNode;
@@ -16,8 +16,9 @@ export type SelectInputV2Props = {
   withBorder?: boolean;
   data: DataItem[];
   onSelect: (selectedItem: DataItem, index: number) => void;
-  value: string;
+  value: string | number;
   placeholder?: string;
+  suffix?: string;
 };
 export function SelectInputV2(props: SelectInputV2Props) {
   const {
@@ -28,6 +29,7 @@ export function SelectInputV2(props: SelectInputV2Props) {
     data = [],
     onSelect = () => {},
     placeholder = "",
+    suffix = "",
   } = props;
 
   const { Colors } = useAppTheme();
@@ -53,10 +55,10 @@ export function SelectInputV2(props: SelectInputV2Props) {
           <Typography
             fontFamily="OpenSans-Regular"
             fontSize={14}
-            color={value ? "textprimary" : "textsecondary"}
+            color={value ? "black" : "textsecondary"}
             style={styles.textInput}
           >
-            {value || placeholder}
+            {value || placeholder} {" " + suffix}
           </Typography>
 
           {trailingIcon}
@@ -72,7 +74,9 @@ export function SelectInputV2(props: SelectInputV2Props) {
               },
             ]}
           >
-            <Typography>{item.title}</Typography>
+            <Typography>
+              {item.title} {suffix}
+            </Typography>
           </View>
         );
       }}
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     gap: 12,
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 2,
+    borderRadius: 10,
   },
   textInput: {
     flex: 1,

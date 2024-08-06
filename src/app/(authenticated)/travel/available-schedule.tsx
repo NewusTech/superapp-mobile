@@ -1,10 +1,11 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
   TouchableNativeFeedbackProps,
   TouchableWithoutFeedback,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -19,11 +20,11 @@ import {
 } from "@/components";
 import {
   IconCarSide,
-  IconDoorThin,
   IconIcArrowRight,
   IconPinSharp,
 } from "@/components/icons";
-import { useAppTheme } from "@/context/theme-context";
+import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
+import { AppColor } from "@/constants/Colors";
 import { useGetTravelSchedule } from "@/features/travel/api/useGetSchedule";
 import { TravelTicketItem } from "@/features/travel/components";
 import {
@@ -38,6 +39,8 @@ export default function TravelOptionScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const [openPopupRute, setOpenPopupRute] = useState(false);
+
   const travelBookingPayload = useTravelbookingPayload();
   const pointToPointPayload = useTravelPointToPointPayload();
   const { setPointToPointPayload, setTravelSchedule } = useTravelActions();
@@ -46,8 +49,11 @@ export default function TravelOptionScreen() {
     from: travelBookingPayload?.from || "",
     to: travelBookingPayload?.to || "",
     date: travelBookingPayload?.date as Date,
-    qtyChair: 1,
+    seats: 1,
   });
+
+  const _disablePoint =
+    !travelScheduleQuery.data || travelScheduleQuery.data?.data.length <= 0;
 
   const handleSelectSchedule = (
     travelSchedule: TravelScheduleResponseSuccess["data"][number]
@@ -112,7 +118,7 @@ export default function TravelOptionScreen() {
               fontSize={14}
               color="textsecondary"
             >
-              {travelBookingPayload?.qtyChair} Kursi
+              {travelBookingPayload?.seats} Kursi
             </Typography>
             <Button
               style={{
@@ -121,6 +127,7 @@ export default function TravelOptionScreen() {
                 paddingEnd: 10,
                 minHeight: 10,
               }}
+              onPress={() => setOpenPopupRute(true)}
             >
               Ubah
             </Button>
@@ -130,20 +137,22 @@ export default function TravelOptionScreen() {
       />
       <View style={style.contentHeaderContainer}>
         <View style={style.headerTitleWrapper}>
-          <Typography fontFamily="Poppins-Bold" fontSize={14} color="main">
+          <Typography fontFamily="Poppins-Bold" fontSize={14} color={"main"}>
             {formatDate(travelBookingPayload?.date)}
           </Typography>
           <View backgroundColor="main" style={style.indicator} />
         </View>
         <View style={style.destinationOptionWrapper}>
           <TouchableWithIcon
-            icon={<IconDoorThin width={20} height={20} color="main" />}
-            label="Door to Door"
-            disabled={
-              !travelScheduleQuery.data ||
-              travelScheduleQuery.data?.data.length <= 0 ||
-              true
+            icon={
+              <IconPinSharp
+                width={20}
+                height={20}
+                color={_disablePoint ? "main" : "paper"}
+              />
             }
+            label="Titik Jemput"
+            disabled={_disablePoint}
             onPress={() =>
               router.push({
                 pathname: "/travel/form-point-to-point/[pageType]",
@@ -154,18 +163,20 @@ export default function TravelOptionScreen() {
             }
           />
           <TouchableWithIcon
-            icon={<IconPinSharp width={20} height={20} color="white" />}
-            label="Point to Point"
-            // disable point to point, since it need TBD
-            disabled={
-              !travelScheduleQuery.data ||
-              travelScheduleQuery.data?.data.length <= 0
+            icon={
+              <IconPinSharp
+                width={20}
+                height={20}
+                color={_disablePoint ? "main" : "paper"}
+              />
             }
+            label="Titik Antar"
+            disabled={_disablePoint}
             onPress={() =>
               router.push({
                 pathname: "/travel/form-point-to-point/[pageType]",
                 params: {
-                  pageType: "from",
+                  pageType: "to",
                 },
               })
             }
@@ -213,6 +224,25 @@ export default function TravelOptionScreen() {
           paddingBottom: insets.bottom + 20,
         }}
       />
+      {openPopupRute && (
+        <View style={style.containerPopup}>
+          <BlurView
+            intensity={100}
+            blurReductionFactor={100}
+            experimentalBlurMethod="dimezisBlurView"
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            onTouchStart={() => setOpenPopupRute(false)}
+          />
+          <View style={style.containerPopupItem}>
+            <SelectTravelComponent
+              handleAfterSubmit={() => setOpenPopupRute(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -264,8 +294,6 @@ function TouchableWithIcon({
   disabled,
   ...rest
 }: TouchableIconWithIconProps) {
-  const { Colors } = useAppTheme();
-
   return (
     <TouchableWithoutFeedback disabled={disabled} {...rest}>
       <View
@@ -277,8 +305,7 @@ function TouchableWithIcon({
         <Typography
           fontFamily="OpenSans-Light"
           fontSize={12}
-          color="white"
-          style={{ color: "white" }}
+          color={disabled ? "main" : "paper"}
         >
           {label}
         </Typography>
@@ -317,7 +344,7 @@ const style = StyleSheet.create({
     gap: 18,
     flexGrow: 1,
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 100,
     flexDirection: "row",
   },
   headerWrapper: {
@@ -361,5 +388,21 @@ const style = StyleSheet.create({
     gap: 24,
     paddingLeft: 60,
     paddingRight: 20,
+  },
+  containerPopup: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    shadowRadius: 1,
+    overflow: "hidden",
+  },
+  containerPopupItem: {
+    backgroundColor: "white",
+    marginTop: "auto",
+    borderWidth: 1,
+    borderColor: AppColor.light.textsecondary,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
 });

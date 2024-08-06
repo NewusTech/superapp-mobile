@@ -91,7 +91,7 @@ export const travelScheduleQuerySchema = z.object({
   from: z.string(),
   to: z.string(),
   date: z.date(),
-  qtyChair: z.number(),
+  seats: z.number(),
 });
 export type TravelScheduleQuery = z.infer<typeof travelScheduleQuerySchema>;
 export type TravelScheduleResponseSuccess = {
