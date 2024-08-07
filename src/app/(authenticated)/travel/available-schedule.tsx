@@ -44,6 +44,7 @@ export default function TravelOptionScreen() {
   const travelBookingPayload = useTravelbookingPayload();
   const pointToPointPayload = useTravelPointToPointPayload();
   const { setPointToPointPayload, setTravelSchedule } = useTravelActions();
+  const { setPassenger } = useTravelActions();
 
   const travelScheduleQuery = useGetTravelSchedule({
     from: travelBookingPayload?.from || "",
@@ -77,13 +78,14 @@ export default function TravelOptionScreen() {
     router.push("/travel/travel-detail");
   };
 
-  // reset pointToPointPaylaod to make sure it fresh data
+  // reset pointToPointPaylaod and pessanger to make sure it fresh data
   useEffect(() => {
     setPointToPointPayload({
       from: undefined,
       to: undefined,
     });
-  }, [setPointToPointPayload]);
+    setPassenger([]);
+  }, [setPointToPointPayload, setPassenger]);
 
   return (
     <View backgroundColor="paper" style={style.container}>

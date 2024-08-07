@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -23,29 +24,51 @@ export type PassengerSeat = z.infer<typeof passengerSeatSchema>;
 export default function AddPassengerScreen() {
   const router = useRouter();
 
+  const params = useLocalSearchParams<{
+    index: string;
+    sheats: string;
+    selectAllSheats: string;
+  }>();
+  const passengerIndex = Number(params.index);
+
   // store
   const passengerList = useTravelPassenger();
   const { setPassenger } = useTravelActions();
 
-  const { control, formState, handleSubmit } = useForm<PassengerSeat>({
-    resolver: zodResolver(passengerSeatSchema),
-    mode: "all",
-  });
+  const { control, formState, handleSubmit, setValue } = useForm<PassengerSeat>(
+    {
+      resolver: zodResolver(passengerSeatSchema),
+      mode: "all",
+    }
+  );
 
   const onSavePassenger = handleSubmit((data) => {
-    const tempPassenger = [...passengerList, data];
-    setPassenger(tempPassenger);
+    const passengerListTemp: PassengerSeat[] = passengerList;
+    if (passengerListTemp?.[passengerIndex]) {
+      passengerListTemp[passengerIndex] = data;
+    }
+    setPassenger(passengerListTemp);
     onBackPress();
   });
 
   const onBackPress = () => {
     router.replace("/travel/order-detail");
   };
+
+  useEffect(() => {
+    const passenger = passengerList[passengerIndex];
+    setValue("name", passenger.name);
+    setValue("email", passenger.email);
+    setValue("nik", passenger.nik);
+    setValue("phoneNumber", passenger.phoneNumber);
+    setValue("seat", passenger.seat);
+  }, [passengerIndex, passengerList, setValue]);
+
   useHardwareBackpress(onBackPress);
 
   return (
     <View backgroundColor="paper" style={styles.container}>
-      <Appbar title="Tambah Penumpang" backIconPress={onBackPress} />
+      <Appbar title="Ubah data Penumpang" backIconPress={onBackPress} />
 
       <View borderColor="outlineborder" style={styles.contentContainer}>
         <Controller

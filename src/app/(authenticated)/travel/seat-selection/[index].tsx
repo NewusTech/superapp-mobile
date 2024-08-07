@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Appbar, Button, Typography, View } from "@/components";
-import { IconCIChecklist } from "@/components/icons";
 import { AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
@@ -14,6 +13,7 @@ import {
   useTravelPassenger,
   useTravelSchedule,
 } from "@/features/travel/store/travel-store";
+import { useHardwareBackpress } from "@/hooks/useHardwareBackPress";
 
 import { PassengerSeat } from "../add-passenger";
 
@@ -71,17 +71,22 @@ export default function SeatSelectionScreen() {
 
   const onProceedNextPage = () => {
     const passengerListTemp: PassengerSeat[] = passengerList;
-
-    if (passengerIndex === 0) {
-      passengerListTemp[0] = {
-        name: userProfile?.nama || "",
-        phoneNumber: userProfile?.no_telp || "",
-        seat: selectedSeats,
-        nik: "",
-        email: "",
-      };
-    } else if (passengerListTemp?.[passengerIndex]) {
-      passengerListTemp[passengerIndex].seat = selectedSeats;
+    if (!selectAllSheats) {
+      if (passengerListTemp?.[passengerIndex]) {
+        passengerListTemp[passengerIndex].seat = selectedSeats[0];
+      }
+    } else {
+      selectedSeats
+        .sort((a, b) => parseFloat(a) - parseFloat(b))
+        .map((numberSheat, index) => {
+          passengerListTemp[index] = {
+            name: "Penumpang " + (index + 1),
+            phoneNumber: "",
+            seat: numberSheat,
+            nik: "",
+            email: "",
+          };
+        });
     }
 
     setPassenger(passengerListTemp);
@@ -95,10 +100,17 @@ export default function SeatSelectionScreen() {
     router.replace("/travel/order-detail");
   };
 
+  useEffect(() => {
+    if (selectAllSheats && passengerList.length >= sheats) {
+      router.replace("/travel/order-detail");
+    }
+  }, [selectAllSheats, passengerList.length, sheats, router]);
+
+  useHardwareBackpress(handleActionBack);
+
   return (
     <View backgroundColor="paper" style={style.container}>
       <Appbar backIconPress={handleActionBack} title="Pilih Kursi" />
-
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={style.contentContainer}
@@ -134,19 +146,6 @@ export default function SeatSelectionScreen() {
                 </>
               )}
             </View>
-          </View>
-
-          <View
-            style={{
-              height: 16,
-              width: 16,
-              borderRadius: 99,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            backgroundColor="secondary"
-          >
-            <IconCIChecklist color="paper" size={10} />
           </View>
         </View>
 
@@ -188,7 +187,7 @@ export default function SeatSelectionScreen() {
         ]}
       >
         <Button
-          disabled={selectedSeats.length <= 0}
+          disabled={selectedSeats.length < sheats}
           onPress={onProceedNextPage}
         >
           Lanjutkan
