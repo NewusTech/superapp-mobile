@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { StyleSheet } from "react-native";
 
+import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { formatDate } from "@/utils/datetime";
 import RNDateTimePicker, {
@@ -7,6 +9,8 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 
 import { TextInputV2, TextInputV2Props } from "../text-input-v2/TextInputV2";
+import { Typography } from "../typography/Typography";
+import { View } from "../view/View";
 
 export type DateInputV2Props = {
   value: Date | string;
@@ -32,15 +36,34 @@ export function DateInputV2(props: DateInputV2Props) {
 
   return (
     <>
-      <TextInputV2
-        trailingIcon={trailingIcon}
-        leadingIcon={leadingIcon}
-        value={formatDate(value)}
-        placeholder={placeholder}
-        onTouchablePress={() => setShowDatePicker(!showDatePicker)}
-        asTouchable
-        withBorder={withBorder}
-      />
+      <View
+        style={[
+          styles.container,
+          {
+            borderWidth: withBorder ? 1 : 0,
+            borderColor: Colors.outlineborder,
+            padding: withBorder ? 12 : 0,
+          },
+        ]}
+      >
+        <Typography
+          fontFamily="OpenSans-Regular"
+          fontSize={12}
+          color={value ? "textprimary" : "textsecondary"}
+          style={styles.textPlaceholder}
+        >
+          {placeholder}
+        </Typography>
+        <TextInputV2
+          trailingIcon={trailingIcon}
+          leadingIcon={leadingIcon}
+          value={formatDate(value)}
+          placeholder={placeholder}
+          onTouchablePress={() => setShowDatePicker(!showDatePicker)}
+          asTouchable
+          withBorder={false}
+        />
+      </View>
 
       {showDatePicker && (
         <RNDateTimePicker
@@ -56,3 +79,21 @@ export function DateInputV2(props: DateInputV2Props) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    gap: 5,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    borderRadius: 10,
+  },
+  textPlaceholder: {
+    flex: 1,
+    color: AppColor.light.textsecondary,
+  },
+  dropdownItemStyle: {
+    padding: 8,
+    borderRadius: 2,
+  },
+});

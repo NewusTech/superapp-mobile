@@ -41,7 +41,7 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
           <>
             {customHeader}
             <View>
-              <Separator />
+              <Separator thickness={2} />
             </View>
           </>
         )}
@@ -103,6 +103,8 @@ const style = StyleSheet.create({
     borderWidth: 1,
     padding: 12,
     gap: 10,
+    shadowOpacity: 1,
+    borderRadius: 20,
   },
   row: {
     flexDirection: "row",

@@ -11,10 +11,10 @@ import {
   Typography,
   View,
 } from "@/components";
+import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetPointToPointApi } from "@/features/travel/api/useGetPointToPointApi";
 import {
-  getPesananResponse,
   useTravelActions,
   useTravelbookingPayload,
   useTravelPointToPointPayload,
@@ -47,23 +47,13 @@ export default function FormPoinToPointScreen() {
       ...pointToPointPayload,
       [pageType]: selectedPoint,
     });
-
-    if (pageType === "from") {
-      router.replace({
-        pathname: "/travel/form-point-to-point/[pageType]",
-        params: {
-          pageType: "to",
-        },
-      });
-    } else {
-      router.back();
-    }
+    router.back();
   };
 
   return (
     <View backgroundColor="paper" style={styles.container}>
       <Appbar
-        title="Point to Point"
+        title={`Pilih Titik ${pageType === "from" ? "Jemput" : "Antar"}`}
         backIconPress={() => router.back()}
         hasBorder={false}
       />
@@ -105,10 +95,18 @@ export default function FormPoinToPointScreen() {
             )}
           </View>
         )}
-        style={{ flex: 1, marginTop: 24 }}
-        contentContainerStyle={{ flexGrow: 1 }}
+        style={{ marginTop: 24 }}
       />
-
+      <View style={styles.containerNote}>
+        <Typography style={[styles.textNote, { fontWeight: "bold" }]}>
+          Catatan :
+        </Typography>
+        <Typography style={styles.textNote}>
+          Jika alamat penjemputan Anda tidak tersedia di titik jemput kami, akan
+          ada tambahan biaya. Silakan pilih titik jemput terdekat atau hubungi
+          admin di 085764156224 untuk bantuan lebih lanjut.
+        </Typography>
+      </View>
       <View
         style={[
           styles.bottomActionContainer,
@@ -147,5 +145,17 @@ const styles = StyleSheet.create({
     minHeight: 400,
     justifyContent: "center",
     alignItems: "center",
+  },
+  containerNote: {
+    backgroundColor: AppColor.light.dangerlight,
+    marginHorizontal: 20,
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 50,
+    display: "flex",
+    flexDirection: "column",
+  },
+  textNote: {
+    color: AppColor.dark.dangerbase,
   },
 });

@@ -79,7 +79,7 @@ export function Button(props: ButtonProps) {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 2,
+    borderRadius: 100,
     minHeight: 48,
     paddingVertical: 4,
     justifyContent: "center",
