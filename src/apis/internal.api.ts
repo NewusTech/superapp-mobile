@@ -4,6 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
+import { API_URL } from "@/constants/Constant";
 import { handleLogoutSession } from "@/features/auth/services/auth.service";
 import { getAccessToken } from "@/features/auth/store/auth-store";
 
@@ -29,7 +30,7 @@ import {
 } from "./internal.api.type";
 
 const apiClient = axios.create({
-  baseURL: "https://backend-superapps.newus.id",
+  baseURL: API_URL,
 });
 
 const requestInterceptor = (config: InternalAxiosRequestConfig<any>) => {

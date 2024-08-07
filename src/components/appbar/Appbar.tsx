@@ -119,7 +119,7 @@ const style = StyleSheet.create({
   },
   titleWrapper: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
   },
 });

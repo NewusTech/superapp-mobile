@@ -27,7 +27,12 @@ export function CarSeat10(props: CarSeat10Props) {
   };
 
   return (
-    <View style={[styles.container, { borderColor: Colors.outlineborder }]}>
+    <View
+      style={[
+        styles.container,
+        { borderColor: Colors.textsecondary, borderRadius: 15 },
+      ]}
+    >
       <View style={styles.row1}>
         <SeatItem
           seatNumber="1"
@@ -136,7 +141,7 @@ function SeatItem(props: SeatItemProps) {
   );
 }
 
-function LabelPintu(props) {
+function LabelPintu(props: any) {
   const { Colors } = useAppTheme();
   return (
     <Svg

@@ -6,6 +6,7 @@ import {
 } from "react-native";
 
 import { Separator, Typography, View } from "@/components";
+import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { formatDate, formatTime } from "@/utils/datetime";
 
@@ -41,7 +42,15 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
           <>
             {customHeader}
             <View>
-              <Separator thickness={2} />
+              <Separator
+                thickness={2}
+                style={{
+                  backgroundColor: "transparent",
+                  borderTopWidth: 1,
+                  borderStyle: "dashed",
+                  borderColor: AppColor.light.textsecondary,
+                }}
+              />
             </View>
           </>
         )}

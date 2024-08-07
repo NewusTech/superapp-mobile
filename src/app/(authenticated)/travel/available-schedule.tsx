@@ -49,7 +49,7 @@ export default function TravelOptionScreen() {
     from: travelBookingPayload?.from || "",
     to: travelBookingPayload?.to || "",
     date: travelBookingPayload?.date as Date,
-    seats: 1,
+    seats: travelBookingPayload?.seats || 1,
   });
 
   const _disablePoint =
@@ -226,16 +226,17 @@ export default function TravelOptionScreen() {
       />
       {openPopupRute && (
         <View style={style.containerPopup}>
-          <BlurView
-            intensity={100}
-            blurReductionFactor={100}
-            experimentalBlurMethod="dimezisBlurView"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            onTouchStart={() => setOpenPopupRute(false)}
-          />
+          <TouchableWithoutFeedback onPress={() => setOpenPopupRute(false)}>
+            <BlurView
+              intensity={100}
+              blurReductionFactor={100}
+              experimentalBlurMethod="dimezisBlurView"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </TouchableWithoutFeedback>
           <View style={style.containerPopupItem}>
             <SelectTravelComponent
               handleAfterSubmit={() => setOpenPopupRute(false)}

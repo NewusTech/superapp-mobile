@@ -22,8 +22,14 @@ export default function SeatSelectionScreen() {
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const params = useLocalSearchParams<{ index: string }>();
+  const params = useLocalSearchParams<{
+    index: string;
+    sheats: string;
+    selectAllSheats: string;
+  }>();
   const passengerIndex = Number(params.index) || 0;
+  const sheats = Number(params.sheats) || 1;
+  const selectAllSheats = params.selectAllSheats === "true";
 
   const [selectedSeats, setSelectedSeat] = useState<string[]>([]);
 
@@ -52,7 +58,7 @@ export default function SeatSelectionScreen() {
   }, [passengerIndex, passengerList, userProfile?.nama]);
 
   const handleSelectSeat = (seatNumber: string) => {
-    const limit = 1;
+    const limit = sheats;
 
     if (selectedSeats.find((seats) => seats === seatNumber)) {
       setSelectedSeat(selectedSeats.filter((seats) => seats !== seatNumber));
@@ -82,22 +88,30 @@ export default function SeatSelectionScreen() {
     router.replace("/travel/order-detail");
   };
 
+  const handleActionBack = () => {
+    if (selectAllSheats) {
+      return router.back();
+    }
+    router.replace("/travel/order-detail");
+  };
+
   return (
     <View backgroundColor="paper" style={style.container}>
-      <Appbar backIconPress={() => router.back()} title="Pilih Kursi" />
+      <Appbar backIconPress={handleActionBack} title="Pilih Kursi" />
 
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={style.contentContainer}
       >
-        <Typography fontFamily="Poppins-Bold" fontSize={16}>
-          Perjalananmu sdfd
-        </Typography>
-
-        <View style={[style.userInfoContainer, { borderColor: Colors.main }]}>
+        <View
+          style={[
+            style.userInfoContainer,
+            { borderColor: Colors.textsecondary, borderRadius: 10 },
+          ]}
+        >
           <View style={{ flex: 1, gap: 12 }}>
             <Typography fontFamily="Poppins-Bold" fontSize={16}>
-              {getUserSeatOwner}
+              {selectAllSheats ? "Pilih Kursi" : getUserSeatOwner}
             </Typography>
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
@@ -142,7 +156,10 @@ export default function SeatSelectionScreen() {
           <SeatDescription color="main" label="Tersedia" />
         </View>
 
-        <View backgroundColor="dangerlight" style={style.informationBanner}>
+        <View
+          backgroundColor="dangerlight"
+          style={[style.informationBanner, { borderRadius: 100 }]}
+        >
           <Typography
             fontFamily="OpenSans-Semibold"
             fontSize={10}

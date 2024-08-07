@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import {
   FlatList,
   ImageBackground,
@@ -8,40 +8,16 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {
-  TravelScheduleQuery,
-  travelScheduleQuerySchema,
-} from "@/apis/internal.api.type";
-import {
-  Appbar,
-  Button,
-  DateInputV2,
-  SectionWrapper,
-  SelectInputV2,
-  Separator,
-  Typography,
-  View,
-} from "@/components";
-import {
-  IconArrowRight,
-  IconCalendar,
-  IconCarSide,
-  IconChevronDown,
-  IconSeat,
-  IconSwap,
-} from "@/components/icons";
-import InputSwitch from "@/components/input-switch/InputSwitch";
+import { Appbar, SectionWrapper, View } from "@/components";
+import { IconArrowRight } from "@/components/icons";
 import { PromoItem } from "@/components/promo-item/PromoItem";
 import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
 import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { ArticleEmpty } from "@/features/article/components";
-import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
 import { useTravelActions } from "@/features/travel/store/travel-store";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export const PromoItemList: { imgUrl: ImageProps["source"] }[] = [
   { imgUrl: require("@/assets/images/promo/1.png") },
@@ -53,52 +29,14 @@ export const PromoItemList: { imgUrl: ImageProps["source"] }[] = [
 export default function BookingTravelScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const maxChair = 8;
-
-  const [pulangPergi, setPulangPergi] = useState<boolean>(false);
 
   const { Colors } = useAppTheme();
 
   const { setBookingPayload } = useTravelActions();
 
-  const travelBranchQuery = useGetTravelBranch();
-
-  const branchList = useMemo(() => {
-    if (!travelBranchQuery.data) return [];
-    return travelBranchQuery.data?.data.map((item) => ({
-      title: item.nama,
-    }));
-  }, [travelBranchQuery.data]);
-
-  const chairList = Array.from({ length: maxChair }, (v, i) => ({
-    title: i + 1,
-  }));
-
-  const { control, formState, handleSubmit, setValue, getValues } =
-    useForm<TravelScheduleQuery>({
-      defaultValues: {
-        date: new Date(),
-        seats: 1,
-      },
-      resolver: zodResolver(travelScheduleQuerySchema),
-      mode: "all",
-    });
-
-  const handleSubmitForm = handleSubmit((data) => {
-    setBookingPayload(data);
-    router.push("/travel/available-schedule");
-  });
-
   useEffect(() => {
     setBookingPayload(undefined);
   }, [setBookingPayload]);
-
-  const handleSwap = () => {
-    const fromValue = getValues("from");
-    const toValue = getValues("to");
-    setValue("from", toValue);
-    setValue("to", fromValue);
-  };
 
   return (
     <ScrollView
