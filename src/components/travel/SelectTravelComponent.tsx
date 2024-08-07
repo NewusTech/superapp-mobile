@@ -173,6 +173,7 @@ export default function SelectTravelComponent({
           label="Pulang Pergi"
           disable
           disableMessage="Coming Soon"
+          value={false}
         />
       </View>
 

@@ -57,7 +57,6 @@ export default function FormPoinToPointScreen() {
         backIconPress={() => router.back()}
         hasBorder={false}
       />
-
       <FlatList
         data={pointToPointQuery.data?.data ?? []}
         ListHeaderComponent={() => (

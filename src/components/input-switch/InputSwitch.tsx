@@ -6,9 +6,10 @@ import { View } from "../view/View";
 
 export type InputSwitchProps = {
   label: string;
-  value?: boolean;
+  value: boolean;
   disable?: boolean;
   disableMessage?: string;
+  handleOnSwitch?: (value: boolean) => void;
 };
 
 export default function InputSwitch({
@@ -16,9 +17,13 @@ export default function InputSwitch({
   value,
   disable = false,
   disableMessage = "is disabled",
+  handleOnSwitch,
 }: InputSwitchProps) {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [isEnabled, setIsEnabled] = useState(() => value);
+  const toggleSwitch = () => {
+    handleOnSwitch!(!isEnabled);
+    setIsEnabled((previousState) => !previousState);
+  };
   return (
     <View style={styles.container}>
       {disable && (

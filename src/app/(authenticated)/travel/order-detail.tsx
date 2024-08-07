@@ -1,10 +1,10 @@
 /* eslint-disable simple-import-sort/imports */
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, Button, Checkbox, Typography, View } from "@/components";
+import { Appbar, Button, Typography, View } from "@/components";
 import { IconCarSide, IconSeat, IconUserCard } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { TravelTicketItem } from "@/features/travel/components";
@@ -17,13 +17,13 @@ import {
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
 
-import { PassengerSeat } from "./add-passenger";
 import { useMutation } from "@tanstack/react-query";
 import { apiClientMock } from "@/apis/internal.api";
 import { AxiosError } from "axios";
 import { useGetPointToPointApi } from "@/features/travel/api/useGetPointToPointApi";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import InputSwitch from "@/components/input-switch/InputSwitch";
+import { PassengerSeat } from "./passenger/[index]";
 
 const usePostPesananMutation = () => {
   const { setPesananResponse } = useTravelActions();
@@ -54,6 +54,9 @@ export default function TravelOrderDetailScreen() {
   const travelSchedule = useTravelSchedule();
   const travelPassenger = useTravelPassenger();
 
+  const [valuePassagerOneSameOnUser, setValuePassagerOneSameOnUser] =
+    useState(false);
+
   const handleNavigateToSeatSelection = (index: number) => {
     const routes = navigation.getState()?.routes;
     const prevRoute = routes[routes.length - 2];
@@ -73,9 +76,28 @@ export default function TravelOrderDetailScreen() {
       });
     }
   };
+  const handleNavigateToPassangerEdit = (index: number) => {
+    const routes = navigation.getState()?.routes;
+    const prevRoute = routes[routes.length - 2];
+    if (prevRoute.name === "travel/travel-detail") {
+      router.replace({
+        pathname: "/travel/passenger/[index]",
+        params: {
+          index,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/travel/passenger/[index]",
+        params: {
+          index,
+        },
+      });
+    }
+  };
 
   const getPassengerSeat = useMemo(() => {
-    let selectedSeat: PassengerSeat["seat"] = [];
+    let selectedSeat: string[] = [];
 
     travelPassenger.forEach((passenger) => {
       selectedSeat = selectedSeat.concat(passenger.seat);
@@ -85,10 +107,11 @@ export default function TravelOrderDetailScreen() {
   }, [travelPassenger]);
 
   const { mutate: postPesanan } = usePostPesananMutation();
-  // const travelStore = useTravelbookingPayload()
   const pointToPointPayload = useTravelPointToPointPayload();
   const bookingPayload = useTravelbookingPayload();
-  const pointToPointQuery = useGetPointToPointApi(bookingPayload);
+  const pointToPointQuery = useGetPointToPointApi(bookingPayload as any);
+  const passengerList = useTravelPassenger();
+  const { setPassenger } = useTravelActions();
 
   const handlerPesanan = () => {
     const data: any = pointToPointQuery?.data?.data.find(
@@ -115,18 +138,38 @@ export default function TravelOrderDetailScreen() {
     });
   };
 
+  const handlePassangerOneSameOnUser = (value: any) => {
+    const passengerListTemp: PassengerSeat[] = passengerList;
+    if (value) {
+      if (passengerListTemp?.[0]) {
+        passengerListTemp[0].email = userProfile?.email || " ";
+        passengerListTemp[0].name = userProfile?.nama || "Penumpang 1";
+        passengerListTemp[0].nik = " ";
+        passengerListTemp[0].phoneNumber = userProfile?.no_telp || "";
+        console.log(passengerList[0]);
+      }
+    } else {
+      passengerListTemp[0].email = " ";
+      passengerListTemp[0].name = "Penumpang 1";
+      passengerListTemp[0].nik = " ";
+      passengerListTemp[0].phoneNumber = "";
+      console.log(passengerList[0]);
+    }
+    setPassenger(passengerListTemp);
+    setValuePassagerOneSameOnUser(value);
+    console.log({ value });
+  };
+
   if (!travelSchedule) return null;
 
   return (
     <View backgroundColor="paper" style={style.container}>
       <Appbar title="Detail Pesanan" backIconPress={() => router.back()} />
-
       <ScrollView>
         <View style={style.contentContainer}>
           <Typography fontFamily="Poppins-Bold" fontSize={16}>
             Perjalananmu
           </Typography>
-
           <TravelTicketItem
             departureDate={new Date(travelSchedule?.departureDate)}
             destinationCity={travelSchedule?.originCity}
@@ -239,7 +282,11 @@ export default function TravelOrderDetailScreen() {
                   >
                     Sama dengan pemesan
                   </Typography>
-                  <InputSwitch label="" />
+                  <InputSwitch
+                    label=""
+                    value={valuePassagerOneSameOnUser}
+                    handleOnSwitch={handlePassangerOneSameOnUser}
+                  />
                 </View>
               )}
               <View style={[style.passengerContainer]}>
@@ -252,8 +299,7 @@ export default function TravelOrderDetailScreen() {
                     {passenger.name}
                   </Typography>
                   <Typography color="textsecondary">
-                    {travelSchedule.carModel} {"\u2022"}{" "}
-                    {passenger.seat.join(", ")}
+                    {travelSchedule.carModel} {"\u2022"} {passenger.seat}
                   </Typography>
                 </View>
 
@@ -277,7 +323,7 @@ export default function TravelOrderDetailScreen() {
                   <IconSeat height={24} width={38} color="main" />
                 </Pressable>
                 <Pressable
-                  onPress={() => handleNavigateToSeatSelection(index)}
+                  onPress={() => handleNavigateToPassangerEdit(index)}
                   style={{
                     borderWidth: 1,
                     borderColor: Colors.outlineborder,
