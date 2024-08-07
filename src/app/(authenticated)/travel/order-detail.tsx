@@ -1,11 +1,11 @@
 /* eslint-disable simple-import-sort/imports */
 import { useMemo } from "react";
-import { StyleSheet } from "react-native";
+import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, Button, Typography, View } from "@/components";
-import { IconCarSide } from "@/components/icons";
+import { Appbar, Button, Checkbox, Typography, View } from "@/components";
+import { IconCarSide, IconSeat, IconUserCard } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { TravelTicketItem } from "@/features/travel/components";
 import {
@@ -13,7 +13,7 @@ import {
   useTravelPassenger,
   useTravelPointToPointPayload,
   useTravelSchedule,
-  useTravelbookingPayload
+  useTravelbookingPayload,
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
 
@@ -22,6 +22,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiClientMock } from "@/apis/internal.api";
 import { AxiosError } from "axios";
 import { useGetPointToPointApi } from "@/features/travel/api/useGetPointToPointApi";
+import { useAuthProfile } from "@/features/auth/store/auth-store";
+import InputSwitch from "@/components/input-switch/InputSwitch";
 
 const usePostPesananMutation = () => {
   const { setPesananResponse } = useTravelActions();
@@ -41,7 +43,6 @@ const usePostPesananMutation = () => {
   });
 };
 
-
 export default function TravelOrderDetailScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -49,6 +50,7 @@ export default function TravelOrderDetailScreen() {
 
   const { Colors } = useAppTheme();
 
+  const userProfile = useAuthProfile();
   const travelSchedule = useTravelSchedule();
   const travelPassenger = useTravelPassenger();
 
@@ -82,7 +84,6 @@ export default function TravelOrderDetailScreen() {
     return selectedSeat;
   }, [travelPassenger]);
 
-
   const { mutate: postPesanan } = usePostPesananMutation();
   // const travelStore = useTravelbookingPayload()
   const pointToPointPayload = useTravelPointToPointPayload();
@@ -90,7 +91,9 @@ export default function TravelOrderDetailScreen() {
   const pointToPointQuery = useGetPointToPointApi(bookingPayload);
 
   const handlerPesanan = () => {
-    const data: any = pointToPointQuery?.data?.data.find(item => item.nama === pointToPointPayload?.from)
+    const data: any = pointToPointQuery?.data?.data.find(
+      (item) => item.nama === pointToPointPayload?.from
+    );
 
     const payload: any = {
       jadwal_id: travelSchedule?.id,
@@ -118,90 +121,183 @@ export default function TravelOrderDetailScreen() {
     <View backgroundColor="paper" style={style.container}>
       <Appbar title="Detail Pesanan" backIconPress={() => router.back()} />
 
-      <View style={style.contentContainer}>
-        <Typography fontFamily="Poppins-Bold" fontSize={16}>
-          Perjalananmu
-        </Typography>
+      <ScrollView>
+        <View style={style.contentContainer}>
+          <Typography fontFamily="Poppins-Bold" fontSize={16}>
+            Perjalananmu
+          </Typography>
 
-        <TravelTicketItem
-          departureDate={new Date(travelSchedule?.departureDate)}
-          destinationCity={travelSchedule?.originCity}
-          destinationDepartureDate={
-            new Date(travelSchedule?.destinationDepartureDate)
-          }
-          originCity={travelSchedule?.destinationCity}
-          originDepartureDate={new Date(travelSchedule?.originDepartureDate)}
-          icon={<IconCarSide color="main" />}
-          customHeader={
-            <View>
-              <Typography>
-                {travelSchedule.carModel} {"\u2022"}{" "}
-                {getPassengerSeat?.map((item) => item).join(", ")}
-              </Typography>
-            </View>
-          }
-          customFooter={
+          <TravelTicketItem
+            departureDate={new Date(travelSchedule?.departureDate)}
+            destinationCity={travelSchedule?.originCity}
+            destinationDepartureDate={
+              new Date(travelSchedule?.destinationDepartureDate)
+            }
+            originCity={travelSchedule?.destinationCity}
+            originDepartureDate={new Date(travelSchedule?.originDepartureDate)}
+            icon={<IconCarSide color="main" />}
+            customHeader={
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>
+                  {travelSchedule.carModel} {"\u2022"}{" "}
+                  {getPassengerSeat?.map((item) => item).join(", ")}
+                </Typography>
+                <Typography
+                  fontFamily="Poppins-Bold"
+                  fontSize={12}
+                  color="main"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.main,
+                    padding: 5,
+                    width: 90,
+                    textAlign: "center",
+                    textAlignVertical: "center",
+                    borderRadius: 100,
+                    marginLeft: "auto",
+                  }}
+                >
+                  Pergi
+                </Typography>
+              </View>
+            }
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontFamily="Poppins-Bold" fontSize={16}>
+              Kontak Pemesan
+            </Typography>
+          </View>
+          <View
+            style={{
+              borderColor: Colors.outlineborder,
+              borderWidth: 1,
+              borderRadius: 20,
+              width: "100%",
+              padding: 10,
+              paddingHorizontal: 20,
+            }}
+          >
+            <Typography fontFamily="Poppins-Bold" fontSize={18}>
+              {userProfile?.nama}
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={16}>
+              {userProfile?.no_telp}
+              {"\n"}
+              {userProfile?.email}
+            </Typography>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontFamily="Poppins-Bold" fontSize={16}>
+              Daftar Penumpang
+            </Typography>
+          </View>
+          {travelPassenger?.map((passenger, index) => (
             <View
+              key={passenger.name}
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                alignContent: "center",
+                borderWidth: 1,
+                borderColor: Colors.outlineborder,
+                borderRadius: 20,
+                flexDirection: "column",
+                padding: 12,
               }}
             >
-              <Typography>Titik Jemput</Typography>
-              <Typography>Titik Antar</Typography>
-            </View>
-          }
-        />
+              {index === 0 && (
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBlockColor: Colors.outlineborder,
+                    paddingLeft: 5,
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      height: "auto",
+                      textAlignVertical: "center",
+                      marginRight: "auto",
+                    }}
+                  >
+                    Sama dengan pemesan
+                  </Typography>
+                  <InputSwitch label="" />
+                </View>
+              )}
+              <View style={[style.passengerContainer]}>
+                <View>
+                  <Typography
+                    fontFamily="Poppins-Bold"
+                    fontSize={16}
+                    numberOfLines={1}
+                  >
+                    {passenger.name}
+                  </Typography>
+                  <Typography color="textsecondary">
+                    {travelSchedule.carModel} {"\u2022"}{" "}
+                    {passenger.seat.join(", ")}
+                  </Typography>
+                </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography fontFamily="Poppins-Bold" fontSize={16}>
-            Daftar Penumpang
-          </Typography>
-          <Button
-            onPress={() => router.push("/travel/add-passenger")}
-            style={{ minHeight: 40, height: 40 }}
-          >
-            Tambah
-          </Button>
+                <Pressable
+                  onPress={() => handleNavigateToSeatSelection(index)}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.outlineborder,
+                    height: 48,
+                    width: 48,
+                    padding: 10,
+                    borderRadius: 100,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginLeft: "auto",
+                    marginRight: 10,
+                    overflow: "hidden",
+                  }}
+                >
+                  <IconSeat height={24} width={38} color="main" />
+                </Pressable>
+                <Pressable
+                  onPress={() => handleNavigateToSeatSelection(index)}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.outlineborder,
+                    height: 48,
+                    width: 48,
+                    padding: 10,
+                    borderRadius: 100,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    overflow: "hidden",
+                  }}
+                >
+                  <IconUserCard height={24} width={24} color="main" />
+                </Pressable>
+              </View>
+            </View>
+          ))}
         </View>
-
-        {travelPassenger?.map((passenger, index) => (
-          <View
-            key={passenger.name}
-            style={[
-              style.passengerContainer,
-              { borderColor: Colors.outlineborder },
-            ]}
-          >
-            <View>
-              <Typography
-                fontFamily="Poppins-Bold"
-                fontSize={16}
-                numberOfLines={1}
-              >
-                {passenger.name}
-              </Typography>
-              <Typography color="textsecondary">
-                {travelSchedule.carModel} {"\u2022"} {passenger.seat.join(", ")}
-              </Typography>
-            </View>
-
-            <Button
-              variant="secondary"
-              onPress={() => handleNavigateToSeatSelection(index)}
-            >
-              Ganti kursi
-            </Button>
-          </View>
-        ))}
-      </View>
+      </ScrollView>
 
       <View
         style={[
@@ -209,6 +305,7 @@ export default function TravelOrderDetailScreen() {
           {
             paddingBottom: 24 + insets.bottom,
             borderColor: Colors.outlineborder,
+            backgroundColor: Colors.paper,
           },
         ]}
       >
@@ -253,11 +350,8 @@ const style = StyleSheet.create({
     borderTopWidth: 1,
   },
   passengerContainer: {
-    borderWidth: 1,
-    borderRadius: 2,
     padding: 12,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
 });

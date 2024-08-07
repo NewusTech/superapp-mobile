@@ -26,3 +26,4 @@ export * from "./IconSeat";
 export * from "./IconSwap";
 export * from "./IconTruckDriver";
 export * from "./IconUser";
+export * from "./IconUserCard";

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 
@@ -38,6 +38,8 @@ export default function SelectTravelComponent({
   const maxChair = 8;
 
   const travelBookingPayload = useTravelbookingPayload();
+
+  const [pulangPergi, setPulangPergi] = useState<boolean>(false);
 
   const { control, formState, handleSubmit, setValue, getValues } =
     useForm<TravelScheduleQuery>({
