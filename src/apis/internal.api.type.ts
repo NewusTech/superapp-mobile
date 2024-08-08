@@ -10,6 +10,7 @@ export type PostLoginResponseSuccess = {
     created_at: string;
     deleted_at?: string;
     email: string;
+    nik: string;
     id: number;
     master_cabang_id: number;
     nama: string;
@@ -116,9 +117,21 @@ export type TravelScheduleResponseSuccess = {
 };
 export type TravelPointToPointApiParams = {
   point: string;
+  id: string;
+};
+export type AvaliableSheats = { mobil_id: string };
+export type AvaliableSheatsResponseSuccess = {
+  data: {
+    id: number;
+    status: string;
+    nomor_kursi: string;
+  }[];
+  message: string;
+  success: boolean;
 };
 export type TravePointToPointApiResponseSuccess = {
   data: {
+    id: string;
     nama: string;
   }[];
   message: string;

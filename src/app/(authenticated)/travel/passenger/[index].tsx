@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -13,11 +13,11 @@ import { useHardwareBackpress } from "@/hooks/useHardwareBackPress";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const passengerSeatSchema = z.object({
-  name: z.string(),
+  nama: z.string(),
   nik: z.string(),
   email: z.string().email(),
-  phoneNumber: z.string(),
-  seat: z.string(),
+  no_telp: z.string(),
+  no_kursi: z.string(),
 });
 export type PassengerSeat = z.infer<typeof passengerSeatSchema>;
 
@@ -30,6 +30,8 @@ export default function AddPassengerScreen() {
     selectAllSheats: string;
   }>();
   const passengerIndex = Number(params.index);
+
+  const [disableSave, setDisableSave] = useState(true);
 
   // store
   const passengerList = useTravelPassenger();
@@ -57,11 +59,11 @@ export default function AddPassengerScreen() {
 
   useEffect(() => {
     const passenger = passengerList[passengerIndex];
-    setValue("name", passenger.name);
+    setValue("nama", passenger.nama);
     setValue("email", passenger.email);
     setValue("nik", passenger.nik);
-    setValue("phoneNumber", passenger.phoneNumber);
-    setValue("seat", passenger.seat);
+    setValue("no_telp", passenger.no_telp);
+    setValue("no_kursi", passenger.no_kursi);
   }, [passengerIndex, passengerList, setValue]);
 
   useHardwareBackpress(onBackPress);
@@ -73,7 +75,7 @@ export default function AddPassengerScreen() {
       <View borderColor="outlineborder" style={styles.contentContainer}>
         <Controller
           control={control}
-          name="name"
+          name="nama"
           render={({ field }) => (
             <TextInput
               label="Nama *"
@@ -90,6 +92,8 @@ export default function AddPassengerScreen() {
           render={({ field }) => (
             <TextInput
               label="NIK *"
+              inputMode="numeric"
+              maxLength={16}
               placeholder="NIK"
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -103,6 +107,7 @@ export default function AddPassengerScreen() {
           render={({ field }) => (
             <TextInput
               label="Email *"
+              inputMode="email"
               placeholder="Email"
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -112,9 +117,11 @@ export default function AddPassengerScreen() {
         />
         <Controller
           control={control}
-          name="phoneNumber"
+          name="no_telp"
           render={({ field }) => (
             <TextInput
+              inputMode="numeric"
+              maxLength={13}
               label="Nomor Telepon *"
               placeholder="Nomor Telepon"
               onChangeText={field.onChange}

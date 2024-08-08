@@ -325,7 +325,6 @@ export default function TravelDetailScreen() {
                 router.push({
                   pathname: "/travel/seat-selection/[index]",
                   params: {
-                    index: 0,
                     sheats: travelBookingPayload?.seats,
                     selectAllSheats: "true",
                   },

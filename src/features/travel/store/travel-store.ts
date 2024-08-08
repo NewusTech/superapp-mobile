@@ -5,24 +5,25 @@ import {
   TravelScheduleQuery,
   TravelScheduleResponseSuccess,
 } from "@/apis/internal.api.type";
-import { PassengerSeat } from "@/app/(authenticated)/travel/add-passenger";
+import { PassengerSeat } from "@/app/(authenticated)/travel/passenger/[index]";
 import { ExtractState } from "@/libs/zustand";
 
 type TravelStore = {
   bookingPayload?: TravelScheduleQuery;
   pointToPointPayload?: {
-    from?: string;
-    to?: string;
+    from?: { name: string; id: string };
+    to?: { name: string; id: string };
   };
   travelSchedule?: TravelScheduleResponseSuccess["data"][number];
   passenger: PassengerSeat[];
   pesananResponse?: any;
+  passagerOneSameOnUser: boolean;
 
   actions: {
     setBookingPayload: (bookinPayload?: TravelScheduleQuery) => void;
     setPointToPointPayload: (bookinPayload?: {
-      from?: string;
-      to?: string;
+      from?: { name: string; id: string };
+      to?: { name: string; id: string };
     }) => void;
     setTravelSchedule: (
       bookinPayload?: TravelScheduleResponseSuccess["data"][number]
@@ -30,6 +31,7 @@ type TravelStore = {
     setPassenger: (bookinPayload: PassengerSeat[]) => void;
     setPesananResponse: (response: any) => void;
     clearBookingSession: () => void;
+    setPassengerOneSameOnUser: (payload: boolean) => void;
   };
 };
 
@@ -39,6 +41,7 @@ const travelStore = createStore<TravelStore>()((set, get) => ({
   travelSchedule: undefined,
   passenger: [],
   pesananResponse: undefined,
+  passagerOneSameOnUser: false,
 
   actions: {
     setBookingPayload: (bookingPayload) => set({ bookingPayload }),
@@ -52,6 +55,8 @@ const travelStore = createStore<TravelStore>()((set, get) => ({
         bookingPayload: undefined,
       });
     },
+    setPassengerOneSameOnUser: (passagerOneSameOnUser) =>
+      set({ passagerOneSameOnUser }),
   },
 }));
 
@@ -68,7 +73,11 @@ const travelPassengerSelector = (state: ExtractState<typeof travelStore>) =>
   state.passenger;
 const actionsSelector = (state: ExtractState<typeof travelStore>) =>
   state.actions;
-const pesananResponseSelector = (state: ExtractState<typeof travelStore>) => state.pesananResponse;
+const pesananResponseSelector = (state: ExtractState<typeof travelStore>) =>
+  state.pesananResponse;
+const passengerOneSameOnUserSelector = (
+  state: ExtractState<typeof travelStore>
+) => state.passagerOneSameOnUser;
 
 // getters
 export const getbookingPayload = () =>
@@ -80,7 +89,10 @@ export const getTravelSchedule = () =>
 export const getTravelPassenger = () =>
   travelPassengerSelector(travelStore.getState());
 export const getTravelActions = () => actionsSelector(travelStore.getState());
-export const getPesananResponse = () => pesananResponseSelector(travelStore.getState());
+export const getPesananResponse = () =>
+  pesananResponseSelector(travelStore.getState());
+export const getPassengeSameOnUserSelector = () =>
+  passengerOneSameOnUserSelector(travelStore.getState());
 
 function useTravelStore<U>(selector: Params<U>[1]) {
   return useStore(travelStore, selector);
@@ -95,3 +107,5 @@ export const useTravelSchedule = () => useTravelStore(travelScheduleSelector);
 export const useTravelPassenger = () => useTravelStore(travelPassengerSelector);
 export const useTravelActions = () => useTravelStore(actionsSelector);
 export const usePesananResponse = () => useTravelStore(pesananResponseSelector);
+export const usePassengerOneSameOnUser = () =>
+  useTravelStore(passengerOneSameOnUserSelector);

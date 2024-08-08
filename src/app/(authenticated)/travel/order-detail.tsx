@@ -1,26 +1,24 @@
 /* eslint-disable simple-import-sort/imports */
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, Button, Typography, View } from "@/components";
+import { Appbar, Button, Snackbar, Typography, View } from "@/components";
 import { IconCarSide, IconSeat, IconUserCard } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { TravelTicketItem } from "@/features/travel/components";
 import {
+  usePassengerOneSameOnUser,
   useTravelActions,
   useTravelPassenger,
   useTravelPointToPointPayload,
   useTravelSchedule,
-  useTravelbookingPayload,
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
 
 import { useMutation } from "@tanstack/react-query";
 import { apiClientMock } from "@/apis/internal.api";
-import { AxiosError } from "axios";
-import { useGetPointToPointApi } from "@/features/travel/api/useGetPointToPointApi";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import InputSwitch from "@/components/input-switch/InputSwitch";
 import { PassengerSeat } from "./passenger/[index]";
@@ -29,6 +27,7 @@ const usePostPesananMutation = () => {
   const { setPesananResponse } = useTravelActions();
   return useMutation({
     mutationFn: async (data) => {
+      console.log(data);
       const response = await apiClientMock({
         method: "POST",
         url: "/api/pesanan/pesanan",
@@ -37,8 +36,19 @@ const usePostPesananMutation = () => {
       setPesananResponse(response.data);
       return response.data;
     },
-    onError: (error: AxiosError) => {
-      console.error("Error processing order:", error);
+    onError: (error: any) => {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        const errorMessage = error.response.data.message;
+        console.error("Error processing order:", errorMessage);
+        // Anda bisa menambahkan notifikasi UI di sini, seperti alert atau toast
+        alert(errorMessage);
+      } else {
+        console.error("Error processing order:", error.message);
+      }
     },
   });
 };
@@ -53,9 +63,7 @@ export default function TravelOrderDetailScreen() {
   const userProfile = useAuthProfile();
   const travelSchedule = useTravelSchedule();
   const travelPassenger = useTravelPassenger();
-
-  const [valuePassagerOneSameOnUser, setValuePassagerOneSameOnUser] =
-    useState(false);
+  const passengerOneSameOnUser = usePassengerOneSameOnUser();
 
   const handleNavigateToSeatSelection = (index: number) => {
     const routes = navigation.getState()?.routes;
@@ -100,7 +108,7 @@ export default function TravelOrderDetailScreen() {
     let selectedSeat: string[] = [];
 
     travelPassenger.forEach((passenger) => {
-      selectedSeat = selectedSeat.concat(passenger.seat);
+      selectedSeat = selectedSeat.concat(passenger.no_kursi);
     });
 
     return selectedSeat;
@@ -108,24 +116,25 @@ export default function TravelOrderDetailScreen() {
 
   const { mutate: postPesanan } = usePostPesananMutation();
   const pointToPointPayload = useTravelPointToPointPayload();
-  const bookingPayload = useTravelbookingPayload();
-  const pointToPointQuery = useGetPointToPointApi(bookingPayload as any);
   const passengerList = useTravelPassenger();
-  const { setPassenger } = useTravelActions();
+  const { setPassenger, setPassengerOneSameOnUser } = useTravelActions();
 
   const handlerPesanan = () => {
-    const data: any = pointToPointQuery?.data?.data.find(
-      (item) => item.nama === pointToPointPayload?.from
-    );
-
+    if (passengerList.some((data) => data.nik.trim() === "")) {
+      Snackbar.show({
+        message: "Data Penumpang Harus Terisi Semua",
+      });
+      return;
+    }
     const payload: any = {
       jadwal_id: travelSchedule?.id,
-      no_kursi: travelPassenger.map((p) => p.seat).join(", "),
-      nama: travelPassenger.map((p) => p.name).join(", "),
-      no_telp: travelPassenger.map((p) => p.phoneNumber).join(", "),
-      titik_jemput_id: data?.master_cabang_id,
-      biaya_tambahan: 0,
-      status: "Menunggu",
+      titik_jemput_id: pointToPointPayload?.from?.id,
+      titik_antar_id: pointToPointPayload?.to?.id,
+      nama: userProfile?.nama,
+      nik: userProfile?.nik || "23423423",
+      email: userProfile?.email,
+      no_telp: userProfile?.no_telp,
+      penumpang: passengerList,
     };
 
     postPesanan(payload, {
@@ -143,20 +152,20 @@ export default function TravelOrderDetailScreen() {
     if (value) {
       if (passengerListTemp?.[0]) {
         passengerListTemp[0].email = userProfile?.email || " ";
-        passengerListTemp[0].name = userProfile?.nama || "Penumpang 1";
-        passengerListTemp[0].nik = " ";
-        passengerListTemp[0].phoneNumber = userProfile?.no_telp || "";
+        passengerListTemp[0].nama = userProfile?.nama || "Penumpang 1";
+        passengerListTemp[0].nik = userProfile?.nik || "";
+        passengerListTemp[0].no_telp = userProfile?.no_telp || "";
         console.log(passengerList[0]);
       }
     } else {
-      passengerListTemp[0].email = " ";
-      passengerListTemp[0].name = "Penumpang 1";
-      passengerListTemp[0].nik = " ";
-      passengerListTemp[0].phoneNumber = "";
+      passengerListTemp[0].email = "";
+      passengerListTemp[0].nama = "Penumpang 1";
+      passengerListTemp[0].nik = "";
+      passengerListTemp[0].no_telp = "";
       console.log(passengerList[0]);
     }
     setPassenger(passengerListTemp);
-    setValuePassagerOneSameOnUser(value);
+    setPassengerOneSameOnUser(value);
     console.log({ value });
   };
 
@@ -254,7 +263,7 @@ export default function TravelOrderDetailScreen() {
           </View>
           {travelPassenger?.map((passenger, index) => (
             <View
-              key={passenger.name}
+              key={passenger.nama}
               style={{
                 borderWidth: 1,
                 borderColor: Colors.outlineborder,
@@ -284,7 +293,7 @@ export default function TravelOrderDetailScreen() {
                   </Typography>
                   <InputSwitch
                     label=""
-                    value={valuePassagerOneSameOnUser}
+                    value={passengerOneSameOnUser}
                     handleOnSwitch={handlePassangerOneSameOnUser}
                   />
                 </View>
@@ -296,10 +305,10 @@ export default function TravelOrderDetailScreen() {
                     fontSize={16}
                     numberOfLines={1}
                   >
-                    {passenger.name}
+                    {passenger.nama}
                   </Typography>
                   <Typography color="textsecondary">
-                    {travelSchedule.carModel} {"\u2022"} {passenger.seat}
+                    {travelSchedule.carModel} {"\u2022"} {passenger.no_kursi}
                   </Typography>
                 </View>
 

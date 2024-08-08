@@ -1,27 +1,27 @@
 /* eslint-disable simple-import-sort/imports */
-import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { WebView } from 'react-native-webview';
-import * as Linking from 'expo-linking';
-import { getPesananResponse } from '@/features/travel/store/travel-store';
+import { useLocalSearchParams } from "expo-router";
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { WebView } from "react-native-webview";
+import * as Linking from "expo-linking";
+import { getPesananResponse } from "@/features/travel/store/travel-store";
 
 const WebViewScreen = () => {
   const params = useLocalSearchParams<{ link: string | any }>();
-  console.log('url', params?.link);
+  console.log("url", params?.link);
 
-  const extractTransactionId = (url) => {
+  const extractTransactionId = (url: string) => {
     const urlObj = new URL(url);
     const urlParams = new URLSearchParams(urlObj.search);
-    return urlParams.get('transaction_id'); // Ganti 'transaction_id' dengan nama parameter yang sesuai dari URL redirect Midtrans
+    return urlParams.get("transaction_id"); // Ganti 'transaction_id' dengan nama parameter yang sesuai dari URL redirect Midtrans
   };
 
-  const pesananResponse = getPesananResponse()
+  const pesananResponse = getPesananResponse();
 
-  const onNavigationStateChange = (navState) => {
-    if (navState.url.includes('example.com')) {
-      // const deepLinkUrl = Linking.createURL(`/payment/${pesananResponse?.data?.kode_pesanan}`)  
-      const deepLinkUrl = Linking.createURL(`/`)
+  const onNavigationStateChange = (navState: any) => {
+    if (navState.url.includes("example.com")) {
+      // const deepLinkUrl = Linking.createURL(`/payment/${pesananResponse?.data?.kode_pesanan}`)
+      const deepLinkUrl = Linking.createURL(`/`);
       Linking.openURL(deepLinkUrl);
     }
   };

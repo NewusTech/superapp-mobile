@@ -3,10 +3,12 @@ import { ScrollView, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PassengerSeat } from "@/app/(authenticated)/travel/passenger/[index]";
 import { Appbar, Button, Typography, View } from "@/components";
 import { AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
+import { useGetAvaliableSheats } from "@/features/travel/api/useGetAvaliableSheats";
 import { CarSeat10 } from "@/features/travel/components";
 import {
   useTravelActions,
@@ -14,8 +16,6 @@ import {
   useTravelSchedule,
 } from "@/features/travel/store/travel-store";
 import { useHardwareBackpress } from "@/hooks/useHardwareBackPress";
-
-import { PassengerSeat } from "../add-passenger";
 
 export default function SeatSelectionScreen() {
   const router = useRouter();
@@ -38,20 +38,31 @@ export default function SeatSelectionScreen() {
   const passengerList = useTravelPassenger();
   const { setPassenger } = useTravelActions();
 
+  const avaliableSheats = useGetAvaliableSheats({ mobil_id: "31" });
+
   const getSeatTaken = useMemo(() => {
     let seatTakenTemp = traveSchedule?.seatTaken || [];
+    // let seatTakenTemp = avaliableSheats.data?.data || [];
     passengerList.forEach((passenger, index) => {
       if (index !== passengerIndex) {
-        seatTakenTemp = seatTakenTemp.concat(passenger.seat);
+        seatTakenTemp = seatTakenTemp.concat(passenger.no_kursi);
       }
+    });
+    avaliableSheats.data?.data.forEach((sheats, index) => {
+      seatTakenTemp = seatTakenTemp.concat(sheats.nomor_kursi);
     });
 
     return seatTakenTemp;
-  }, [passengerIndex, passengerList, traveSchedule?.seatTaken]);
+  }, [
+    passengerIndex,
+    passengerList,
+    traveSchedule?.seatTaken,
+    avaliableSheats,
+  ]);
 
   const getUserSeatOwner = useMemo(() => {
     if (passengerList?.[passengerIndex]) {
-      return `${passengerIndex + 1}. ${passengerList[passengerIndex].name}`;
+      return `${passengerIndex + 1}. ${passengerList[passengerIndex].nama}`;
     }
 
     return `1. ${userProfile?.nama}`;
@@ -73,16 +84,16 @@ export default function SeatSelectionScreen() {
     const passengerListTemp: PassengerSeat[] = passengerList;
     if (!selectAllSheats) {
       if (passengerListTemp?.[passengerIndex]) {
-        passengerListTemp[passengerIndex].seat = selectedSeats[0];
+        passengerListTemp[passengerIndex].no_kursi = selectedSeats[0];
       }
     } else {
       selectedSeats
         .sort((a, b) => parseFloat(a) - parseFloat(b))
         .map((numberSheat, index) => {
           passengerListTemp[index] = {
-            name: "Penumpang " + (index + 1),
-            phoneNumber: "",
-            seat: numberSheat,
+            nama: "Penumpang " + (index + 1),
+            no_telp: "",
+            no_kursi: numberSheat,
             nik: "",
             email: "",
           };

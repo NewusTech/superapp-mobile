@@ -44,7 +44,7 @@ export default function TravelOptionScreen() {
   const travelBookingPayload = useTravelbookingPayload();
   const pointToPointPayload = useTravelPointToPointPayload();
   const { setPointToPointPayload, setTravelSchedule } = useTravelActions();
-  const { setPassenger } = useTravelActions();
+  const { setPassenger, setPassengerOneSameOnUser } = useTravelActions();
 
   const travelScheduleQuery = useGetTravelSchedule({
     from: travelBookingPayload?.from || "",
@@ -73,8 +73,9 @@ export default function TravelOptionScreen() {
       });
       return;
     }
-
     setTravelSchedule(travelSchedule);
+    setPassenger([]);
+    setPassengerOneSameOnUser(false);
     router.push("/travel/travel-detail");
   };
 
@@ -84,7 +85,6 @@ export default function TravelOptionScreen() {
       from: undefined,
       to: undefined,
     });
-    setPassenger([]);
   }, [setPointToPointPayload, setPassenger]);
 
   return (
