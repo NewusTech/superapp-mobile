@@ -19,9 +19,10 @@ export function CarSeat10(props: CarSeat10Props) {
   const { Colors } = useAppTheme();
 
   const getSeatStatus = (seatNumber: string): SeatItemProps["status"] => {
-    if (filled.find((item) => item === seatNumber)) return "filled";
+    if (filled.find((item) => item.toString() === seatNumber)) return "filled";
 
-    if (selected.find((item) => item === seatNumber)) return "selected";
+    if (selected.find((item) => item.toString() === seatNumber))
+      return "selected";
 
     return "available";
   };
@@ -110,7 +111,7 @@ export function CarSeat10(props: CarSeat10Props) {
 
 type SeatItemProps = {
   seatNumber: string;
-  status: "filled" | "selected" | "available" | "driver";
+  status: "filled" | "selected" | "available" | "driver" | "unavaliable";
 } & TouchableWithoutFeedbackProps;
 function SeatItem(props: SeatItemProps) {
   const { seatNumber, status, disabled, ...rest } = props;

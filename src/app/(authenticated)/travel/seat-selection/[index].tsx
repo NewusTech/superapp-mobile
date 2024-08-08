@@ -38,27 +38,19 @@ export default function SeatSelectionScreen() {
   const passengerList = useTravelPassenger();
   const { setPassenger } = useTravelActions();
 
-  const avaliableSheats = useGetAvaliableSheats({ mobil_id: "31" });
-
   const getSeatTaken = useMemo(() => {
     let seatTakenTemp = traveSchedule?.seatTaken || [];
-    // let seatTakenTemp = avaliableSheats.data?.data || [];
+
     passengerList.forEach((passenger, index) => {
       if (index !== passengerIndex) {
         seatTakenTemp = seatTakenTemp.concat(passenger.no_kursi);
       }
     });
-    avaliableSheats.data?.data.forEach((sheats, index) => {
-      seatTakenTemp = seatTakenTemp.concat(sheats.nomor_kursi);
-    });
+
+    console.log(seatTakenTemp);
 
     return seatTakenTemp;
-  }, [
-    passengerIndex,
-    passengerList,
-    traveSchedule?.seatTaken,
-    avaliableSheats,
-  ]);
+  }, [passengerIndex, passengerList, traveSchedule?.seatTaken]);
 
   const getUserSeatOwner = useMemo(() => {
     if (passengerList?.[passengerIndex]) {

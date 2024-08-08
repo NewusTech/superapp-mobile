@@ -42,6 +42,8 @@ export default function OrderTabScreen() {
     );
   }, [orderListQuery.data?.data]);
 
+  console.log(getOrderListByFilter);
+
   return (
     <View backgroundColor="paper" style={style.container}>
       <Appbar title="Pesanan" />
