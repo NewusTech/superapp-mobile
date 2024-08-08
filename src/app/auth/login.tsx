@@ -14,6 +14,7 @@ import {
   postLoginPayloadSchema,
 } from "@/apis/internal.api.type";
 import {
+  Appbar,
   Button,
   PageWrapper,
   Snackbar,
@@ -22,6 +23,7 @@ import {
   Typography,
   View,
 } from "@/components";
+import { DEVELOPMENT_MODE } from "@/constants/Constant";
 import { useAuthLogin } from "@/features/auth/api/useAuthLogin";
 import { useAuthActions } from "@/features/auth/store/auth-store";
 import { setItem } from "@/libs/async-storage";
@@ -39,8 +41,8 @@ export default function LoginScreen() {
 
   const { control, handleSubmit, formState } = useForm<PostLoginPayload>({
     defaultValues: {
-      email: "test9@gmail.com",
-      password: "123456",
+      email: DEVELOPMENT_MODE ? "test9@gmail.com" : "",
+      password: DEVELOPMENT_MODE ? "123456" : "",
     },
     resolver: zodResolver(postLoginPayloadSchema),
     mode: "all",
@@ -75,7 +77,6 @@ export default function LoginScreen() {
   return (
     <PageWrapper backgroundColor="main" isLoading={loginMutation.isPending}>
       <StatusBar barStyle="light-content" />
-
       <ImageBackground
         source={require("@/assets/images/auth-bg-2.jpeg")}
         style={{
@@ -94,10 +95,12 @@ export default function LoginScreen() {
           style={[style.content, { paddingBottom: insets.bottom + 37 }]}
         >
           <Image
-            source={require("@/assets/images/logo-rama.png")}
+            source={require("@/assets/images/adaptive-icon.png")}
             style={style.logo}
           />
-          <Typography fontFamily="Poppins-Bold">Silahkan Masuk!</Typography>
+          <Typography fontFamily="Poppins-Bold" fontSize={16}>
+            Silahkan Masuk!
+          </Typography>
 
           <View style={style.formContainer}>
             <Controller
@@ -154,24 +157,24 @@ const style = StyleSheet.create({
   },
   content: {
     marginTop: "auto",
-    paddingTop: 54,
+    paddingTop: 24,
     paddingHorizontal: 35,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
   },
   formContainer: {
     marginTop: 30,
     gap: 36,
   },
   forgotPasswordWrapper: {
-    marginBottom: 80,
+    marginBottom: 20,
     marginTop: 16,
     alignItems: "flex-end",
   },
   logo: {
     marginHorizontal: "auto",
-    width: 151,
-    height: 151,
-    marginBottom: 54,
+    width: 350,
+    height: 190,
+    marginBottom: 20,
   },
 });

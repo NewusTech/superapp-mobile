@@ -2,11 +2,18 @@ import { Image, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button, View } from "@/components";
+import { Button, Typography, View } from "@/components";
 
 export default function InitialScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+
+  const handleTncPress = () => {
+    router.push("/public-screen/screen-tnc");
+  };
+  const handlePpPress = () => {
+    router.push("/public-screen/privacy-policy");
+  };
 
   return (
     <View
@@ -17,7 +24,7 @@ export default function InitialScreen() {
       ]}
     >
       <Image
-        source={require("@/assets/images/logo-rama.png")}
+        source={require("@/assets/images/adaptive-icon.png")}
         style={style.logo}
       />
 
@@ -30,6 +37,33 @@ export default function InitialScreen() {
         </Button>
         <Button onPress={() => router.push("/auth/login")}>Masuk</Button>
       </View>
+      <Typography
+        fontFamily="Poppins-Regular"
+        color="textsecondary"
+        fontSize={12}
+        style={{ margin: 20, marginTop: "auto", textAlign: "center" }}
+      >
+        By using this app, you agree to Ramatranz{" "}
+        <Typography
+          fontFamily="Poppins-Bold"
+          color="main"
+          fontSize={12}
+          onPress={handleTncPress}
+        >
+          {" "}
+          Terms and Conditions{" "}
+        </Typography>{" "}
+        and acknowledge that you have read and understood our{" "}
+        <Typography
+          fontFamily="Poppins-Bold"
+          color="main"
+          fontSize={12}
+          onPress={handlePpPress}
+        >
+          {" "}
+          Privacy Policy.
+        </Typography>
+      </Typography>
     </View>
   );
 }
@@ -41,11 +75,12 @@ const style = StyleSheet.create({
   },
   logo: {
     marginHorizontal: "auto",
-    width: 192,
-    height: 192,
+    width: 350,
+    height: 190,
+    marginTop: "auto",
   },
   content: {
-    margin: 45,
+    margin: 10,
     marginHorizontal: 24,
     gap: 16,
   },

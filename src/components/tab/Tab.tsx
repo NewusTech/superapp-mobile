@@ -61,7 +61,7 @@ function TabItemThin({
   return (
     <View style={style.touchableContainer}>
       <Typography
-        fontFamily="Poppins-SemiBold"
+        fontFamily="Poppins-Bold"
         fontSize={12}
         color={isActive ? "main" : "textprimary"}
       >
@@ -118,7 +118,7 @@ const style = StyleSheet.create({
     height: 24,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 2,
+    borderRadius: 100,
     borderWidth: 1,
     paddingHorizontal: 12,
   },

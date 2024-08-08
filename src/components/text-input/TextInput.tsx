@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: 100,
     paddingVertical: 10,
     paddingHorizontal: 26,
     gap: 10,

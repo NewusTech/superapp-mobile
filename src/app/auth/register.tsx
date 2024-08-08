@@ -133,6 +133,7 @@ export default function RegisterScreen() {
                     label="Nomor Telepon *"
                     placeholder="08276287687287"
                     keyboardType="number-pad"
+                    maxLength={13}
                     value={field.value}
                     onBlur={field.onBlur}
                     onChangeText={field.onChange}

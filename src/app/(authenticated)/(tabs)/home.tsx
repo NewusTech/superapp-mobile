@@ -1,11 +1,4 @@
-import {
-  FlatList,
-  ImageBackground,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -17,13 +10,13 @@ import {
   View,
 } from "@/components";
 import {
-  IconArrowRight,
   IconBasket,
   IconBuilding,
   IconCar,
   IconCarSide,
   IconPackage,
 } from "@/components/icons";
+import { PromoItem } from "@/components/promo-item/PromoItem";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetArticleList } from "@/features/article/api/useGetArticleList";
 import {
@@ -34,6 +27,8 @@ import {
 } from "@/features/article/components";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import { formatCurrency } from "@/utils/common";
+
+import { PromoItemList } from "../travel/booking-travel";
 
 export default function HomeTabScreen() {
   const router = useRouter();
@@ -49,7 +44,7 @@ export default function HomeTabScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.paper }}
@@ -111,23 +106,7 @@ export default function HomeTabScreen() {
           </View>
         </View>
 
-        <SectionWrapper
-          title="Artikel"
-          action={
-            <TouchableWithoutFeedback
-              onPress={() => router.push("/(tabs)/article")}
-            >
-              <View
-                style={[
-                  styles.touchableIconWrapper,
-                  { backgroundColor: Colors.bgsecondary },
-                ]}
-              >
-                <IconArrowRight height={20} width={20} color="main" />
-              </View>
-            </TouchableWithoutFeedback>
-          }
-        >
+        <SectionWrapper title="Artikel">
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -161,31 +140,59 @@ export default function HomeTabScreen() {
             contentContainerStyle={styles.listArticleContainer}
           />
         </SectionWrapper>
-
-        <View style={{ height: 80 }} />
-      </ScrollView>
-
-      <View style={styles.promoBannerContainer}>
-        <ImageBackground
-          source={require("@/assets/images/promo/promo-banner.jpg")}
+        <View style={{ height: 10 }} />
+        <SectionWrapper title="Rute">
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={
+              articleListQuery.isFetching
+                ? articleListPlaceholderData
+                : articleListQuery.data?.data || []
+            }
+            renderItem={({ item }) =>
+              articleListQuery.isFetching ? (
+                <ArticleItemPlaceholder />
+              ) : (
+                <ArticleItem
+                  imgSource={{ uri: item.image_url }}
+                  title={item.judul}
+                  subtitle={item.konten}
+                  price={formatCurrency(item.harga)}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/article/[id]",
+                      params: {
+                        id: item.id,
+                      },
+                    })
+                  }
+                />
+              )
+            }
+            style={{ width: "100%" }}
+            ListEmptyComponent={() => <ArticleEmpty />}
+            contentContainerStyle={styles.listArticleContainer}
+          />
+        </SectionWrapper>
+        <View
           style={{
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            top: 0,
+            marginBottom: insets.bottom + 10,
+            marginTop: 20,
           }}
-          resizeMode="cover"
-        />
-        <View style={styles.promoBannerContent}>
-          <Typography color="paper" fontSize={16} fontFamily="Poppins-Bold">
-            Promo
-          </Typography>
-          <Typography color="paper">
-            Nikmati perjalanan anda dengan berbagai promo menarik dari kami!
-          </Typography>
+        >
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={PromoItemList}
+            renderItem={({ item }) => <PromoItem imgUrl={item.imgUrl} />}
+            style={{ width: "100%" }}
+            ListEmptyComponent={() => <ArticleEmpty />}
+            contentContainerStyle={styles.listArticleContainer}
+          />
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -230,16 +237,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     gap: 16,
     flexGrow: 1,
-  },
-  promoBannerContainer: {
-    height: 117,
-    width: "100%",
-    borderTopLeftRadius: 2,
-    justifyContent: "center",
-    borderTopRightRadius: 2,
-  },
-  promoBannerContent: {
-    justifyContent: "center",
-    padding: 16,
   },
 });
