@@ -206,7 +206,7 @@ export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
 export const getOrderList = async () => {
   const response = await apiClientMock<OrderListResponseSuccess>({
     method: "GET",
-    url: "/api/pesanan",
+    url: "/api/pesanan/user",
   });
 
   return response.data;
