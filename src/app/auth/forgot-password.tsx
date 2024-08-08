@@ -31,7 +31,7 @@ export default function ForgotPasswordScreen() {
       >
         <View style={style.formContainer}>
           <Image
-            source={require("@/assets/images/logo-rama.png")}
+            source={require("@/assets/images/adaptive-icon.png")}
             style={style.logo}
           />
           <TextInput
@@ -63,7 +63,7 @@ const style = StyleSheet.create({
   },
   logo: {
     marginHorizontal: "auto",
-    width: 151,
-    height: 151,
+    width: 350,
+    height: 190,
   },
 });

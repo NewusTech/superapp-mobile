@@ -14,7 +14,7 @@ export function SectionWrapper(props: SectionWrapperProps) {
   return (
     <View style={style.container}>
       <View style={style.headerWrapper}>
-        <Typography fontFamily="Poppins-SemiBold" fontSize={14}>
+        <Typography fontFamily="Poppins-Bold" fontSize={14}>
           {title}
         </Typography>
         {action}
@@ -26,7 +26,7 @@ export function SectionWrapper(props: SectionWrapperProps) {
 
 const style = StyleSheet.create({
   container: {
-    gap: 20,
+    gap: 10,
     width: "100%",
   },
   headerWrapper: {

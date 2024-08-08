@@ -42,12 +42,25 @@ export default function OrderTabScreen() {
     );
   }, [orderListQuery.data?.data]);
 
-  console.log(getOrderListByFilter);
+  console.log(orderListQuery.data?.data);
 
   return (
     <View backgroundColor="paper" style={style.container}>
-      <Appbar title="Pesanan" />
-
+      <Appbar
+        title={
+          <Typography
+            fontFamily={"Poppins-Bold"}
+            fontSize={16}
+            color={"textprimary"}
+            style={{
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            Pesanan
+          </Typography>
+        }
+      />
       <View style={style.contenContainer}>
         <View style={style.tabContainer}>
           <Tab
@@ -155,7 +168,7 @@ const style = StyleSheet.create({
     flex: 1,
   },
   contenContainer: {
-    paddingVertical: 37,
+    paddingVertical: 15,
     padding: 24,
     paddingBottom: 0,
     gap: 24,
