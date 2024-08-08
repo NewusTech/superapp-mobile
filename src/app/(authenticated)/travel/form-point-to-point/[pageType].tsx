@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { FlatList, StyleSheet, TouchableHighlight } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -30,7 +35,10 @@ export default function FormPoinToPointScreen() {
   const pageType = params.pageType || "from";
   const { Colors } = useAppTheme();
 
-  const [selectedPoint, setSelectedPoint] = useState("");
+  const [selectedPoint, setSelectedPoint] = useState<{
+    point: string;
+    id: string;
+  }>({ point: "", id: "" });
 
   const pointToPointPayload = useTravelPointToPointPayload();
   const bookingPayload = useTravelbookingPayload();
@@ -40,6 +48,7 @@ export default function FormPoinToPointScreen() {
 
   const pointToPointQuery = useGetPointToPointApi({
     point: bookingPayload?.[pageType]?.toLowerCase() || "",
+    id: bookingPayload?.[pageType]?.toLocaleLowerCase() || "",
   });
 
   const handleSavePoint = () => {
@@ -57,55 +66,67 @@ export default function FormPoinToPointScreen() {
         backIconPress={() => router.back()}
         hasBorder={false}
       />
-      <FlatList
-        data={pointToPointQuery.data?.data ?? []}
-        ListHeaderComponent={() => (
-          <View backgroundColor="outlineborder" style={styles.headerContainer}>
-            <Typography
-              fontFamily="OpenSans-Semibold"
-              fontSize={12}
-              color="textsecondary"
+      <ScrollView>
+        <FlatList
+          scrollEnabled={false}
+          data={pointToPointQuery.data?.data ?? []}
+          ListHeaderComponent={() => (
+            <View
+              backgroundColor="outlineborder"
+              style={styles.headerContainer}
             >
-              {pageType === "from"
-                ? "Titik jemput yang tersedia"
-                : "Titik antar yang tersedia"}
-            </Typography>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <TouchableHighlight
-            underlayColor={Colors.outlineborder}
-            onPress={() => setSelectedPoint(item.nama)}
-          >
-            <View backgroundColor="paper" style={styles.itemWrapper}>
-              <RadioItem selected={item.nama === selectedPoint} />
-              <Typography>{item.nama}</Typography>
-            </View>
-          </TouchableHighlight>
-        )}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyListContainer}>
-            {pointToPointQuery.isFetching ? (
-              <Loader />
-            ) : (
-              <Typography fontFamily="Poppins-Medium">
-                Tidak ada data
+              <Typography
+                fontFamily="OpenSans-Semibold"
+                fontSize={12}
+                color="textsecondary"
+              >
+                {pageType === "from"
+                  ? "Titik jemput yang tersedia"
+                  : "Titik antar yang tersedia"}
               </Typography>
-            )}
-          </View>
-        )}
-        style={{ marginTop: 24 }}
-      />
-      <View style={styles.containerNote}>
-        <Typography style={[styles.textNote, { fontWeight: "bold" }]}>
-          Catatan :
-        </Typography>
-        <Typography style={styles.textNote}>
-          Jika alamat penjemputan Anda tidak tersedia di titik jemput kami, akan
-          ada tambahan biaya. Silakan pilih titik jemput terdekat atau hubungi
-          admin di 085764156224 untuk bantuan lebih lanjut.
-        </Typography>
-      </View>
+            </View>
+          )}
+          renderItem={({ item }) => (
+            <TouchableHighlight
+              underlayColor={Colors.outlineborder}
+              onPress={() =>
+                setSelectedPoint({ id: item.id, point: item.nama })
+              }
+            >
+              <View backgroundColor="paper" style={styles.itemWrapper}>
+                <RadioItem selected={item.nama === selectedPoint.point} />
+                <Typography>{item.nama}</Typography>
+              </View>
+            </TouchableHighlight>
+          )}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyListContainer}>
+              {pointToPointQuery.isFetching ? (
+                <Loader />
+              ) : (
+                <Typography fontFamily="Poppins-Medium">
+                  Tidak ada data
+                </Typography>
+              )}
+            </View>
+          )}
+          style={{ marginTop: 24 }}
+        />
+        <View style={[styles.containerNote, { marginTop: 25 }]}>
+          <Typography
+            style={[styles.textNote, { fontWeight: "bold" }]}
+            fontSize={12}
+          >
+            Catatan :
+          </Typography>
+          <Typography style={styles.textNote} fontSize={12}>
+            Jika alamat penjemputan Anda tidak tersedia di titik jemput kami,
+            akan ada tambahan biaya. Silakan pilih titik jemput terdekat atau
+            hubungi admin di 085764156224 untuk bantuan lebih lanjut.
+          </Typography>
+        </View>
+      </ScrollView>
+
       <View
         style={[
           styles.bottomActionContainer,
@@ -150,7 +171,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     padding: 20,
     borderRadius: 10,
-    marginBottom: 50,
     display: "flex",
     flexDirection: "column",
   },

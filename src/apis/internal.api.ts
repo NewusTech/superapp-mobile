@@ -9,6 +9,8 @@ import { handleLogoutSession } from "@/features/auth/services/auth.service";
 import { getAccessToken } from "@/features/auth/store/auth-store";
 
 import {
+  AvaliableSheats,
+  AvaliableSheatsResponseSuccess,
   GetArticleDetailResponseSuccess,
   GetArticleQuery,
   GetArticleResponseSuccess,
@@ -68,7 +70,7 @@ apiClient.interceptors.response.use(
 );
 
 export const apiClientMock = axios.create({
-  baseURL: "https://backend-superapps.newus.id",
+  baseURL: API_URL,
 });
 apiClientMock.interceptors.request.use(requestInterceptor);
 apiClientMock.interceptors.response.use(
@@ -165,6 +167,14 @@ export const getPointToPointApi = async (
     method: "GET",
     url: "/api/titik_jemput/master_titik_jemput",
     params,
+  });
+
+  return response.data;
+};
+export const getAvaliableSheatApi = async (params: AvaliableSheats) => {
+  const response = await apiClientMock<AvaliableSheatsResponseSuccess>({
+    method: "GET",
+    url: "/api/kursi/kursi_by_mobil/" + params.mobil_id,
   });
 
   return response.data;
