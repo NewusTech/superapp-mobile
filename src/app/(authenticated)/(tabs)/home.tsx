@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -6,6 +7,7 @@ import {
   RoundedButton,
   SearchBox,
   SectionWrapper,
+  Tab,
   Typography,
   View,
 } from "@/components";
@@ -26,6 +28,7 @@ import {
   articleListPlaceholderData,
 } from "@/features/article/components";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
+import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
 import { formatCurrency } from "@/utils/common";
 
 import { PromoItemList } from "../travel/booking-travel";
@@ -39,9 +42,25 @@ export default function HomeTabScreen() {
 
   const articleListQuery = useGetArticleList();
 
-  const handleRefresh = () => {
+  const travelBranchQuery = useGetTravelBranch();
+
+  const [activeFilter, setActiveFilter] = useState("Lampung");
+
+  const branchList = useMemo(() => {
+    if (!travelBranchQuery.data) return [];
+    return travelBranchQuery.data?.data.map((item) => ({
+      title: item.nama,
+    }));
+  }, [travelBranchQuery.data]);
+
+  const handleRefresh = useCallback(() => {
     articleListQuery.refetch();
-  };
+  }, [articleListQuery]);
+
+  useEffect(() => {
+    handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -142,6 +161,21 @@ export default function HomeTabScreen() {
         </SectionWrapper>
         <View style={{ height: 10 }} />
         <SectionWrapper title="Rute">
+          <View style={styles.tabContainer}>
+            <Tab
+              tabs={[
+                ...branchList.map((b) => {
+                  return {
+                    key: b.title,
+                    label: b.title,
+                  };
+                }),
+              ]}
+              activeTab={activeFilter}
+              onPress={(key) => setActiveFilter(key as string)}
+              variant="button"
+            />
+          </View>
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -237,5 +271,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     gap: 16,
     flexGrow: 1,
+  },
+  tabContainer: {
+    marginLeft: 20,
   },
 });

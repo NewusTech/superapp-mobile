@@ -22,6 +22,7 @@ import {
   useTravelSchedule,
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
+import { formatTime } from "@/utils/datetime";
 
 export default function TravelPaymentScreen() {
   const insets = useSafeAreaInsets();
@@ -39,19 +40,18 @@ export default function TravelPaymentScreen() {
 
   // query & mutation
   const processPaymentMutation = usePostProcessPaymentMutation();
-  const pesananResponse = getPesananResponse()
-  console.log(pesananResponse, 'tessss');
+  const pesananResponse = getPesananResponse();
+  console.log(pesananResponse, "tessss");
 
   // method
   const handleProcessPayment = () => {
-    const processPaymentData =
-    {
-      orderCode: pesananResponse?.data?.kode_pesanan
-    }
+    const processPaymentData = {
+      orderCode: pesananResponse?.data?.kode_pesanan,
+    };
 
     processPaymentMutation.mutate(processPaymentData, {
       onSuccess: (res) => {
-        console.log(res, 'res');
+        console.log(res, "res");
         Snackbar.show({ message: "Order pesanan berhasil" });
         router.push({
           pathname: "/travel/link-transaction",
@@ -93,23 +93,47 @@ export default function TravelPaymentScreen() {
           originDepartureDate={new Date(travelSchedule?.originDepartureDate)}
           icon={<IconCarSide color="main" />}
           customHeader={
-            <View>
-              <Typography color="secondary">
-                {travelSchedule.carModel} {"\u2022"}{" "}
-                {travelPassenger?.map((item) => item.seat).join(", ")}
-              </Typography>
-            </View>
-          }
-          customFooter={
             <View
               style={{
-                flexDirection: "row",
-                alignContent: "center",
-                gap: 10,
+                flexDirection: "column",
+                gap: 5,
+                justifyContent: "flex-start",
               }}
             >
-              <IconPinSharp color="main" />
-              <Typography>Titik Jemput</Typography>
+              <Typography
+                fontFamily="Poppins-Bold"
+                fontSize={10}
+                color="main"
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.main,
+                  padding: 5,
+                  width: 90,
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  borderRadius: 100,
+                }}
+              >
+                Pergi
+              </Typography>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography color="secondary">
+                  {travelSchedule.carModel} {"\u2022"}{" "}
+                  {travelPassenger?.map((item) => item.no_kursi).join(", ")}
+                </Typography>
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={12}
+                  color={"textsecondary"}
+                >
+                  {formatTime(new Date(travelSchedule?.departureDate))}
+                </Typography>
+              </View>
             </View>
           }
         />

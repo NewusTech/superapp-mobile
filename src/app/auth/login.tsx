@@ -14,7 +14,6 @@ import {
   postLoginPayloadSchema,
 } from "@/apis/internal.api.type";
 import {
-  Appbar,
   Button,
   PageWrapper,
   Snackbar,
@@ -41,8 +40,10 @@ export default function LoginScreen() {
 
   const { control, handleSubmit, formState } = useForm<PostLoginPayload>({
     defaultValues: {
-      email: DEVELOPMENT_MODE ? "test9@gmail.com" : "",
-      password: DEVELOPMENT_MODE ? "123456" : "",
+      // email: DEVELOPMENT_MODE ? "test9@gmail.com" : "",
+      // password: DEVELOPMENT_MODE ? "123456" : "",
+      email: "test9@gmail.com",
+      password: "123456",
     },
     resolver: zodResolver(postLoginPayloadSchema),
     mode: "all",

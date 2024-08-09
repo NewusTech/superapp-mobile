@@ -1,7 +1,7 @@
 import { getTravelSchedule } from "@/apis/internal.api";
 import { TravelScheduleQuery } from "@/apis/internal.api.type";
-import { convertToStartOfDay } from "@/constants/Constant";
 import { useAccessToken } from "@/features/auth/store/auth-store";
+import { convertToStartOfDay } from "@/utils/datetime";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetTravelSchedule = (params: TravelScheduleQuery) => {
