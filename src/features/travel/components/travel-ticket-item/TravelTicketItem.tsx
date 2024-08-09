@@ -15,7 +15,7 @@ export type TravelTicketItemProps = {
   originDepartureDate: Date;
   destinationCity: string;
   destinationDepartureDate: Date;
-  departureDate: Date;
+  departureDate?: Date;
   customHeader?: ReactNode;
   customFooter?: ReactNode;
   icon?: ReactNode;

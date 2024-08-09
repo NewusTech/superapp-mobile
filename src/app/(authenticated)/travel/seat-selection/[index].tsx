@@ -8,7 +8,6 @@ import { Appbar, Button, Typography, View } from "@/components";
 import { AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
-import { useGetAvaliableSheats } from "@/features/travel/api/useGetAvaliableSheats";
 import { CarSeat10 } from "@/features/travel/components";
 import {
   useTravelActions,

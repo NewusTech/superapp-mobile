@@ -156,15 +156,43 @@ export type PostProcessPaymentPayload = {
 
 export type OrderListResponseSuccess = {
   data: {
-    id: number;
-    status: "success" | "waiting" | "failed";
-    departureDate: string;
-    destinationCity: string;
-    destinationDepartureDate: string;
-    originCity: string;
-    originDepartureDate: string;
-    orderType: "travel" | "paket";
+    created_at: string;
+    jam: string;
+    kode_pesanan: string;
+    kota_asal: string;
+    kota_tujuan: string;
+    status: string;
+    tanggal: string;
   }[];
+  message: string;
+  success: boolean;
+};
+export type OrderDetailResponseSuccess = {
+  data: {
+    pembayaran: {
+      status: string;
+      metode: string;
+      nominal: string;
+    };
+    penumpang: [
+      {
+        nama: string;
+        nik: string;
+        no_telp: string;
+        kursi: number;
+      },
+    ];
+    pesanan: {
+      mobil: string;
+      jam: string;
+      tanggal: string;
+      kota_asal: string;
+      kota_tujuan: string;
+      titik_jemput: string;
+      titik_antar: string;
+      kursi: number[];
+    };
+  };
   message: string;
   success: boolean;
 };

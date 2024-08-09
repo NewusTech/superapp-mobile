@@ -1,4 +1,5 @@
 import {
+  ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
   TouchableWithoutFeedbackProps,
@@ -24,32 +25,34 @@ export function Tab(props: TabProps) {
   const { tabs, activeTab, variant = "thin", onPress = () => {} } = props;
 
   return (
-    <View style={style.container}>
-      {tabs.map(({ key, label, indicator, ...rest }) => (
-        <TouchableWithoutFeedback
-          key={key}
-          onPress={() => onPress(key)}
-          {...rest}
-        >
-          <View>
-            {variant === "thin" && (
-              <TabItemThin
-                label={label}
-                indicator={indicator}
-                isActive={activeTab === key}
-              />
-            )}
-            {variant === "button" && (
-              <TabItemButton
-                label={label}
-                indicator={indicator}
-                isActive={activeTab === key}
-              />
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      ))}
-    </View>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View style={style.container}>
+        {tabs.map(({ key, label, indicator, ...rest }) => (
+          <TouchableWithoutFeedback
+            key={key}
+            onPress={() => onPress(key)}
+            {...rest}
+          >
+            <View>
+              {variant === "thin" && (
+                <TabItemThin
+                  label={label}
+                  indicator={indicator}
+                  isActive={activeTab === key}
+                />
+              )}
+              {variant === "button" && (
+                <TabItemButton
+                  label={label}
+                  indicator={indicator}
+                  isActive={activeTab === key}
+                />
+              )}
+            </View>
+          </TouchableWithoutFeedback>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -104,8 +107,9 @@ function TabItemButton({
 
 const style = StyleSheet.create({
   container: {
+    display: "flex",
     flexDirection: "row",
-    gap: 16,
+    gap: 10,
   },
   touchableContainer: {
     minWidth: 50,

@@ -19,6 +19,7 @@ import {
   GetPaymentMethodResponseSuccess,
   GetPaymentStatusResponseSuccess,
   GetTravelBranchResponseSuccess,
+  OrderDetailResponseSuccess,
   OrderListResponseSuccess,
   PostLoginPayload,
   PostLoginResponseSuccess,
@@ -206,7 +207,15 @@ export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
 export const getOrderList = async () => {
   const response = await apiClientMock<OrderListResponseSuccess>({
     method: "GET",
-    url: "/api/pesanan/user",
+    url: "/api/pesanan/riwayat",
+  });
+
+  return response.data;
+};
+export const getOrderDetail = async (kode_pesanan: string) => {
+  const response = await apiClientMock<OrderDetailResponseSuccess>({
+    method: "GET",
+    url: "/api/pesanan/riwayat/" + kode_pesanan,
   });
 
   return response.data;
