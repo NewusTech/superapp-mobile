@@ -21,6 +21,7 @@ export function PaymentComponent(props: PaymentComponentProps) {
 
   // query & mutation
   const paymentMethodQuery = useGetPaymentMethodQuery();
+  console.log({ paymentMethodQuery });
 
   return (
     <View style={{ gap: 16 }}>
@@ -36,32 +37,80 @@ export function PaymentComponent(props: PaymentComponentProps) {
             <Loader />
           </View>
         ) : (
-          <FlatList
-            data={paymentMethodQuery.data?.data}
-            renderItem={({ item }) => (
-              <TouchableWithoutFeedback
-                onPress={() => onMethodSelected(item.id)}
-              >
-                <View style={styles.paymentItem}>
-                  <Image
-                    source={{ uri: item.img }}
-                    style={{ height: 30, width: 30, resizeMode: "center" }}
-                  />
-                  <View style={{ flex: 1 }}>
-                    <Typography>{item.metode}</Typography>
+          <>
+            <Typography fontFamily="Poppins-Bold" fontSize={12}>
+              Dompet Digital
+            </Typography>
+            <FlatList
+              data={paymentMethodQuery.data?.data.payment_gateway}
+              renderItem={({ item }) => (
+                <TouchableWithoutFeedback
+                  onPress={() => onMethodSelected(item.id)}
+                >
+                  <View style={styles.paymentItem}>
+                    <Image
+                      source={{ uri: item.img }}
+                      style={{ height: 30, width: 30, resizeMode: "center" }}
+                    />
+                    <View style={{ flex: 1 }}>
+                      <Typography>{item.nama}</Typography>
+                      <Typography
+                        fontFamily="OpenSans-Regular"
+                        fontSize={10}
+                        color="textsecondary"
+                      >
+                        {item.keterangan}
+                      </Typography>
+                    </View>
+                    <Checkbox selected={item.id === selectedMethod} />
                   </View>
-                  <Checkbox selected={item.id === selectedMethod} />
+                </TouchableWithoutFeedback>
+              )}
+              ListEmptyComponent={() => (
+                <View style={styles.loadingContainer}>
+                  <Typography fontFamily="OpenSans-Semibold">
+                    Tidak ada data
+                  </Typography>
                 </View>
-              </TouchableWithoutFeedback>
-            )}
-            ListEmptyComponent={() => (
-              <View style={styles.loadingContainer}>
-                <Typography fontFamily="OpenSans-Semibold">
-                  Tidak ada data
-                </Typography>
-              </View>
-            )}
-          />
+              )}
+            />
+            <Typography fontFamily="Poppins-Bold" fontSize={12}>
+              Bank Transfer
+            </Typography>
+            <FlatList
+              data={paymentMethodQuery.data?.data.bank_transfer}
+              renderItem={({ item }) => (
+                <TouchableWithoutFeedback
+                  onPress={() => onMethodSelected(item.id)}
+                >
+                  <View style={styles.paymentItem}>
+                    <Image
+                      source={{ uri: item.img }}
+                      style={{ height: 30, width: 30, resizeMode: "center" }}
+                    />
+                    <View style={{ flex: 1 }}>
+                      <Typography>{item.nama}</Typography>
+                      <Typography
+                        fontFamily="OpenSans-Regular"
+                        fontSize={10}
+                        color="textsecondary"
+                      >
+                        {item.keterangan}
+                      </Typography>
+                    </View>
+                    <Checkbox selected={item.id === selectedMethod} />
+                  </View>
+                </TouchableWithoutFeedback>
+              )}
+              ListEmptyComponent={() => (
+                <View style={styles.loadingContainer}>
+                  <Typography fontFamily="OpenSans-Semibold">
+                    Tidak ada data
+                  </Typography>
+                </View>
+              )}
+            />
+          </>
         )}
       </View>
     </View>

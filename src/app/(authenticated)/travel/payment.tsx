@@ -1,42 +1,46 @@
 import { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PostProcessPaymentPayload } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
+  Checkbox,
   PageWrapper,
+  SectionWrapper,
   Snackbar,
   Typography,
   View,
 } from "@/components";
-import { IconCarSide, IconPinSharp } from "@/components/icons";
+import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
 import { usePostProcessPaymentMutation } from "@/features/payment/api/usePostProcessPaymentMutation";
 import { PaymentComponent } from "@/features/payment/components";
 import { TravelTicketItem } from "@/features/travel/components";
-import {
-  getPesananResponse,
-  useTravelPassenger,
-  useTravelSchedule,
-} from "@/features/travel/store/travel-store";
+import { getPesananResponse } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
-import { formatTime } from "@/utils/datetime";
+import { formatTimeString } from "@/utils/datetime";
 
 export default function TravelPaymentScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { Colors } = useAppTheme();
 
+  const params = useLocalSearchParams<{
+    kode_pesanan: string;
+  }>();
+
   // state
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     number | null
   >(null);
+  const [tna, setTna] = useState(false);
 
-  // store
-  const travelSchedule = useTravelSchedule();
-  const travelPassenger = useTravelPassenger();
+  const orderDetailQuery = useGetOrderDetail(params.kode_pesanan);
+  const orderDetail = orderDetailQuery.data?.data;
 
   // query & mutation
   const processPaymentMutation = usePostProcessPaymentMutation();
@@ -45,13 +49,15 @@ export default function TravelPaymentScreen() {
 
   // method
   const handleProcessPayment = () => {
-    const processPaymentData = {
-      orderCode: pesananResponse?.data?.kode_pesanan,
+    const processPaymentData: PostProcessPaymentPayload = {
+      orderCode: params.kode_pesanan,
+      metode_id: selectedPaymentMethod?.toString() || "1",
     };
 
     processPaymentMutation.mutate(processPaymentData, {
       onSuccess: (res) => {
         console.log(res, "res");
+        router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
         router.push({
           pathname: "/travel/link-transaction",
@@ -69,8 +75,6 @@ export default function TravelPaymentScreen() {
     });
   };
 
-  if (!travelSchedule) return null;
-
   return (
     <PageWrapper
       isLoading={processPaymentMutation.isPending}
@@ -78,83 +82,189 @@ export default function TravelPaymentScreen() {
       style={styles.container}
     >
       <Appbar title="Pembayaran" backIconPress={() => router.back()} />
-      <View style={styles.contentContainer}>
-        <Typography fontFamily="Poppins-Bold" fontSize={16}>
-          Perjalananmu
-        </Typography>
+      <ScrollView horizontal={false}>
+        <View style={styles.contentContainer}>
+          <SectionWrapper title="Perjalanan">
+            <TravelTicketItem
+              destinationCity={orderDetail?.pesanan.kota_tujuan || ""}
+              destinationDepartureDate={
+                new Date(orderDetail?.pesanan.tanggal || "2024-08-10")
+              }
+              originCity={orderDetail?.pesanan.kota_asal || ""}
+              originDepartureDate={
+                new Date(orderDetail?.pesanan.tanggal || "2024-08-10")
+              }
+              icon={<IconCarSide color="main" />}
+              customHeader={
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography fontFamily="Poppins-Regular" color="dangerbase">
+                    {orderDetail?.pesanan.mobil} {"\u2022"}{" "}
+                    {orderDetail?.pesanan.kursi
+                      .map((item: any) => item)
+                      .join(", ")}
+                  </Typography>
+                  <Typography
+                    fontFamily="Poppins-Bold"
+                    fontSize={12}
+                    color="main"
+                    style={{
+                      borderWidth: 1,
+                      borderColor: Colors.main,
+                      padding: 5,
+                      width: 90,
+                      textAlign: "center",
+                      textAlignVertical: "center",
+                      borderRadius: 100,
+                      marginLeft: "auto",
+                    }}
+                  >
+                    Pergi
+                  </Typography>
+                </View>
+              }
+              customFooter={
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      gap: 1,
+                      width: "40%",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <IconPinSharp color="main" />
+                    <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                      {orderDetail?.pesanan.titik_jemput}
+                    </Typography>
+                  </View>
+                  <Typography fontFamily="Poppins-Bold">
+                    {formatTimeString(orderDetail?.pesanan.jam || "00:00:00")}
+                  </Typography>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      gap: 1,
+                      width: "40%",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <IconPinSharp color="main" />
+                    <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                      {orderDetail?.pesanan.titik_antar}
+                    </Typography>
+                  </View>
+                </View>
+              }
+            />
+          </SectionWrapper>
 
-        <TravelTicketItem
-          departureDate={new Date(travelSchedule?.departureDate)}
-          destinationCity={travelSchedule?.originCity}
-          destinationDepartureDate={
-            new Date(travelSchedule?.destinationDepartureDate)
-          }
-          originCity={travelSchedule?.destinationCity}
-          originDepartureDate={new Date(travelSchedule?.originDepartureDate)}
-          icon={<IconCarSide color="main" />}
-          customHeader={
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 5,
-                justifyContent: "flex-start",
-              }}
-            >
-              <Typography
-                fontFamily="Poppins-Bold"
-                fontSize={10}
-                color="main"
-                style={{
-                  borderWidth: 1,
-                  borderColor: Colors.main,
-                  padding: 5,
-                  width: 90,
-                  textAlign: "center",
-                  textAlignVertical: "center",
-                  borderRadius: 100,
-                }}
-              >
-                Pergi
-              </Typography>
+          <SectionWrapper title="Daftar Penumpang">
+            {orderDetail?.penumpang.map((penumpang) => (
               <View
+                key={penumpang.nama}
                 style={{
+                  backgroundColor: Colors.paper,
+                  borderWidth: 1,
+                  borderColor: Colors.outlineborder,
+                  padding: 10,
+                  paddingHorizontal: 20,
+                  borderRadius: 20,
                   flexDirection: "row",
+                  alignItems: "center",
                   justifyContent: "space-between",
                 }}
               >
-                <Typography color="secondary">
-                  {travelSchedule.carModel} {"\u2022"}{" "}
-                  {travelPassenger?.map((item) => item.no_kursi).join(", ")}
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color={"textsecondary"}
+                <View>
+                  <Typography fontFamily="Poppins-Bold" fontSize={18}>
+                    {penumpang.nama}
+                  </Typography>
+                  <View style={{ flexDirection: "row", gap: 15 }}>
+                    <Typography
+                      fontFamily="Poppins-Regular"
+                      color="textsecondary"
+                    >
+                      Nik {"\n"}
+                      No Tlp.
+                    </Typography>
+                    <Typography
+                      fontFamily="Poppins-Regular"
+                      color="textsecondary"
+                    >
+                      {penumpang.nik} {"\n"}
+                      {penumpang.no_telp}
+                    </Typography>
+                  </View>
+                </View>
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
                 >
-                  {formatTime(new Date(travelSchedule?.departureDate))}
-                </Typography>
+                  <IconSeat height={32} width={32} color="textsecondary" />
+                  <Typography
+                    fontFamily="Poppins-SemiBold"
+                    fontSize={18}
+                    color="textsecondary"
+                  >
+                    {penumpang.kursi}
+                  </Typography>
+                </View>
               </View>
-            </View>
-          }
-        />
+            ))}
+          </SectionWrapper>
 
-        <PaymentComponent
-          selectedMethod={selectedPaymentMethod}
-          onMethodSelected={setSelectedPaymentMethod}
-        />
+          <PaymentComponent
+            selectedMethod={selectedPaymentMethod}
+            onMethodSelected={setSelectedPaymentMethod}
+          />
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+            <TouchableWithoutFeedback
+              onPress={() => setTna((prev) => !prev)}
+              style={{ backgroundColor: "red" }}
+            >
+              <View>
+                <Checkbox selected={tna} />
+              </View>
+            </TouchableWithoutFeedback>
+            <Typography fontFamily="Poppins-Regular" fontSize={12}>
+              Saya Menyetuji{" "}
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="main"
+              >
+                Sytarat & Ketentuan
+              </Typography>{" "}
+              Rama Tranz
+            </Typography>
+          </View>
 
-        <View backgroundColor="dangerlight" style={styles.warningWrapper}>
-          <Typography
-            fontFamily="OpenSans-Regular"
-            fontSize={10}
-            color="dangerbase"
-          >
-            Mohon diperhatikan, setiap pembelian tiket tidak dapat dikembalikan.
-            Pastikan untuk mempertimbangkan dengan baik sebelum membeli.
-          </Typography>
+          <View backgroundColor="dangerlight" style={styles.warningWrapper}>
+            <Typography
+              fontFamily="OpenSans-Regular"
+              fontSize={10}
+              color="dangerbase"
+            >
+              Mohon diperhatikan, setiap pembelian tiket tidak dapat
+              dikembalikan. Pastikan untuk mempertimbangkan dengan baik sebelum
+              membeli.
+            </Typography>
+          </View>
         </View>
-      </View>
-
+      </ScrollView>
       <View
         style={[
           styles.bottomContainer,
@@ -167,7 +277,7 @@ export default function TravelPaymentScreen() {
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Typography fontFamily="OpenSans-Semibold" fontSize={16} color="main">
             {formatCurrency(
-              travelSchedule?.price * (travelPassenger?.length || 0)
+              parseInt(orderDetail?.pembayaran.nominal || "0", 10)
             )}
           </Typography>
           <Typography
@@ -180,7 +290,7 @@ export default function TravelPaymentScreen() {
         </View>
         <View style={{ flex: 1 }}>
           <Button
-            disabled={!selectedPaymentMethod}
+            disabled={!selectedPaymentMethod || !tna}
             onPressIn={handleProcessPayment}
           >
             Bayar

@@ -191,10 +191,6 @@ export const getPaymentMethod = async () => {
 };
 
 export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
-  // const payload = {
-  //   orderCode: data
-  // }
-
   const response = await apiClientMock({
     method: "POST",
     url: "/api/pembayaran/proses_pembayaran",

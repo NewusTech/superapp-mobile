@@ -138,8 +138,15 @@ export default function TravelOrderDetailScreen() {
     };
 
     postPesanan(payload, {
-      onSuccess: () => {
-        router.push("/travel/payment");
+      onSuccess: (data) => {
+        router.dismissAll();
+        console.log(data.data.kode_pesanan);
+        router.push({
+          pathname: "/travel/payment",
+          params: {
+            kode_pesanan: data.data.kode_pesanan,
+          },
+        });
       },
       onError: () => {
         // Tetap di halaman ini jika ada error
