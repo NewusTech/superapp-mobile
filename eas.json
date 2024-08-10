@@ -11,11 +11,14 @@
       "distribution": "internal"
     },
     "production": {
-       "android": {
+      "android": {
         "buildType": "apk"
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://backend-superapps.newus.id"
+      },
+      "cache": {
+        "disabled": false
       }
     }
   },
