@@ -327,7 +327,7 @@ export default function TravelDetailScreen() {
                   params: {
                     sheats: travelBookingPayload?.seats,
                     selectAllSheats: "true",
-                  },
+                  } as any,
                 })
               }
             >

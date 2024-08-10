@@ -11,8 +11,8 @@ import { ExtractState } from "@/libs/zustand";
 type TravelStore = {
   bookingPayload?: TravelScheduleQuery;
   pointToPointPayload?: {
-    from?: { name: string; id: string };
-    to?: { name: string; id: string };
+    from?: { point: string; id: string };
+    to?: { point: string; id: string };
   };
   travelSchedule?: TravelScheduleResponseSuccess["data"][number];
   passenger: PassengerSeat[];
@@ -22,8 +22,8 @@ type TravelStore = {
   actions: {
     setBookingPayload: (bookinPayload?: TravelScheduleQuery) => void;
     setPointToPointPayload: (bookinPayload?: {
-      from?: { name: string; id: string };
-      to?: { name: string; id: string };
+      from?: { point: string; id: string };
+      to?: { point: string; id: string };
     }) => void;
     setTravelSchedule: (
       bookinPayload?: TravelScheduleResponseSuccess["data"][number]

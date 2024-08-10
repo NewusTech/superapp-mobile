@@ -118,6 +118,7 @@ export type TravelScheduleResponseSuccess = {
 export type TravelPointToPointApiParams = {
   point: string;
   id: string;
+  cabang: string;
 };
 export type AvaliableSheats = { mobil_id: string };
 export type AvaliableSheatsResponseSuccess = {
@@ -140,10 +141,21 @@ export type TravePointToPointApiResponseSuccess = {
 
 export type GetPaymentMethodResponseSuccess = {
   data: {
-    id: number;
-    metode: string;
-    img: string;
-  }[];
+    payment_gateway: {
+      id: number;
+      nama: string;
+      keterangan: string;
+      kode: string;
+      img: string;
+    }[];
+    bank_transfer: {
+      id: number;
+      nama: string;
+      keterangan: string;
+      kode: string;
+      img: string;
+    }[];
+  };
 };
 
 // export const postProcessPaymentSchema = z.object({});
@@ -152,6 +164,7 @@ export type GetPaymentMethodResponseSuccess = {
 // >;
 export type PostProcessPaymentPayload = {
   orderCode: string;
+  metode_id: string;
 };
 
 export type OrderListResponseSuccess = {
@@ -172,6 +185,9 @@ export type OrderDetailResponseSuccess = {
     pembayaran: {
       status: string;
       metode: string;
+      payment_link: string | null;
+      created_at: string;
+      expired_at: string;
       nominal: string;
     };
     penumpang: [

@@ -87,6 +87,8 @@ export default function TravelOptionScreen() {
     });
   }, [setPointToPointPayload, setPassenger]);
 
+  console.log({ pointToPointPayload });
+
   return (
     <View backgroundColor="paper" style={style.container}>
       <Appbar
@@ -144,8 +146,14 @@ export default function TravelOptionScreen() {
           </Typography>
           <View backgroundColor="main" style={style.indicator} />
         </View>
-        <View style={style.destinationOptionWrapper}>
+        <View
+          style={[
+            style.destinationOptionWrapper,
+            { height: "auto", overflow: "hidden" },
+          ]}
+        >
           <TouchableWithIcon
+            style={{ width: 80, overflow: "scroll" }}
             icon={
               <IconPinSharp
                 width={20}
@@ -153,13 +161,15 @@ export default function TravelOptionScreen() {
                 color={_disablePoint ? "main" : "paper"}
               />
             }
-            label="Titik Jemput"
+            width={90}
+            label={pointToPointPayload?.from?.point || "Titik Jemput"}
             disabled={_disablePoint}
             onPress={() =>
               router.push({
                 pathname: "/travel/form-point-to-point/[pageType]",
                 params: {
                   pageType: "from",
+                  cabang: travelBookingPayload?.from,
                 },
               })
             }
@@ -172,13 +182,15 @@ export default function TravelOptionScreen() {
                 color={_disablePoint ? "main" : "paper"}
               />
             }
-            label="Titik Antar"
+            width={90}
+            label={pointToPointPayload?.to?.point || "Titik Antar"}
             disabled={_disablePoint}
             onPress={() =>
               router.push({
                 pathname: "/travel/form-point-to-point/[pageType]",
                 params: {
                   pageType: "to",
+                  cabang: travelBookingPayload?.to,
                 },
               })
             }
@@ -290,11 +302,15 @@ function ScheduleHeader({ item, availableSeat }: ScheduleHeaderProps) {
 type TouchableIconWithIconProps = {
   icon: ReactNode;
   label: string;
+  width?: any;
+  height?: any;
 } & TouchableNativeFeedbackProps;
 function TouchableWithIcon({
   icon,
   label,
   disabled,
+  width,
+  height,
   ...rest
 }: TouchableIconWithIconProps) {
   return (
@@ -302,7 +318,7 @@ function TouchableWithIcon({
       <View
         backgroundColor={disabled ? "paper" : "main"}
         borderColor="main"
-        style={[style.touchableContainer]}
+        style={[style.touchableContainer, { width: width, height: height }]}
       >
         {icon}
         <Typography

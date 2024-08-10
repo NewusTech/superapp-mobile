@@ -30,6 +30,7 @@ export default function FormPoinToPointScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
     pageType: "from" | "to";
+    cabang: string;
   }>();
 
   const pageType = params.pageType || "from";
@@ -49,6 +50,7 @@ export default function FormPoinToPointScreen() {
   const pointToPointQuery = useGetPointToPointApi({
     point: bookingPayload?.[pageType]?.toLowerCase() || "",
     id: bookingPayload?.[pageType]?.toLocaleLowerCase() || "",
+    cabang: params.cabang,
   });
 
   const handleSavePoint = () => {

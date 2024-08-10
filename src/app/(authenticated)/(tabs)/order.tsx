@@ -4,12 +4,15 @@ import { useRouter } from "expo-router";
 
 import { Appbar, Button, Loader, Tab, Typography, View } from "@/components";
 import { IconCarSide, IconPackage } from "@/components/icons";
+import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderListQuery } from "@/features/order/api/useGetOrderListQuery";
 import { TravelTicketItem } from "@/features/travel/components";
 import { formatLocalDate, formatTimeString } from "@/utils/datetime";
 
 export default function OrderTabScreen() {
   const router = useRouter();
+
+  const { Colors } = useAppTheme();
 
   const [activeTab, setActiveTab] = useState("in-progress");
   const [activeFilter, setActiveFilter] = useState("travel");
@@ -153,8 +156,19 @@ export default function OrderTabScreen() {
                 >
                   <Typography
                     fontFamily="Poppins-Regular"
-                    fontSize={14}
-                    color={"black"}
+                    fontSize={11}
+                    color={"paper"}
+                    style={{
+                      backgroundColor:
+                        item.status === "Sukses"
+                          ? Colors.success
+                          : item.status === "Menunggu Pembayaran"
+                            ? Colors.textsecondary
+                            : Colors.dangerlight,
+                      borderRadius: 100,
+                      padding: 5,
+                      paddingHorizontal: 10,
+                    }}
                   >
                     {item.status}
                   </Typography>
