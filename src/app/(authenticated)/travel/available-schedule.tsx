@@ -322,7 +322,7 @@ function TouchableWithIcon({
       >
         {icon}
         <Typography
-          fontFamily="OpenSans-Light"
+          fontFamily="OpenSans-Bold"
           fontSize={12}
           color={disabled ? "main" : "paper"}
         >
@@ -360,7 +360,7 @@ const style = StyleSheet.create({
   },
   touchableContainer: {
     padding: 10,
-    gap: 18,
+    gap: 5,
     flexGrow: 1,
     borderWidth: 1,
     borderRadius: 100,

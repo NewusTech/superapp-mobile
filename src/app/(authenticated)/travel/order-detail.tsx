@@ -176,7 +176,7 @@ export default function TravelOrderDetailScreen() {
     console.log({ value });
   };
 
-  if (!travelSchedule) return null;
+  if (!travelSchedule) return router.back();
 
   return (
     <View backgroundColor="paper" style={style.container}>

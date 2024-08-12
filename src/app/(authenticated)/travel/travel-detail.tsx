@@ -362,7 +362,7 @@ export default function TravelDetailScreen() {
               >
                 <Image
                   source={{
-                    uri: travelSchedule?.img_url || "",
+                    uri: activeImg,
                   }}
                   style={{ height: "100%" }}
                 />

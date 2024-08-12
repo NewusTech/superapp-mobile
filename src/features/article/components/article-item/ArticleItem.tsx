@@ -72,7 +72,12 @@ export function ArticleItemPlaceholder() {
   const { Colors } = useAppTheme();
 
   return (
-    <View style={[style.container, { borderColor: Colors.outlineborder }]}>
+    <View
+      style={[
+        style.container,
+        { borderColor: Colors.outlineborder, marginHorizontal: "auto" },
+      ]}
+    >
       <Image style={[style.image, { backgroundColor: Colors.bgsecondary }]} />
 
       <View style={style.contentWrapper}>

@@ -14,6 +14,7 @@ export type PostLoginResponseSuccess = {
     id: number;
     master_cabang_id: number;
     nama: string;
+    alamat?: string;
     no_telp?: string;
     role_id: number;
     token: string;
@@ -46,10 +47,10 @@ export type PostRegisterResponseError = {
 };
 
 export const postUpdateProfileSchema = z.object({
-  nama: z.string().optional(),
-  email: z.string().optional(),
-  no_hp: z.string(),
-  alamat: z.string().optional(),
+  nama: z.string(),
+  nik: z.string(),
+  no_telp: z.string(),
+  alamat: z.string(),
 });
 export type PostUpdateProfileData = z.infer<typeof postUpdateProfileSchema>;
 
@@ -185,6 +186,7 @@ export type OrderDetailResponseSuccess = {
     pembayaran: {
       status: string;
       metode: string;
+      kode_pembayaran: string;
       payment_link: string | null;
       created_at: string;
       expired_at: string;
@@ -200,6 +202,7 @@ export type OrderDetailResponseSuccess = {
     ];
     pesanan: {
       mobil: string;
+      kode_pesanan: string;
       jam: string;
       tanggal: string;
       kota_asal: string;

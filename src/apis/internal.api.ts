@@ -147,7 +147,7 @@ export const getTravelSchedule = async (params: TravelScheduleQuery) => {
     },
   });
 
-  console.log(response.data);
+  // console.log(response.data);
 
   return response.data;
 };
@@ -200,10 +200,13 @@ export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
   return response.data;
 };
 
-export const getOrderList = async () => {
+export const getOrderList = async (status: string) => {
   const response = await apiClientMock<OrderListResponseSuccess>({
     method: "GET",
     url: "/api/pesanan/riwayat",
+    params: {
+      status,
+    },
   });
 
   return response.data;

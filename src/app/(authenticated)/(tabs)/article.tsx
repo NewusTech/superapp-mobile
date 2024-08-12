@@ -82,18 +82,24 @@ export default function ArticleTabScreen() {
 
         <SectionWrapper title="Artikel">
           <FlatList
-            horizontal
+            numColumns={2}
             showsHorizontalScrollIndicator={false}
             data={
               articleListQuery.isFetching
                 ? articleListPlaceholderData
                 : articleListQuery.data?.data || []
             }
-            renderItem={({ item }) =>
+            renderItem={({ item, index }) =>
               articleListQuery.isFetching ? (
                 <ArticleItemPlaceholder />
               ) : (
                 <ArticleItem
+                  style={{
+                    marginHorizontal:
+                      articleListQuery.data?.data.length === index + 1
+                        ? 20
+                        : "auto",
+                  }}
                   imgSource={{ uri: item.image_url }}
                   title={item.judul}
                   subtitle={item.konten}
@@ -129,8 +135,6 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {},
   listArticleContainer: {
-    paddingHorizontal: 20,
     gap: 16,
-    flexGrow: 1,
   },
 });

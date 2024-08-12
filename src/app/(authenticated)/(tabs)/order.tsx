@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -14,37 +14,14 @@ export default function OrderTabScreen() {
 
   const { Colors } = useAppTheme();
 
-  const [activeTab, setActiveTab] = useState("in-progress");
+  const [activeTab, setActiveTab] = useState("Menunggu pembayaran");
   const [activeFilter, setActiveFilter] = useState("travel");
 
   // query & mutation
-  const orderListQuery = useGetOrderListQuery();
+  const orderListQuery = useGetOrderListQuery(activeFilter);
 
   // methods
-  const isHistoryTab = activeTab === "history";
-  // const getOrderListByFilter =
-  //   orderListQuery.data?.data
-  //     .filter(
-  //       (item) =>
-  //         item.orderType === activeFilter &&
-  //         (isHistoryTab
-  //           ? new Date().getTime() > new Date(item.departureDate).getTime()
-  //           : new Date().getTime() < new Date(item.departureDate).getTime())
-  //     )
-  //     .map((item) => ({
-  //       ...item,
-  //       isOrderActive: !isHistoryTab,
-  //     })) || [];
-
-  // const hasActiveOrder = useMemo(() => {
-  //   if (!orderListQuery.data?.data) return false;
-
-  //   return (
-  //     orderListQuery.data?.data.filter(
-  //       (item) => new Date().getTime() < new Date(item.departureDate).getTime()
-  //     ).length > 0
-  //   );
-  // }, [orderListQuery.data?.data]);
+  // const isHistoryTab = activeTab === "Menunggu Pembayaran";
 
   const handleDetailPesanan = (kode_pesanan: string) => {
     router.push({
@@ -54,8 +31,6 @@ export default function OrderTabScreen() {
       },
     });
   };
-
-  // console.log(orderListQuery.data?.data);
 
   return (
     <View backgroundColor="paper" style={style.container}>
@@ -78,9 +53,9 @@ export default function OrderTabScreen() {
         <View style={style.tabContainer}>
           <Tab
             tabs={[
-              { key: "history", label: "Riwayat" },
+              { key: "", label: "Riwayat" },
               {
-                key: "in-progress",
+                key: "Menunggu pembayaran",
                 label: "Dalam proses",
                 // indicator: hasActiveOrder,
               },
@@ -162,9 +137,9 @@ export default function OrderTabScreen() {
                       backgroundColor:
                         item.status === "Sukses"
                           ? Colors.success
-                          : item.status === "Menunggu Pembayaran"
+                          : item.status === "Menunggu pembayaran"
                             ? Colors.textsecondary
-                            : Colors.dangerlight,
+                            : Colors.dangerbase,
                       borderRadius: 100,
                       padding: 5,
                       paddingHorizontal: 10,

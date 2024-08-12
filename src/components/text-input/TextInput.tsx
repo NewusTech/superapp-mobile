@@ -16,6 +16,8 @@ export type TextInputProps = {
   label: string;
   trailingIcon?: ReactNode;
   errorMessage?: string;
+  borderRadius?: number;
+  textAlignVertical?: "top" | "center";
 } & RNTextInputProps;
 export function TextInput(props: TextInputProps) {
   const {
@@ -25,6 +27,8 @@ export function TextInput(props: TextInputProps) {
     errorMessage = "",
     secureTextEntry = false,
     trailingIcon,
+    borderRadius = 100,
+    textAlignVertical = "center",
     ...rest
   } = props;
 
@@ -39,13 +43,16 @@ export function TextInput(props: TextInputProps) {
       </Typography>
       <View
         backgroundColor={editable ? "transparent" : "outlineborder"}
-        style={[styles.inputWrapper, { borderColor: Colors.outlineborder }]}
+        style={[
+          styles.inputWrapper,
+          { borderColor: Colors.outlineborder, borderRadius },
+        ]}
       >
         <View style={{ flex: 1 }}>
           <RNTextInput
             placeholderTextColor={Colors.textsecondary}
             editable={editable}
-            style={[{ color: Colors.textprimary }, style]}
+            style={[{ color: Colors.textprimary, textAlignVertical }, style]}
             secureTextEntry={secureTextEntry && hidePassword}
             {...rest}
           />
@@ -78,7 +85,6 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     borderWidth: 1,
-    borderRadius: 100,
     paddingVertical: 10,
     paddingHorizontal: 26,
     gap: 10,

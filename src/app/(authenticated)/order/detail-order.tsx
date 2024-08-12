@@ -58,6 +58,13 @@ export default function DetailOrder() {
     orderDetailQuery.refetch();
   };
 
+  const checExpired = (expirationTime: string, status: string) => {
+    if (status !== "Menunggu Pembayaran") {
+      return false;
+    }
+    return new Date(expirationTime).getTime() - new Date().getTime() > 0;
+  };
+
   useEffect(() => {
     if (orderDetailQuery.error) {
       Snackbar.show({
@@ -112,17 +119,22 @@ export default function DetailOrder() {
           }}
         >
           {/* Countdown */}
-          <View
-            style={{
-              backgroundColor: Colors.dangerlight,
-              width: "100%",
-              padding: 5,
-            }}
-          >
-            <CountdownTimer
-              expirationTime={orderDetail.pembayaran.expired_at}
-            />
-          </View>
+          {checExpired(
+            orderDetail.pembayaran.expired_at,
+            orderDetail.pembayaran.status
+          ) && (
+            <View
+              style={{
+                backgroundColor: Colors.dangerlight,
+                width: "100%",
+                padding: 5,
+              }}
+            >
+              <CountdownTimer
+                expirationTime={orderDetail.pembayaran.expired_at}
+              />
+            </View>
+          )}
           {/* ticket */}
           <View
             style={{
@@ -140,7 +152,7 @@ export default function DetailOrder() {
                   ? "success"
                   : orderDetail?.pembayaran.status === "Menunggu Pembayaran"
                     ? "textsecondary"
-                    : "dangerlight"
+                    : "dangerbase"
               }
               fontSize={14}
             >
@@ -182,7 +194,7 @@ export default function DetailOrder() {
                   width: "50%",
                 }}
               >
-                -
+                {orderDetail.pembayaran.kode_pembayaran || "-"}
               </Typography>
             </View>
             <View
@@ -199,7 +211,7 @@ export default function DetailOrder() {
                   width: "50%",
                 }}
               >
-                -
+                {orderDetail.pembayaran.metode || "-"}
               </Typography>
             </View>
             <View
@@ -403,9 +415,11 @@ export default function DetailOrder() {
           padding: 10,
         }}
       >
-        {orderDetail.pembayaran.payment_link ? (
-          <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
-        ) : (
+        {orderDetail.pembayaran.payment_link &&
+          orderDetail.pembayaran.status === "Menunggu Pembayaran" && (
+            <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
+          )}
+        {!orderDetail.pembayaran.payment_link && (
           <Button onPress={handleOnBeforePayment}>
             Lanjut Pilih Metode Pembayaran
           </Button>
@@ -415,7 +429,13 @@ export default function DetailOrder() {
   );
 }
 
-const CountdownTimer = ({ expirationTime }: { expirationTime: string }) => {
+const CountdownTimer = ({
+  expirationTime,
+  handleAfterExpired,
+}: {
+  expirationTime: string;
+  handleAfterExpired?: () => void;
+}) => {
   const calculateTimeLeft = () => {
     const difference =
       new Date(expirationTime).getTime() - new Date().getTime();
