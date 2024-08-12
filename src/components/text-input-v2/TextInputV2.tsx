@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     gap: 12,
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 2,
+    borderRadius: 100,
   },
   textInput: {
     fontFamily: "OpenSans-Regular",

@@ -8,21 +8,21 @@ import {
 
 export type PromoItemProps = {
   imgUrl: ImageProps["source"];
+  height?: any;
+  width?: any;
 } & TouchableHighlightProps;
 export function PromoItem(props: PromoItemProps) {
-  const { imgUrl, ...rest } = props;
+  const { imgUrl, height = 187, width = 326, ...rest } = props;
 
   return (
     <TouchableHighlight {...rest}>
-      <Image source={imgUrl} style={styles.container} />
+      <Image source={imgUrl} style={[styles.container, { height, width }]} />
     </TouchableHighlight>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 187,
-    width: 326,
     resizeMode: "cover",
     borderRadius: 10,
   },

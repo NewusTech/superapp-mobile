@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { BlurView } from "expo-blur";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -38,6 +39,7 @@ export default function TravelPaymentScreen() {
     number | null
   >(null);
   const [tna, setTna] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const orderDetailQuery = useGetOrderDetail(params.kode_pesanan);
   const orderDetail = orderDetailQuery.data?.data;
@@ -245,6 +247,7 @@ export default function TravelPaymentScreen() {
                 fontFamily="Poppins-Regular"
                 fontSize={12}
                 color="main"
+                onPress={() => setOpenModal(true)}
               >
                 Sytarat & Ketentuan
               </Typography>{" "}
@@ -297,6 +300,55 @@ export default function TravelPaymentScreen() {
           </Button>
         </View>
       </View>
+      {openModal && (
+        <View style={styles.containerPopup}>
+          <TouchableWithoutFeedback onPress={() => setOpenModal(false)}>
+            <BlurView
+              intensity={100}
+              blurReductionFactor={100}
+              experimentalBlurMethod="dimezisBlurView"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: Colors.paper,
+                  width: "auto",
+                  height: "auto",
+                  borderWidth: 1,
+                  borderColor: Colors.outlineborder,
+                  padding: 20,
+                  marginHorizontal: 50,
+                  marginVertical: "auto",
+                  overflow: "hidden",
+                  borderRadius: 10,
+                }}
+              >
+                <Typography fontFamily="Poppins-Bold">
+                  Syarat dan Ketentuan
+                </Typography>
+                <Typography fontFamily="Poppins-Regular">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Ipsam similique quae, eaque harum accusantium quis pariatur
+                  assumenda. Omnis culpa temporibus cum alias distinctio dolorem
+                  veniam laborum quibusdam sit minima aperiam natus quod nostrum
+                  assumenda nemo, reprehenderit eaque fuga soluta. Accusantium
+                  dolore sunt dolores nulla. Aliquam aut tenetur voluptatem,
+                  facilis laborum debitis alias eaque voluptatum dolores
+                  accusamus numquam officiis doloremque possimus quis autem
+                  perferendis fugiat, molestias odio. Animi totam at inventore
+                  corrupti. Laboriosam laudantium eveniet enim pariatur tenetur
+                  unde molestias omnis officiis sunt quis ipsum labore illo,
+                  earum animi quam eius aspernatur magni, dolores repellat eaque
+                  corporis, eum placeat at ducimus.
+                </Typography>
+              </View>
+            </BlurView>
+          </TouchableWithoutFeedback>
+        </View>
+      )}
     </PageWrapper>
   );
 }
@@ -337,5 +389,13 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: "center",
     alignItems: "center",
+  },
+  containerPopup: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    shadowRadius: 1,
+    overflow: "hidden",
   },
 });

@@ -1,23 +1,52 @@
-import { StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { Clipboard, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { useRouter } from "expo-router";
 
 import { useAppTheme } from "@/context/theme-context";
+import { formatLocalDate } from "@/utils/datetime";
 
 import { Button } from "../button/Button";
+import { Snackbar } from "../snackbar/Snackbar";
 import { Typography } from "../typography/Typography";
 import { View } from "../view/View";
 
-export function PromoListItem() {
+type PromoListItemType = {
+  discount: string;
+  label: string;
+  min_transaksi: string;
+  detail: string;
+  expired: string;
+  kode_promo: string;
+};
+
+export function PromoListItem(data: PromoListItemType) {
+  const router = useRouter();
+
   const { Colors } = useAppTheme();
 
+  const handleDetailPesanan = () => {
+    router.push(`/(authenticated)/promo/${data.kode_promo}`);
+  };
+
+  const copyToClipboard = () => {
+    Clipboard.setString(data.kode_promo);
+    Snackbar.show({
+      message: "Berhasil Menyalin Kode Promosi " + data.kode_promo,
+      variant: "neutral",
+    });
+  };
+
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={handleDetailPesanan}>
       <View
         backgroundColor="paper"
-        style={[styles.container, { borderColor: Colors.outlineborder }]}
+        style={[
+          styles.container,
+          { borderColor: Colors.outlineborder, borderRadius: 20 },
+        ]}
       >
         <View>
           <Typography fontSize={18} fontFamily="Poppins-SemiBold">
-            30%
+            {data.discount}
           </Typography>
         </View>
 
@@ -28,19 +57,22 @@ export function PromoListItem() {
               fontFamily="Poppins-SemiBold"
               fontSize={16}
             >
-              Diskon Travel Hingga 30%
+              {data.label}
             </Typography>
             <Typography fontFamily="Poppins-Regular">
-              Min. pembelian Rp.1,000,000
+              Min. pembelian {data.min_transaksi}
             </Typography>
           </View>
 
           <View style={styles.contentBottomWrapper}>
             <Typography fontSize={12} color="textsecondary" style={{ flex: 1 }}>
-              Berlaku hingga Jul 14,2024
+              Berlaku hingga {formatLocalDate(new Date(data.expired))}
             </Typography>
 
-            <Button style={{ height: 30, minHeight: 30, maxHeight: 30 }}>
+            <Button
+              style={{ height: 30, minHeight: 30, maxHeight: 30 }}
+              onPress={copyToClipboard}
+            >
               Salin
             </Button>
           </View>

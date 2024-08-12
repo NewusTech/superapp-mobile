@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   RefreshControl,
@@ -6,10 +6,12 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   Appbar,
-  Loader,
+  Button,
   Snackbar,
   TextInput,
   Typography,
@@ -24,10 +26,21 @@ import {
   useAuthActions,
   useAuthProfile,
 } from "@/features/auth/store/auth-store";
-import useDebounce from "@/hooks/useDebounce";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+export const profileSchema = z.object({
+  nama: z.string(),
+  nik: z.string(),
+  no_telp: z.string(),
+  alamat: z.string(),
+});
+export type profileType = z.infer<typeof profileSchema>;
 
 export default function ProfileTabScreen() {
   const { Colors } = useAppTheme();
+
+  // state
+  const [isEdit, setIsEdit] = useState(false);
 
   // store
   const userProfile = useAuthProfile();
@@ -37,48 +50,54 @@ export default function ProfileTabScreen() {
   const userProfileQuery = useGetProfile();
   const updateUserProfileMutation = useUpdateProfileMutation();
 
-  // state
-  const [mobileNumber, setMobileNumber] = useState(userProfile?.no_telp || "");
-  // const [address, setAddress] = useState(userProfile?.);
-  const debouncedMobileNumber = useDebounce(mobileNumber, 1000);
+  const { control, formState, handleSubmit, setValue } = useForm<profileType>({
+    resolver: zodResolver(profileSchema),
+    mode: "all",
+    defaultValues: {
+      alamat: userProfile?.alamat || "",
+      nama: userProfile?.nama || "",
+      nik: userProfile?.nik || "",
+      no_telp: userProfile?.no_telp || "",
+    },
+  });
 
-  useEffect(() => {
-    if (userProfileQuery.data) {
-      setProfile(userProfileQuery.data.data);
-    }
-  }, [userProfileQuery.data, setProfile]);
+  const onSaveProfile = handleSubmit((data) => {
+    updateUserProfileMutation.mutate(data, {
+      onSuccess: (data) => {
+        setProfile(data?.data);
+        Snackbar.show({ message: "Berhasil update profile!" });
+      },
+      onError: (error) => {
+        Snackbar.show({ message: "Gagal update profile", variant: "danger" });
+      },
+    });
+  });
+
+  const onHandleButtonSave = () => {
+    onSaveProfile();
+    setIsEdit(false);
+  };
+
+  const onHandleButtonReset = () => {
+    if (!isEdit) return setIsEdit(true);
+    setIsEdit(false);
+    setValue("nama", userProfile?.nama || "");
+    setValue("nik", userProfile?.nik || "");
+    setValue("no_telp", userProfile?.no_telp || "");
+    setValue("alamat", userProfile?.alamat || "");
+  };
 
   // methods
   const handleRefresh = () => {
     userProfileQuery.refetch();
+    setIsEdit(false);
   };
 
   const handleLogout = async () => {
     // TODO integrate with logout API
-
     handleLogoutSession();
     Snackbar.show({ message: "Logout berhasil!" });
   };
-
-  useEffect(() => {
-    if (debouncedMobileNumber === userProfile?.no_telp) return;
-
-    updateUserProfileMutation.mutate(
-      {
-        no_hp: debouncedMobileNumber,
-      },
-      {
-        onSuccess: (data) => {
-          setProfile(data?.data);
-          Snackbar.show({ message: "Berhasil update profile!" });
-        },
-        onError: (error) => {
-          Snackbar.show({ message: "Gagal update profile", variant: "danger" });
-        },
-      }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedMobileNumber, setProfile]);
 
   return (
     <View backgroundColor="paper" style={style.container}>
@@ -98,26 +117,89 @@ export default function ProfileTabScreen() {
         <View style={style.avatarContainer}>
           <Image
             style={[style.avatarImg, { backgroundColor: Colors.outlineborder }]}
+            source={require("@/assets/images/default-profile.png")}
           />
-
-          <Typography fontFamily="Poppins-SemiBold" fontSize={20}>
-            {userProfile?.nama}
-          </Typography>
+          <View style={{ flexDirection: "row", gap: 5 }}>
+            <Button onPress={onHandleButtonReset} variant="secondary">
+              {isEdit ? "Batal" : "Ubah"}
+            </Button>
+            {isEdit && (
+              <Button
+                onPress={onHandleButtonSave}
+                disabled={!formState.isValid}
+              >
+                Simpan
+              </Button>
+            )}
+          </View>
         </View>
 
+        <Controller
+          control={control}
+          name="nama"
+          render={({ field }) => (
+            <TextInput
+              label="Nama *"
+              maxLength={150}
+              placeholder="Nama"
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              editable={isEdit}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="nik"
+          render={({ field }) => (
+            <TextInput
+              label="NIK *"
+              inputMode="numeric"
+              maxLength={16}
+              placeholder="NIK"
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              editable={isEdit}
+            />
+          )}
+        />
         <TextInput label="Email" value={userProfile?.email} editable={false} />
-
-        {!!userProfile?.no_telp && (
-          <TextInput
-            label="Nomor Telepon"
-            value={mobileNumber}
-            trailingIcon={
-              updateUserProfileMutation.isPending && <Loader size={16} />
-            }
-            onChangeText={setMobileNumber}
-          />
-        )}
-        <TextInput label="Alamat" numberOfLines={5} value="" />
+        <Controller
+          control={control}
+          name="no_telp"
+          render={({ field }) => (
+            <TextInput
+              inputMode="numeric"
+              maxLength={13}
+              label="Nomor Telepon *"
+              placeholder="Nomor Telepon"
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              editable={isEdit}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="alamat"
+          render={({ field }) => (
+            <TextInput
+              label="Alamat Lengkap *"
+              placeholder="Jl.alamat"
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              borderRadius={20}
+              numberOfLines={5}
+              textAlignVertical="top"
+              multiline={true}
+              editable={isEdit}
+            />
+          )}
+        />
       </ScrollView>
 
       <TouchableWithoutFeedback onPress={handleLogout}>
@@ -138,9 +220,10 @@ const style = StyleSheet.create({
     flex: 1,
   },
   avatarContainer: {
-    gap: 30,
-    flexDirection: "row",
+    gap: 10,
+    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   avatarImg: {
     height: 80,

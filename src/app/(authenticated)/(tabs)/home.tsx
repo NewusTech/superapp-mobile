@@ -124,8 +124,22 @@ export default function HomeTabScreen() {
             />
           </View>
         </View>
-
-        <SectionWrapper title="Artikel">
+        <SectionWrapper title="Rute">
+          <View style={styles.tabContainer}>
+            <Tab
+              tabs={[
+                ...branchList.map((b) => {
+                  return {
+                    key: b.title,
+                    label: b.title,
+                  };
+                }),
+              ]}
+              activeTab={activeFilter}
+              onPress={(key) => setActiveFilter(key as string)}
+              variant="button"
+            />
+          </View>
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -160,22 +174,7 @@ export default function HomeTabScreen() {
           />
         </SectionWrapper>
         <View style={{ height: 10 }} />
-        <SectionWrapper title="Rute">
-          <View style={styles.tabContainer}>
-            <Tab
-              tabs={[
-                ...branchList.map((b) => {
-                  return {
-                    key: b.title,
-                    label: b.title,
-                  };
-                }),
-              ]}
-              activeTab={activeFilter}
-              onPress={(key) => setActiveFilter(key as string)}
-              variant="button"
-            />
-          </View>
+        <SectionWrapper title="Artikel">
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}

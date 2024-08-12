@@ -19,9 +19,12 @@ const WebViewScreen = () => {
   const pesananResponse = getPesananResponse();
 
   const onNavigationStateChange = (navState: any) => {
-    if (navState.url.includes("example.com")) {
+    if (
+      navState.url.includes("admin-superapps.newus.id") ||
+      navState.url.includes("example.com")
+    ) {
       // const deepLinkUrl = Linking.createURL(`/payment/${pesananResponse?.data?.kode_pesanan}`)
-      const deepLinkUrl = Linking.createURL(`/`);
+      const deepLinkUrl = Linking.createURL(`/(authenticated)/(tabs)/order`);
       Linking.openURL(deepLinkUrl);
     }
   };
