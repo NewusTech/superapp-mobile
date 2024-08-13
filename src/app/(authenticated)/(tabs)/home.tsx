@@ -27,6 +27,7 @@ import {
   ArticleItemPlaceholder,
   articleListPlaceholderData,
 } from "@/features/article/components";
+import { RuteItem } from "@/features/article/components/rute-item/RuteItem";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
 import { formatCurrency } from "@/utils/common";
@@ -103,11 +104,13 @@ export default function HomeTabScreen() {
               icon={<IconPackage width={24} height={24} color="paper" />}
               iconColor="secondary"
               onPress={() => router.push("/package/shipment-form")}
+              disabled
             />
             <RoundedButton
               label="Rental"
               icon={<IconCarSide width={24} height={24} color="paper" />}
               iconColor="dangerbase"
+              onPress={() => router.push("/rental/rental-car-lists")}
               disabled
             />
             <RoundedButton
@@ -152,7 +155,8 @@ export default function HomeTabScreen() {
               articleListQuery.isFetching ? (
                 <ArticleItemPlaceholder />
               ) : (
-                <ArticleItem
+                <RuteItem
+                  badgePromo
                   imgSource={{ uri: item.image_url }}
                   title={item.judul}
                   subtitle={item.konten}
@@ -171,10 +175,13 @@ export default function HomeTabScreen() {
             style={{ width: "100%" }}
             ListEmptyComponent={() => <ArticleEmpty />}
             contentContainerStyle={styles.listArticleContainer}
+            snapToStart
+            decelerationRate={"normal"}
+            snapToInterval={175}
           />
         </SectionWrapper>
         <View style={{ height: 10 }} />
-        <SectionWrapper title="Artikel">
+        <SectionWrapper title="Pariwisata">
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -206,22 +213,33 @@ export default function HomeTabScreen() {
             style={{ width: "100%" }}
             ListEmptyComponent={() => <ArticleEmpty />}
             contentContainerStyle={styles.listArticleContainer}
+            snapToStart
+            decelerationRate={"normal"}
+            snapToInterval={175}
           />
         </SectionWrapper>
         <View
           style={{
             marginBottom: insets.bottom + 10,
             marginTop: 20,
+            marginHorizontal: 20,
+            // borderRadius: 20,
+            // overflow: "hidden",
           }}
         >
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
             data={PromoItemList}
-            renderItem={({ item }) => <PromoItem imgUrl={item.imgUrl} />}
+            renderItem={({ item }) => (
+              <PromoItem imgUrl={item.imgUrl} width={326} borderRadius={20} />
+            )}
             style={{ width: "100%" }}
             ListEmptyComponent={() => <ArticleEmpty />}
-            contentContainerStyle={styles.listArticleContainer}
+            snapToStart
+            decelerationRate={"normal"}
+            snapToInterval={336}
+            contentContainerStyle={{ gap: 10 }}
           />
         </View>
       </ScrollView>
@@ -268,6 +286,7 @@ const styles = StyleSheet.create({
   },
   listArticleContainer: {
     paddingHorizontal: 20,
+    paddingVertical: 10,
     gap: 16,
     flexGrow: 1,
   },

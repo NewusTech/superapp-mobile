@@ -203,10 +203,10 @@ export default function ProfileTabScreen() {
       </ScrollView>
 
       <TouchableWithoutFeedback onPress={handleLogout}>
-        <View backgroundColor="outlineborder" style={style.logoutButton}>
-          <IconCILogout color="main" />
+        <View backgroundColor="main" style={style.logoutButton}>
+          <IconCILogout color="paper" />
 
-          <Typography fontFamily="Poppins-Medium" fontSize={16}>
+          <Typography fontFamily="Poppins-Medium" fontSize={16} color="paper">
             Log Out
           </Typography>
         </View>

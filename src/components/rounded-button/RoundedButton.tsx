@@ -28,8 +28,36 @@ export function RoundedButton(props: RoundedButtonProps) {
   const { Colors } = useAppTheme();
 
   return (
-    <TouchableWithoutFeedback {...rest}>
+    <TouchableWithoutFeedback {...rest} disabled={disabled}>
       <View style={style.container}>
+        {disabled && (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              top: -5,
+              left: 0,
+              zIndex: 1,
+            }}
+          >
+            <Typography
+              fontFamily="OpenSans-Light"
+              color="paper"
+              fontSize={6}
+              style={{
+                backgroundColor: Colors.textsecondary,
+                paddingHorizontal: 3,
+                paddingVertical: 2.5,
+                textAlign: "center",
+                borderRadius: 100,
+                width: "60%",
+                marginLeft: "auto",
+              }}
+            >
+              Soon
+            </Typography>
+          </View>
+        )}
         <View
           style={[
             style.iconWrapper,
@@ -65,6 +93,7 @@ const style = StyleSheet.create({
     width: 65,
     gap: 8,
     alignItems: "center",
+    justifyContent: "flex-end",
   },
   iconWrapper: {
     height: 48,

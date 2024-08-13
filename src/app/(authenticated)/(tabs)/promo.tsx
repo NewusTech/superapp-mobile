@@ -22,7 +22,11 @@ export default function PromoScreen() {
           padding: 20,
         }}
       >
-        <PromoItem imgUrl={require("@/assets/images/promo/1.png")} />
+        <PromoItem
+          imgUrl={require("@/assets/images/promo/1.png")}
+          width={326}
+          borderRadius={20}
+        />
       </View>
       <View style={[styles.searchPromoContainer]} backgroundColor="paper">
         <View style={{ flex: 1 }}>
