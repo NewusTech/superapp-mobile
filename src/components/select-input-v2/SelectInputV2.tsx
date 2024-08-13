@@ -19,6 +19,7 @@ export type SelectInputV2Props = {
   value: string | number;
   placeholder?: string;
   suffix?: string;
+  label?: string;
 };
 export function SelectInputV2(props: SelectInputV2Props) {
   const {
@@ -30,6 +31,7 @@ export function SelectInputV2(props: SelectInputV2Props) {
     onSelect = () => {},
     placeholder = "",
     suffix = "",
+    label,
   } = props;
 
   const { Colors } = useAppTheme();
@@ -39,29 +41,35 @@ export function SelectInputV2(props: SelectInputV2Props) {
       data={data}
       onSelect={onSelect}
       renderButton={(selected, isOpened) => (
-        <View
-          backgroundColor={selected ? "outlineborder" : "paper"}
-          style={[
-            styles.container,
-            {
-              borderWidth: withBorder ? 1 : 0,
-              borderColor: Colors.outlineborder,
-              padding: withBorder ? 12 : 0,
-            },
-          ]}
-        >
-          {leadingIcon}
-
-          <Typography
-            fontFamily="OpenSans-Regular"
-            fontSize={14}
-            color={value ? "black" : "textsecondary"}
-            style={styles.textInput}
+        <View style={{ gap: 5 }}>
+          {label && (
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              {label}
+            </Typography>
+          )}
+          <View
+            // backgroundColor={selected ? "outlineborder" : "paper"}
+            style={[
+              styles.container,
+              {
+                borderWidth: withBorder ? 1 : 0,
+                borderColor: Colors.outlineborder,
+                padding: withBorder ? 12 : 0,
+              },
+            ]}
           >
-            {value || placeholder} {" " + suffix}
-          </Typography>
+            {leadingIcon}
+            <Typography
+              fontFamily="OpenSans-Regular"
+              fontSize={14}
+              color={value ? "black" : "textsecondary"}
+              style={styles.textInput}
+            >
+              {value || placeholder} {" " + suffix}
+            </Typography>
 
-          {trailingIcon}
+            {trailingIcon}
+          </View>
         </View>
       )}
       renderItem={(item, index, isSelected) => {
@@ -70,7 +78,7 @@ export function SelectInputV2(props: SelectInputV2Props) {
             style={[
               styles.dropdownItemStyle,
               {
-                ...(isSelected && { backgroundColor: "#D2D9DF" }),
+                // ...(isSelected && { backgroundColor: "#D2D9DF" }),
               },
             ]}
           >

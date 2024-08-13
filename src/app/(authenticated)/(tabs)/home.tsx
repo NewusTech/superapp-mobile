@@ -104,14 +104,14 @@ export default function HomeTabScreen() {
               icon={<IconPackage width={24} height={24} color="paper" />}
               iconColor="secondary"
               onPress={() => router.push("/package/shipment-form")}
-              disabled
+              // disabled
             />
             <RoundedButton
               label="Rental"
               icon={<IconCarSide width={24} height={24} color="paper" />}
               iconColor="dangerbase"
               onPress={() => router.push("/rental/rental-car-lists")}
-              disabled
+              // disabled
             />
             <RoundedButton
               label="Oleh-oleh"
@@ -223,8 +223,6 @@ export default function HomeTabScreen() {
             marginBottom: insets.bottom + 10,
             marginTop: 20,
             marginHorizontal: 20,
-            // borderRadius: 20,
-            // overflow: "hidden",
           }}
         >
           <FlatList

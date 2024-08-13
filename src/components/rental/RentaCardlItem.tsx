@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Image,
   ImageSourcePropType,
   Pressable,
   PressableProps,
@@ -53,8 +54,17 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
           }}
         >
           <View
-            style={{ backgroundColor: "blue", width: "100%", height: "40%" }}
-          ></View>
+            style={{
+              backgroundColor: Colors.paper,
+              width: "100%",
+              height: "40%",
+            }}
+          >
+            <Image
+              source={require("@/assets/images/default_rent_car.png")}
+              style={{ objectFit: "contain" }}
+            />
+          </View>
           <View
             style={{
               padding: 20,
