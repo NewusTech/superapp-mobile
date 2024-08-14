@@ -36,6 +36,7 @@ import {
   ArticleItemPlaceholder,
   articleListPlaceholderData,
 } from "@/features/article/components";
+import { HotelItem } from "@/features/article/components/hotel-item/HotelItem";
 import { RuteItem } from "@/features/article/components/rute-item/RuteItem";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
@@ -79,11 +80,7 @@ export default function HomeTabScreen() {
   return (
     <>
       <ScrollView
-        style={{
-          flex: 1,
-        }}
         contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.paper }}
-        stickyHeaderIndices={[0, 1]}
         refreshControl={
           <RefreshControl
             refreshing={articleListQuery.isRefetching}
@@ -111,10 +108,6 @@ export default function HomeTabScreen() {
             <SearchBox placeholder="Cari disini..." />
 
             <View
-              // key={route.name}
-              // intensity={150}
-              // blurReductionFactor={100}
-              // experimentalBlurMethod="dimezisBlurView"
               style={{
                 backgroundColor: "rgba(255,255,255,0.8)",
                 width: Dimensions.get("window").width - 50,
@@ -123,7 +116,7 @@ export default function HomeTabScreen() {
                 borderRadius: 20,
                 overflow: "hidden",
                 paddingHorizontal: 20,
-                marginBottom: 43,
+                // marginBottom: 43,
               }}
             >
               <View style={styles.contentGreetingWrapper}>
@@ -142,7 +135,7 @@ export default function HomeTabScreen() {
                   label="Paket"
                   icon={<IconPackage width={24} height={24} color="paper" />}
                   iconColor="secondary"
-                  onPress={() => router.push("/package/shipment-form")}
+                  onPress={() => router.push("/package/new-package-screen")}
                   // disabled
                 />
                 <RoundedButton
@@ -169,188 +162,214 @@ export default function HomeTabScreen() {
             borderTopLeftRadius: 40,
             paddingTop: 20,
             top: -50,
+            position: "relative",
+            width: "100%",
           }}
         >
-          <ScrollView style={{ flex: 1 }} scrollEnabled>
-            <View style={{}}>
-              <View
-                style={{
-                  paddingLeft: 20,
-                  marginBottom: 10,
-                  flexDirection: "column",
-                }}
-              >
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <Image source={require("@/assets/images/map1.png")} />
-                  <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                    Rute
-                  </Typography>
-                </View>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color="textsecondary"
-                >
-                  Nikmati Rute Perjalanan Kami dari Jakarta ke Bandar Lampung
-                  dan Palembang.
-                </Typography>
-              </View>
-              <View style={styles.tabContainer}>
-                <Tab
-                  tabs={[
-                    ...branchList.map((b) => {
-                      return {
-                        key: b.title,
-                        label: b.title,
-                      };
-                    }),
-                  ]}
-                  activeTab={activeFilter}
-                  onPress={(key) => setActiveFilter(key as string)}
-                  variant="button"
-                />
-              </View>
-              <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={
-                  articleListQuery.isFetching
-                    ? articleListPlaceholderData
-                    : articleListQuery.data?.data || []
-                }
-                renderItem={({ item }) =>
-                  articleListQuery.isFetching ? (
-                    <ArticleItemPlaceholder />
-                  ) : (
-                    <RuteItem
-                      badgePromo
-                      imgSource={{ uri: item.image_url }}
-                      title={item.judul}
-                      subtitle={item.konten}
-                      price={formatCurrency(item.harga)}
-                      onPress={() =>
-                        router.push({
-                          pathname: "/article/[id]",
-                          params: {
-                            id: item.id,
-                          },
-                        })
-                      }
-                    />
-                  )
-                }
-                style={{ width: "100%" }}
-                ListEmptyComponent={() => <ArticleEmpty />}
-                contentContainerStyle={styles.listArticleContainer}
-                snapToStart
-                decelerationRate={"normal"}
-                snapToInterval={175}
-              />
-            </View>
-            <View style={{ marginTop: 10 }}>
-              <View
-                style={{
-                  paddingLeft: 20,
-                  marginBottom: 10,
-                  flexDirection: "column",
-                }}
-              >
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                    Jelajahi Wisata Bersama Kami
-                  </Typography>
-                  <Image
-                    source={require("@/assets/images/emoticon_star.png")}
-                  />
-                </View>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color="textsecondary"
-                >
-                  Nikmati Perjalanan dengan Kami ke berabagai wisata pilihan
-                  anda.
-                </Typography>
-              </View>
-              <View style={styles.tabContainer}>
-                <Tab
-                  tabs={[
-                    ...branchList.map((b) => {
-                      return {
-                        key: b.title,
-                        label: b.title,
-                      };
-                    }),
-                  ]}
-                  activeTab={activeFilter}
-                  onPress={(key) => setActiveFilter(key as string)}
-                  variant="button"
-                />
-              </View>
-              <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={
-                  articleListQuery.isFetching
-                    ? articleListPlaceholderData
-                    : articleListQuery.data?.data || []
-                }
-                renderItem={({ item }) =>
-                  articleListQuery.isFetching ? (
-                    <ArticleItemPlaceholder />
-                  ) : (
-                    <ArticleItem
-                      badgeLocation="Location"
-                      imgSource={{ uri: item.image_url }}
-                      title={item.judul}
-                      subtitle={item.konten}
-                      price={formatCurrency(item.harga)}
-                      onPress={() =>
-                        router.push({
-                          pathname: "/article/[id]",
-                          params: {
-                            id: item.id,
-                          },
-                        })
-                      }
-                    />
-                  )
-                }
-                style={{ width: "100%" }}
-                ListEmptyComponent={() => <ArticleEmpty />}
-                contentContainerStyle={styles.listArticleContainer}
-                snapToStart
-                decelerationRate={"normal"}
-                snapToInterval={175}
-              />
-            </View>
+          <View style={{}}>
             <View
               style={{
-                marginBottom: insets.bottom + 10,
-                marginTop: 20,
-                marginHorizontal: 20,
+                paddingLeft: 20,
+                marginBottom: 10,
+                flexDirection: "column",
               }}
             >
-              <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={PromoItemList}
-                renderItem={({ item }) => (
-                  <PromoItem
-                    imgUrl={item.imgUrl}
-                    width={326}
-                    borderRadius={20}
-                  />
-                )}
-                style={{ width: "100%" }}
-                ListEmptyComponent={() => <ArticleEmpty />}
-                snapToStart
-                decelerationRate={"normal"}
-                snapToInterval={336}
-                contentContainerStyle={{ gap: 10 }}
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Image source={require("@/assets/images/map1.png")} />
+                <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                  Rute
+                </Typography>
+              </View>
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="textsecondary"
+              >
+                Nikmati Rute Perjalanan Kami dari Jakarta ke Bandar Lampung dan
+                Palembang.
+              </Typography>
+            </View>
+            <View style={styles.tabContainer}>
+              <Tab
+                tabs={[
+                  ...branchList.map((b) => {
+                    return {
+                      key: b.title,
+                      label: b.title,
+                    };
+                  }),
+                ]}
+                activeTab={activeFilter}
+                onPress={(key) => setActiveFilter(key as string)}
+                variant="button"
               />
             </View>
-          </ScrollView>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={
+                articleListQuery.isFetching
+                  ? articleListPlaceholderData
+                  : articleListQuery.data?.data || []
+              }
+              renderItem={({ item, index }) =>
+                articleListQuery.isFetching ? (
+                  <ArticleItemPlaceholder />
+                ) : (
+                  <RuteItem
+                    badgePromo
+                    width={Dimensions.get("window").width / 2.3 + index}
+                    imgSource={{ uri: item.image_url }}
+                    title={item.judul}
+                    subtitle={item.konten}
+                    price={formatCurrency(item.harga)}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/article/[id]",
+                        params: {
+                          id: item.id,
+                        },
+                      })
+                    }
+                  />
+                )
+              }
+              style={{ width: "100%" }}
+              ListEmptyComponent={() => <ArticleEmpty />}
+              contentContainerStyle={styles.listArticleContainer}
+              snapToStart
+              decelerationRate={"normal"}
+              snapToInterval={Dimensions.get("window").width / 2.3 + 19}
+            />
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <View
+              style={{
+                paddingLeft: 20,
+                marginBottom: 10,
+                flexDirection: "column",
+              }}
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                  Jelajahi Wisata Bersama Kami
+                </Typography>
+                <Image source={require("@/assets/images/emoticon_star.png")} />
+              </View>
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="textsecondary"
+              >
+                Nikmati Perjalanan dengan Kami ke berabagai wisata pilihan anda.
+              </Typography>
+            </View>
+            <View style={styles.tabContainer}>
+              <Tab
+                tabs={[
+                  ...branchList.map((b) => {
+                    return {
+                      key: b.title,
+                      label: b.title,
+                    };
+                  }),
+                ]}
+                activeTab={activeFilter}
+                onPress={(key) => setActiveFilter(key as string)}
+                variant="button"
+              />
+            </View>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={
+                articleListQuery.isFetching
+                  ? articleListPlaceholderData
+                  : articleListQuery.data?.data || []
+              }
+              renderItem={({ item, index }) =>
+                articleListQuery.isFetching ? (
+                  <ArticleItemPlaceholder />
+                ) : (
+                  <ArticleItem
+                    width={Dimensions.get("window").width / 2.3 + index}
+                    badgeLocation="Location"
+                    imgSource={{ uri: item.image_url }}
+                    title={item.judul}
+                    subtitle={item.konten}
+                    price={formatCurrency(item.harga)}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/article/[id]",
+                        params: {
+                          id: item.id,
+                        },
+                      })
+                    }
+                  />
+                )
+              }
+              style={{ width: "100%" }}
+              ListEmptyComponent={() => <ArticleEmpty />}
+              contentContainerStyle={styles.listArticleContainer}
+              snapToStart
+              decelerationRate={"normal"}
+              snapToInterval={Dimensions.get("window").width / 2.3 + 19}
+            />
+          </View>
+          <View style={{ marginTop: 10, paddingLeft: 20 }}>
+            <View
+              style={{
+                marginBottom: 10,
+                flexDirection: "column",
+              }}
+            >
+              <View style={{ flexDirection: "row", gap: 10, paddingRight: 20 }}>
+                <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                  Temukan Penginapan Ideal Bersama Kami!{" "}
+                  <Image source={require("@/assets/images/bedroom.png")} />
+                </Typography>
+              </View>
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="textsecondary"
+              >
+                Nikmati Pengalaman Menginap yang Tak Terlupakan di Berbagai
+                Lokasi Pilihan.
+              </Typography>
+            </View>
+            <HotelItem
+              width={Dimensions.get("window").width - 40}
+              imgSource={require("@/assets/images/tmp_img.png")}
+              location="Bogor, Jawa Barat"
+              rating={4.5}
+              star={5}
+              title="Podomoro Golf View "
+            />
+          </View>
+          <View
+            style={{
+              marginBottom: insets.bottom + 10,
+              marginTop: 20,
+              marginHorizontal: 20,
+            }}
+          >
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={PromoItemList}
+              renderItem={({ item }) => (
+                <PromoItem imgUrl={item.imgUrl} width={326} borderRadius={20} />
+              )}
+              style={{ width: "100%" }}
+              ListEmptyComponent={() => <ArticleEmpty />}
+              snapToStart
+              decelerationRate={"normal"}
+              snapToInterval={336}
+              contentContainerStyle={{ gap: 10 }}
+            />
+          </View>
         </View>
       </ScrollView>
     </>
@@ -376,7 +395,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 20,
     paddingBottom: 0,
-    marginBottom: 43,
+    // marginBottom: 43,
   },
   contentGreetingWrapper: {
     paddingTop: 25,

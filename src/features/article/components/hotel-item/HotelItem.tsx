@@ -12,22 +12,24 @@ import { Typography, View } from "@/components";
 import { IconStar } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 
-export type ArticleItemProps = {
+export type HotelItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
-  subtitle: string;
-  price: string;
-  badgeLocation?: string;
+  location: string;
+  star: number;
+  rating: number;
+  badgePromoTipe?: string;
   width?: number | "auto" | any;
   height?: number | "auto" | any;
 } & PressableProps;
-export function ArticleItem(props: ArticleItemProps) {
+export function HotelItem(props: HotelItemProps) {
   const {
     title,
     imgSource,
-    subtitle,
-    price,
-    badgeLocation,
+    location,
+    star,
+    rating,
+    badgePromoTipe,
     width = 155,
     height = 220,
     ...rest
@@ -36,7 +38,7 @@ export function ArticleItem(props: ArticleItemProps) {
   const { Colors } = useAppTheme();
 
   return (
-    <Pressable {...rest}>
+    <Pressable {...rest} style={{}}>
       {({ pressed }) => (
         <View
           style={[
@@ -71,7 +73,7 @@ export function ArticleItem(props: ArticleItemProps) {
               }}
             />
           )}
-          {badgeLocation && (
+          {badgePromoTipe && (
             <View
               style={{
                 width: "100%",
@@ -92,7 +94,7 @@ export function ArticleItem(props: ArticleItemProps) {
                   borderBottomRightRadius: 20,
                   textAlign: "center",
                   textAlignVertical: "center",
-                  backgroundColor: Colors.badgeMain,
+                  backgroundColor: Colors.badgeWaring,
                 }}
               >
                 Hot Promo
@@ -103,34 +105,36 @@ export function ArticleItem(props: ArticleItemProps) {
             source={imgSource}
             style={[style.image, { backgroundColor: Colors.bgsecondary }]}
           />
-
           <View
-            style={[
-              style.contentWrapper,
-              {
-                paddingHorizontal: 12,
-                paddingTop: 10,
-                justifyContent: "flex-start",
-              },
-            ]}
+            style={{
+              //   backgroundColor: "blue",
+              height: "100%",
+              flexDirection: "row",
+              padding: 20,
+              alignContent: "center",
+              justifyContent: "space-between",
+            }}
           >
-            <Typography
-              fontFamily="OpenSans-Regular"
-              fontSize={14}
-              numberOfLines={1}
-            >
-              {title}
-            </Typography>
-            <View style={{ flexDirection: "column" }}>
+            <View style={{}}>
               <Typography
                 fontFamily="OpenSans-Regular"
-                fontSize={12}
-                color="textsecondary"
+                fontSize={14}
                 numberOfLines={1}
               >
-                {/* {subtitle} */}
-                Snorkeling & Explore
+                {title}
               </Typography>
+              <View>
+                <Typography
+                  fontFamily="OpenSans-Regular"
+                  fontSize={12}
+                  color="textsecondary"
+                  numberOfLines={1}
+                >
+                  {location}
+                </Typography>
+              </View>
+            </View>
+            <View style={{}}>
               <View
                 style={{
                   flexDirection: "row",
@@ -143,15 +147,17 @@ export function ArticleItem(props: ArticleItemProps) {
                 <IconStar height={14} width={14} color="yellow" />
                 <IconStar height={14} width={14} color="yellow" />
               </View>
-              <Typography
-                fontFamily="OpenSans-Regular"
-                fontSize={12}
-                numberOfLines={1}
-                color="main"
-                style={{ marginTop: 5, textDecorationLine: "underline" }}
-              >
-                Lihat Selengkapnya
-              </Typography>
+              <View>
+                <Typography
+                  fontFamily="OpenSans-Regular"
+                  fontSize={12}
+                  color="textsecondary"
+                  numberOfLines={1}
+                  style={{ textAlign: "right" }}
+                >
+                  ({rating})
+                </Typography>
+              </View>
             </View>
           </View>
         </View>
@@ -202,6 +208,7 @@ const style = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 12,
     overflow: "hidden",
+    flexDirection: "column",
   },
   image: {
     width: "100%",
@@ -209,9 +216,9 @@ const style = StyleSheet.create({
     resizeMode: "cover",
   },
   contentWrapper: {
-    flex: 1,
+    width: "100%",
     padding: 12,
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   placeholder: {},
 });

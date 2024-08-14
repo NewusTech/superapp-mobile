@@ -11,15 +11,26 @@ import { GetArticleResponseSuccess } from "@/apis/internal.api.type";
 import { Typography, View } from "@/components";
 import { useAppTheme } from "@/context/theme-context";
 
-export type ArticleItemProps = {
+export type RuteItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
   subtitle: string;
   price: string;
   badgePromo?: boolean;
+  width?: number | "auto" | any;
+  height?: number | "auto" | any;
 } & PressableProps;
-export function RuteItem(props: ArticleItemProps) {
-  const { title, imgSource, subtitle, price, badgePromo, ...rest } = props;
+export function RuteItem(props: RuteItemProps) {
+  const {
+    title,
+    imgSource,
+    subtitle,
+    price,
+    badgePromo,
+    width = 155,
+    height = 220,
+    ...rest
+  } = props;
 
   const { Colors } = useAppTheme();
 
@@ -30,6 +41,8 @@ export function RuteItem(props: ArticleItemProps) {
           style={[
             style.container,
             {
+              height,
+              width,
               borderColor: Colors.outlineborder,
               backgroundColor: Colors.paper,
               shadowColor: "#000",
@@ -160,8 +173,6 @@ function Placeholder({ height = 10, width = "50%" }: ViewStyle) {
 
 const style = StyleSheet.create({
   container: {
-    width: 155,
-    height: 200,
     borderWidth: 0.5,
     borderRadius: 12,
     overflow: "hidden",
