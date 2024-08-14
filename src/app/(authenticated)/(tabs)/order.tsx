@@ -254,6 +254,7 @@ const style = StyleSheet.create({
   listContentContainer: {
     flexGrow: 1,
     gap: 16,
+    paddingBottom: 20,
   },
   emptyContainer: {
     height: 400,

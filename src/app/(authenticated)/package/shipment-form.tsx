@@ -136,15 +136,28 @@ export default function PackageShipmentFormScreen() {
           </TouchableWithoutFeedback>
         }
       >
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={PromoItemList}
-          renderItem={({ item }) => <PromoItem imgUrl={item.imgUrl} />}
-          style={{ width: "100%" }}
-          ListEmptyComponent={() => <ArticleEmpty />}
-          contentContainerStyle={styles.listArticleContainer}
-        />
+        <View
+          style={{
+            marginBottom: insets.bottom + 10,
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}
+        >
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={PromoItemList}
+            renderItem={({ item }) => (
+              <PromoItem imgUrl={item.imgUrl} width={326} borderRadius={20} />
+            )}
+            style={{ width: "100%" }}
+            ListEmptyComponent={() => <ArticleEmpty />}
+            snapToStart
+            decelerationRate={"normal"}
+            snapToInterval={336}
+            contentContainerStyle={{ gap: 10 }}
+          />
+        </View>
       </SectionWrapper>
     </View>
   );

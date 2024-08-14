@@ -16,15 +16,15 @@ export type ArticleItemProps = {
   title: string;
   subtitle: string;
   price: string;
-  badgeLocation?: string;
+  badgePromo?: boolean;
 } & PressableProps;
-export function ArticleItem(props: ArticleItemProps) {
-  const { title, imgSource, subtitle, price, badgeLocation, ...rest } = props;
+export function RuteItem(props: ArticleItemProps) {
+  const { title, imgSource, subtitle, price, badgePromo, ...rest } = props;
 
   const { Colors } = useAppTheme();
 
   return (
-    <Pressable {...rest}>
+    <Pressable {...rest} style={{}}>
       {({ pressed }) => (
         <View
           style={[
@@ -57,7 +57,7 @@ export function ArticleItem(props: ArticleItemProps) {
               }}
             />
           )}
-          {badgeLocation && (
+          {badgePromo && (
             <View
               style={{
                 width: "100%",
@@ -78,7 +78,7 @@ export function ArticleItem(props: ArticleItemProps) {
                   borderBottomRightRadius: 20,
                   textAlign: "center",
                   textAlignVertical: "center",
-                  backgroundColor: Colors.badgeMain,
+                  backgroundColor: Colors.badgeWaring,
                 }}
               >
                 Hot Promo
@@ -89,7 +89,6 @@ export function ArticleItem(props: ArticleItemProps) {
             source={imgSource}
             style={[style.image, { backgroundColor: Colors.bgsecondary }]}
           />
-
           <View style={style.contentWrapper}>
             <Typography
               fontFamily="OpenSans-Regular"
@@ -108,12 +107,12 @@ export function ArticleItem(props: ArticleItemProps) {
                 {subtitle.replace(/<[^>]*>?/gm, "")}
               </Typography>
               {/* <Typography
-                fontFamily="OpenSans-Semibold"
-                fontSize={16}
-                numberOfLines={1}
-              >
-                {price}
-              </Typography> */}
+                  fontFamily="OpenSans-Semibold"
+                  fontSize={16}
+                  numberOfLines={1}
+                >
+                  {price}
+                </Typography> */}
             </View>
           </View>
         </View>

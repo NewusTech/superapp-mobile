@@ -36,6 +36,8 @@ export const AppColor = {
     dangerlight: "#fbe6eb",
     success: "#4ac582",
     yellow: "#fac700",
+    badgeWaring: "#E7B52C",
+    badgeMain: "#3C70F3",
   },
   dark: {
     // app theme color
@@ -54,6 +56,8 @@ export const AppColor = {
     dangerlight: "#fbe6eb",
     success: "#4ac582",
     yellow: "#fac700",
+    badgeWaring: "#E7B52C",
+    badgeMain: "#3C70F3",
   },
 };
 

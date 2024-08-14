@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import {
+  Pressable,
   StyleSheet,
   TouchableNativeFeedbackProps,
-  TouchableWithoutFeedback,
 } from "react-native";
 
 import { Separator, Typography, View } from "@/components";
@@ -36,74 +36,114 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
   const { Colors } = useAppTheme();
 
   return (
-    <TouchableWithoutFeedback {...rest}>
-      <View style={[style.container, { borderColor: Colors.outlineborder }]}>
-        {!!customHeader && (
-          <>
-            {customHeader}
-            <View>
-              <Separator
-                thickness={2}
-                style={{
-                  backgroundColor: "transparent",
-                  borderTopWidth: 1,
-                  borderStyle: "dashed",
-                  borderColor: AppColor.light.textsecondary,
-                }}
-              />
-            </View>
-          </>
-        )}
-
-        <View style={style.contentContainer}>
-          <View style={style.contentLeftWrapper}>
-            <Typography color="textsecondary" fontSize={14} numberOfLines={1}>
-              {originCity}
-            </Typography>
-            <Typography color="textsecondary" fontSize={12}>
-              {formatDate(originDepartureDate, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </Typography>
-          </View>
-
-          <View style={style.contentSeparatorIndicator}>
-            <Separator style={{ position: "absolute" }} />
+    <Pressable {...rest}>
+      {({ pressed }) => (
+        <>
+          {pressed && (
             <View
-              backgroundColor="paper"
-              style={[style.separatorPoint, { borderColor: Colors.main }]}
+              style={[
+                style.container,
+                style.mask,
+                {
+                  borderWidth: 0,
+                  backgroundColor: Colors.outlineborder,
+                },
+              ]}
             />
-            {icon}
-            <View backgroundColor="main" style={style.separatorPoint} />
-          </View>
+          )}
+          <View
+            style={[
+              style.container,
+              {
+                backgroundColor: Colors.paper,
+                borderColor: Colors.outlineborder,
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 1,
+                },
+                shadowOpacity: 0.18,
+                shadowRadius: 1.0,
+                elevation: 1,
+              },
+            ]}
+          >
+            {!!customHeader && (
+              <>
+                {customHeader}
+                <View>
+                  <Separator
+                    thickness={2}
+                    style={{
+                      backgroundColor: "transparent",
+                      borderTopWidth: 1,
+                      borderStyle: "dashed",
+                      borderColor: AppColor.light.textsecondary,
+                    }}
+                  />
+                </View>
+              </>
+            )}
 
-          <View style={style.contentRightWrapper}>
-            <Typography color="textsecondary" fontSize={14} numberOfLines={1}>
-              {destinationCity}
-            </Typography>
-            <Typography color="textsecondary" fontSize={12}>
-              {formatDate(destinationDepartureDate, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </Typography>
-          </View>
-        </View>
+            <View style={style.contentContainer}>
+              <View style={style.contentLeftWrapper}>
+                <Typography
+                  color="textsecondary"
+                  fontSize={14}
+                  numberOfLines={1}
+                >
+                  {originCity}
+                </Typography>
+                <Typography color="textsecondary" fontSize={12}>
+                  {formatDate(originDepartureDate, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </Typography>
+              </View>
 
-        {!!departureDate && (
-          <View style={style.center}>
-            <Typography fontFamily="OpenSans-Regular" fontSize={12}>
-              {formatTime(departureDate)}
-            </Typography>
-          </View>
-        )}
+              <View style={style.contentSeparatorIndicator}>
+                <Separator style={{ position: "absolute" }} />
+                <View
+                  backgroundColor="paper"
+                  style={[style.separatorPoint, { borderColor: Colors.main }]}
+                />
+                {icon}
+                <View backgroundColor="main" style={style.separatorPoint} />
+              </View>
 
-        {customFooter}
-      </View>
-    </TouchableWithoutFeedback>
+              <View style={style.contentRightWrapper}>
+                <Typography
+                  color="textsecondary"
+                  fontSize={14}
+                  numberOfLines={1}
+                >
+                  {destinationCity}
+                </Typography>
+                <Typography color="textsecondary" fontSize={12}>
+                  {formatDate(destinationDepartureDate, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </Typography>
+              </View>
+            </View>
+
+            {!!departureDate && (
+              <View style={style.center}>
+                <Typography fontFamily="OpenSans-Regular" fontSize={12}>
+                  {formatTime(departureDate)}
+                </Typography>
+              </View>
+            )}
+
+            {customFooter}
+          </View>
+        </>
+      )}
+    </Pressable>
   );
 }
 
@@ -111,9 +151,8 @@ const style = StyleSheet.create({
   container: {
     borderWidth: 1,
     padding: 12,
-    gap: 10,
-    shadowOpacity: 1,
     borderRadius: 20,
+    gap: 10,
   },
   row: {
     flexDirection: "row",
@@ -153,5 +192,14 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     gap: 24,
+  },
+  mask: {
+    width: "100%",
+    height: "100%",
+    zIndex: 2,
+    opacity: 0.25,
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
 });

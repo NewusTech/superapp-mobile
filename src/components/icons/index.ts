@@ -15,6 +15,8 @@ export * from "./IconClock";
 export * from "./IconCross";
 export * from "./IconDoorThin";
 export * from "./IconDownload";
+export * from "./IconGasPump";
+export * from "./IconGitBranch";
 export * from "./IconHome";
 export * from "./IconIcArrowRight";
 export * from "./IconPackage";

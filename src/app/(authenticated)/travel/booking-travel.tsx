@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  Dimensions,
   FlatList,
   ImageBackground,
   ImageProps,
@@ -44,7 +45,7 @@ export default function BookingTravelScreen() {
       contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.paper }}
     >
       <View
-        backgroundColor="dangerbase"
+        backgroundColor="paper"
         style={[style.headerBack, { height: insets.top + 130 }]}
       >
         <ImageBackground
@@ -93,15 +94,29 @@ export default function BookingTravelScreen() {
           </TouchableWithoutFeedback>
         }
       >
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={PromoItemList}
-          renderItem={({ item }) => <PromoItem imgUrl={item.imgUrl} />}
-          style={{ width: "100%" }}
-          ListEmptyComponent={() => <ArticleEmpty />}
-          contentContainerStyle={style.listArticleContainer}
-        />
+        <View
+          style={{
+            marginBottom: insets.bottom + 10,
+            marginTop: 20,
+            marginHorizontal: 20,
+            borderRadius: 20,
+            overflow: "hidden",
+          }}
+        >
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={PromoItemList}
+            renderItem={({ item }) => <PromoItem imgUrl={item.imgUrl} />}
+            style={{
+              width: "100%",
+            }}
+            ListEmptyComponent={() => <ArticleEmpty />}
+            snapToAlignment="start"
+            decelerationRate={"normal"}
+            snapToInterval={Dimensions.get("window").width}
+          />
+        </View>
       </SectionWrapper>
     </ScrollView>
   );

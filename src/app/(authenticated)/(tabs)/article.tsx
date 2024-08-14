@@ -42,7 +42,7 @@ export default function ArticleTabScreen() {
         />
       }
     >
-      <Appbar title="Artikel" />
+      <Appbar title="Explor" />
 
       <View style={styles.contentContainer}>
         <SectionWrapper title="Rekomendasi untuk anda">
@@ -80,7 +80,7 @@ export default function ArticleTabScreen() {
           />
         </SectionWrapper>
 
-        <SectionWrapper title="Artikel">
+        <SectionWrapper title="Explore Pariwisata">
           <FlatList
             numColumns={2}
             showsHorizontalScrollIndicator={false}
