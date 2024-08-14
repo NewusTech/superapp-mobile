@@ -9,6 +9,7 @@ import {
 
 import { GetArticleResponseSuccess } from "@/apis/internal.api.type";
 import { Typography, View } from "@/components";
+import { IconStar } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 
 export type ArticleItemProps = {
@@ -90,7 +91,12 @@ export function ArticleItem(props: ArticleItemProps) {
             style={[style.image, { backgroundColor: Colors.bgsecondary }]}
           />
 
-          <View style={style.contentWrapper}>
+          <View
+            style={[
+              style.contentWrapper,
+              { paddingHorizontal: 12, justifyContent: "flex-start" },
+            ]}
+          >
             <Typography
               fontFamily="OpenSans-Regular"
               fontSize={14}
@@ -105,7 +111,8 @@ export function ArticleItem(props: ArticleItemProps) {
                 color="textsecondary"
                 numberOfLines={1}
               >
-                {subtitle.replace(/<[^>]*>?/gm, "")}
+                {/* {subtitle} */}
+                Snorkeling & Explore
               </Typography>
               {/* <Typography
                 fontFamily="OpenSans-Semibold"
@@ -113,6 +120,20 @@ export function ArticleItem(props: ArticleItemProps) {
                 numberOfLines={1}
               >
                 {price}
+              </Typography> */}
+              <View style={{ flexDirection: "row", gap: 2 }}>
+                <IconStar height={14} width={14} color="yellow" />
+                <IconStar height={14} width={14} color="yellow" />
+                <IconStar height={14} width={14} color="yellow" />
+                <IconStar height={14} width={14} color="yellow" />
+              </View>
+              {/* <Typography
+                fontFamily="OpenSans-Regular"
+                fontSize={16}
+                numberOfLines={1}
+                color="main"
+              >
+                Lihat Selengkapnya
               </Typography> */}
             </View>
           </View>

@@ -157,7 +157,7 @@ export default function SelectTravelComponent({
         render={({ field }) => (
           <SelectInputV2
             placeholder="1 Sheat"
-            suffix="Sheat"
+            suffix="Kursi"
             value={String(field.value)}
             data={chairList}
             onSelect={(selectedItem) => field.onChange(selectedItem.title)}

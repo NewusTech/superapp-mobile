@@ -15,6 +15,7 @@ import { View } from "../view/View";
 export type DateInputV2Props = {
   value: Date | string;
   onChange: (date: Date | undefined) => void;
+  label?: string;
 } & Pick<
   TextInputV2Props,
   "placeholder" | "trailingIcon" | "leadingIcon" | "withBorder"
@@ -28,6 +29,7 @@ export function DateInputV2(props: DateInputV2Props) {
     trailingIcon,
     leadingIcon,
     withBorder = false,
+    label,
   } = props;
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -36,6 +38,11 @@ export function DateInputV2(props: DateInputV2Props) {
 
   return (
     <>
+      {label && (
+        <Typography fontFamily="Poppins-Medium" fontSize={14}>
+          {label}
+        </Typography>
+      )}
       <View
         style={[
           styles.container,
@@ -46,14 +53,16 @@ export function DateInputV2(props: DateInputV2Props) {
           },
         ]}
       >
-        <Typography
-          fontFamily="OpenSans-Regular"
-          fontSize={12}
-          color={value ? "textprimary" : "textsecondary"}
-          style={styles.textPlaceholder}
-        >
-          {placeholder}
-        </Typography>
+        {placeholder && (
+          <Typography
+            fontFamily="OpenSans-Regular"
+            fontSize={12}
+            color={value ? "textprimary" : "textsecondary"}
+            style={styles.textPlaceholder}
+          >
+            {placeholder}
+          </Typography>
+        )}
         <TextInputV2
           trailingIcon={trailingIcon}
           leadingIcon={leadingIcon}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import * as FileSystem from "expo-file-system";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -17,11 +18,13 @@ import {
   IconPinSharp,
   IconSeat,
 } from "@/components/icons";
+import { API_URL } from "@/constants/Constant";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
 import { TravelTicketItem } from "@/features/travel/components";
 import { formatCurrency } from "@/utils/common";
 import { formatLocalDate, formatTimeString } from "@/utils/datetime";
+import downloadFile from "@/utils/downloadFile";
 
 export default function DetailOrder() {
   const router = useRouter();
@@ -63,6 +66,52 @@ export default function DetailOrder() {
       return false;
     }
     return new Date(expirationTime).getTime() - new Date().getTime() > 0;
+  };
+
+  const handleToDownloadTiket = async () => {
+    try {
+      if (!orderDetail)
+        return Snackbar.show({
+          message: "Gagal Mendownload File",
+          variant: "danger",
+        });
+      await downloadFile(
+        orderDetail?.pembayaran.link_tiket,
+        `Tiket-${orderDetail?.pembayaran.kode_pembayaran}`
+      );
+      Snackbar.show({
+        message: "Berhasil Mendownload File",
+      });
+    } catch (error) {
+      console.error(error);
+      Snackbar.show({
+        message: "Gagal Mendownload File",
+        variant: "danger",
+      });
+    }
+  };
+
+  const handleToDownloadInvoice = async () => {
+    try {
+      if (!orderDetail)
+        return Snackbar.show({
+          message: "Gagal Mendownload File",
+          variant: "danger",
+        });
+      await downloadFile(
+        orderDetail?.pembayaran.link_invoice,
+        `Invoice-${orderDetail?.pembayaran.kode_pembayaran}`
+      );
+      Snackbar.show({
+        message: "Berhasil Mendownload File",
+      });
+    } catch (error) {
+      console.error(error);
+      Snackbar.show({
+        message: "Gagal Mendownload File",
+        variant: "danger",
+      });
+    }
   };
 
   useEffect(() => {
@@ -233,34 +282,41 @@ export default function DetailOrder() {
                 )}
               </Typography>
             </View>
-            {/* <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingTop: 10,
-                gap: 5,
-              }}
-            >
-              <Button
-                style={{
-                  width: 150,
-                  alignItems: "center",
-                  borderColor: Colors.textsecondary,
-                }}
-                variant="secondary"
-              >
-                <IconDownload size={24} color="main" />
-                <Typography fontFamily="Poppins-Regular" color="main">
-                  e-tiket
-                </Typography>
-              </Button>
-              <Button style={{ width: 150 }}>
-                <IconDownload size={24} color="paper" />
-                <Typography fontFamily="Poppins-Regular" color="paper">
-                  Invoice
-                </Typography>
-              </Button>
-            </View> */}
+            {!orderDetailQuery.isFetching &&
+              orderDetail.pembayaran.status === "Sukses" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: 10,
+                    gap: 5,
+                  }}
+                >
+                  <Button
+                    style={{
+                      width: 150,
+                      alignItems: "center",
+                      borderColor: Colors.textsecondary,
+                    }}
+                    variant="secondary"
+                    onPress={handleToDownloadTiket}
+                  >
+                    <IconDownload size={24} color="main" />
+                    <Typography fontFamily="Poppins-Regular" color="main">
+                      e-tiket
+                    </Typography>
+                  </Button>
+                  <Button
+                    style={{ width: 150 }}
+                    onPress={handleToDownloadInvoice}
+                  >
+                    <IconDownload size={24} color="paper" />
+                    <Typography fontFamily="Poppins-Regular" color="paper">
+                      Invoice
+                    </Typography>
+                  </Button>
+                </View>
+              )}
           </View>
           {/* perjalanan */}
           <SectionWrapper title="Perjalanan">

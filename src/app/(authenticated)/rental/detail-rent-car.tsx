@@ -42,12 +42,22 @@ export default function DetailRentCar() {
       duration: 1,
       dateStart: new Date(),
       dateEnd: new Date(),
+      area: "Dalam Kota",
     },
   });
 
   const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: i + 1,
   }));
+
+  const areList = [
+    {
+      title: "Dalam Kota",
+    },
+    {
+      title: "Luar Dalam Kota",
+    },
+  ];
 
   const dumpData = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: "Dummy Data " + i,
@@ -97,7 +107,7 @@ export default function DetailRentCar() {
                 label="Area *"
                 placeholder="Pilih Area"
                 value={String(field.value)}
-                data={dumpData}
+                data={areList}
                 onSelect={(selectedItem) => field.onChange(selectedItem.title)}
                 trailingIcon={
                   <IconChevronDown width={21} height={21} color="main" />
@@ -127,9 +137,11 @@ export default function DetailRentCar() {
             render={({ field }) => (
               <DateInputV2
                 withBorder
-                placeholder={"Tanggal Mulai Sewa"}
+                label={"Tanggal Mulai Sewa"}
                 trailingIcon={
-                  <IconCalendar width={21} height={21} color="main" />
+                  <View style={{ marginLeft: "auto" }}>
+                    <IconCalendar width={21} height={21} color="main" />
+                  </View>
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
@@ -142,9 +154,11 @@ export default function DetailRentCar() {
             render={({ field }) => (
               <DateInputV2
                 withBorder
-                placeholder={"Tanggal Selesai Sewa"}
+                label={"Tanggal Selesai Sewa"}
                 trailingIcon={
-                  <IconCalendar width={21} height={21} color="main" />
+                  <View style={{ marginLeft: "auto" }}>
+                    <IconCalendar width={21} height={21} color="main" />
+                  </View>
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
@@ -169,7 +183,7 @@ export default function DetailRentCar() {
             )}
           />
           <View>
-            <Typography fontFamily="Poppins-Bold" fontSize={14}>
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
               Harga/ Hari
             </Typography>
             <Typography

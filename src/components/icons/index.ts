@@ -25,6 +25,7 @@ export * from "./IconPackageImport";
 export * from "./IconPinSharp";
 export * from "./IconPromo";
 export * from "./IconSeat";
+export * from "./IconStar";
 export * from "./IconSwap";
 export * from "./IconTruckDriver";
 export * from "./IconUser";

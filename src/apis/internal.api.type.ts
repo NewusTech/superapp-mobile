@@ -191,6 +191,8 @@ export type OrderDetailResponseSuccess = {
       created_at: string;
       expired_at: string;
       nominal: string;
+      link_tiket: string;
+      link_invoice: string;
     };
     penumpang: [
       {
