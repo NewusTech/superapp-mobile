@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Dimensions,
+  FlatList,
   Image,
   ImageBackground,
   Pressable,
@@ -14,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button, Tab, Typography, View } from "@/components";
 import { IconChevronLeft } from "@/components/icons";
+import RenderImg from "@/components/image/RenderImg";
 import { useAppTheme } from "@/context/theme-context";
 import {
   useTravelbookingPayload,
@@ -21,6 +23,8 @@ import {
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
 import { formatTime } from "@/utils/datetime";
+
+import { RentalImgDump } from "../rental/detail/[id]";
 
 export default function TravelDetailScreen() {
   const router = useRouter();
@@ -30,12 +34,12 @@ export default function TravelDetailScreen() {
   const [activeTab, setActiveTab] = useState("description");
 
   const [activePopupImg, setActivePopupImg] = useState(false);
-  const [activeImg, setActiveImg] = useState("");
+  const [activeImg, setActiveImg] = useState<any>();
 
   const travelSchedule = useTravelSchedule();
   const travelBookingPayload = useTravelbookingPayload();
 
-  const handleSelectedImg = (url: string) => {
+  const handleSelectedImg = (url: any) => {
     setActiveImg(url);
     setActivePopupImg(true);
   };
@@ -50,10 +54,10 @@ export default function TravelDetailScreen() {
         backgroundColor="paper"
         style={[style.container, { paddingTop: insets.top }]}
       >
-        {/* Image */}
         <View
           style={{
-            height: 350,
+            height: "auto",
+            gap: 5,
           }}
         >
           <View
@@ -79,72 +83,62 @@ export default function TravelDetailScreen() {
               <IconChevronLeft height={21} width={21} />
             </Pressable>
           </View>
-          <TouchableWithoutFeedback
-            onPress={() => handleSelectedImg(travelSchedule?.img_url || "")}
-          >
-            <Image
-              source={{
-                uri: travelSchedule?.img_url || "",
-              }}
-              style={[style.image, { marginBottom: 1 }]}
-            />
-          </TouchableWithoutFeedback>
-          <View
-            style={{
-              width: "auto",
-              height: "40%",
-              display: "flex",
-              flexDirection: "row",
-              gap: 1,
-            }}
-          >
-            <TouchableWithoutFeedback
-              onPress={() => handleSelectedImg(travelSchedule?.img_url || "")}
-            >
-              <Image
-                source={{
-                  uri: travelSchedule?.img_url || "",
-                }}
-                style={{ height: "100%", width: "33%" }}
+          <FlatList
+            scrollEnabled={false}
+            data={RentalImgDump.slice(0, 1)} // Only render the main image
+            renderItem={({ item }) => (
+              <RenderImg
+                imgUrl={item.imgUrl}
+                height={200}
+                width={"100%"}
+                onPressImg={() => handleSelectedImg(item.imgUrl)}
               />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => handleSelectedImg(travelSchedule?.img_url || "")}
-            >
-              <Image
-                source={{
-                  uri: travelSchedule?.img_url || "",
-                }}
-                style={{ height: "100%", width: "33%" }}
-              />
-            </TouchableWithoutFeedback>
-            <ImageBackground
-              source={{ uri: travelSchedule?.img_url || "" }}
-              style={{
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              <TouchableWithoutFeedback onPress={handleViewAllImage}>
-                <Typography
-                  fontFamily="Poppins-Medium"
-                  fontSize={14}
+            )}
+            style={style.mainImageContainer}
+          />
+          <FlatList
+            horizontal
+            scrollEnabled={false}
+            data={RentalImgDump.slice(0, 3)} // Only render the main image
+            renderItem={({ item, index }) =>
+              index === 2 ? (
+                <ImageBackground
+                  source={RentalImgDump.slice(0, -1)[0].imgUrl}
                   style={{
-                    backgroundColor: "rgba(255 255 255 / 0.8)",
-                    height: "100%",
-                    width: "33%",
-                    alignItems: "center",
-                    textAlignVertical: "center",
-                    textAlign: "center",
+                    height: 120,
+                    width: Dimensions.get("window").width / 3.07,
                   }}
                 >
-                  2+ Lainnya
-                </Typography>
-              </TouchableWithoutFeedback>
-            </ImageBackground>
-          </View>
+                  <TouchableWithoutFeedback onPress={handleViewAllImage}>
+                    <Typography
+                      fontFamily="Poppins-Medium"
+                      fontSize={14}
+                      style={{
+                        backgroundColor: "rgba(255 255 255 / 0.8)",
+                        height: "100%",
+                        width: "100%",
+                        alignItems: "center",
+                        textAlignVertical: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      2+ Lainnya
+                    </Typography>
+                  </TouchableWithoutFeedback>
+                </ImageBackground>
+              ) : (
+                <RenderImg
+                  height={120}
+                  width={Dimensions.get("window").width / 3.07}
+                  imgUrl={item.imgUrl}
+                  onPressImg={() => handleSelectedImg(item.imgUrl)}
+                />
+              )
+            }
+            contentContainerStyle={{ gap: 5 }}
+            style={style.detailImageContainer}
+          />
         </View>
-        {/* end Image */}
         <View style={{ flex: 1 }}>
           <View style={style.tabHeaderContainer}>
             <Tab
@@ -360,12 +354,7 @@ export default function TravelDetailScreen() {
                   borderRadius: 10,
                 }}
               >
-                <Image
-                  source={{
-                    uri: activeImg,
-                  }}
-                  style={{ height: "100%" }}
-                />
+                <Image source={activeImg} style={{ height: "100%" }} />
               </View>
             </BlurView>
           </TouchableWithoutFeedback>
@@ -419,5 +408,12 @@ const style = StyleSheet.create({
     flex: 1,
     shadowRadius: 1,
     overflow: "hidden",
+  },
+  detailImageContainer: {
+    width: "100%",
+    flexDirection: "row",
+  },
+  mainImageContainer: {
+    backgroundColor: "transparent",
   },
 });

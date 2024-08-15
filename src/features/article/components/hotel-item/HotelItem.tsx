@@ -18,7 +18,7 @@ export type HotelItemProps = {
   location: string;
   star: number;
   rating: number;
-  badgePromoTipe?: string;
+  badge?: string;
   width?: number | "auto" | any;
   height?: number | "auto" | any;
 } & PressableProps;
@@ -29,9 +29,9 @@ export function HotelItem(props: HotelItemProps) {
     location,
     star,
     rating,
-    badgePromoTipe,
+    badge,
     width = 155,
-    height = 220,
+    height = 200,
     ...rest
   } = props;
 
@@ -73,7 +73,7 @@ export function HotelItem(props: HotelItemProps) {
               }}
             />
           )}
-          {badgePromoTipe && (
+          {badge && (
             <View
               style={{
                 width: "100%",
@@ -90,14 +90,14 @@ export function HotelItem(props: HotelItemProps) {
                 color="paper"
                 style={{
                   height: 30,
-                  width: "50%",
+                  width: "30%",
                   borderBottomRightRadius: 20,
                   textAlign: "center",
                   textAlignVertical: "center",
-                  backgroundColor: Colors.badgeWaring,
+                  backgroundColor: Colors.secondary,
                 }}
               >
-                Hot Promo
+                {badge}
               </Typography>
             </View>
           )}
@@ -107,7 +107,6 @@ export function HotelItem(props: HotelItemProps) {
           />
           <View
             style={{
-              //   backgroundColor: "blue",
               height: "100%",
               flexDirection: "row",
               padding: 20,
@@ -117,7 +116,7 @@ export function HotelItem(props: HotelItemProps) {
           >
             <View style={{}}>
               <Typography
-                fontFamily="OpenSans-Regular"
+                fontFamily="Poppins-Bold"
                 fontSize={14}
                 numberOfLines={1}
               >
@@ -125,7 +124,7 @@ export function HotelItem(props: HotelItemProps) {
               </Typography>
               <View>
                 <Typography
-                  fontFamily="OpenSans-Regular"
+                  fontFamily="Poppins-Regular"
                   fontSize={12}
                   color="textsecondary"
                   numberOfLines={1}

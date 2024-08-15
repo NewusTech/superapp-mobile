@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Appbar,
   Button,
+  Checkbox,
   DateInputV2,
   SelectInputV2,
   TextInput,
@@ -25,6 +26,7 @@ export const sewaRentSchema = z.object({
   dateStart: z.date(),
   dateEnd: z.date(),
   alamat: z.string(),
+  allIn: z.boolean(),
 });
 export type SewaRent = z.infer<typeof sewaRentSchema>;
 
@@ -35,16 +37,18 @@ export default function DetailRentCar() {
 
   const { Colors } = useAppTheme();
 
-  const { control, formState, handleSubmit, setValue } = useForm<SewaRent>({
-    resolver: zodResolver(sewaRentSchema),
-    mode: "all",
-    defaultValues: {
-      duration: 1,
-      dateStart: new Date(),
-      dateEnd: new Date(),
-      area: "Dalam Kota",
-    },
-  });
+  const { control, formState, handleSubmit, setValue, watch } =
+    useForm<SewaRent>({
+      resolver: zodResolver(sewaRentSchema),
+      mode: "all",
+      defaultValues: {
+        duration: 1,
+        dateStart: new Date(),
+        dateEnd: new Date(),
+        area: "Dalam Kota",
+        allIn: false,
+      },
+    });
 
   const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: i + 1,
@@ -182,6 +186,21 @@ export default function DetailRentCar() {
               />
             )}
           />
+          <TouchableWithoutFeedback
+            onPress={() => setValue("allIn", !watch("allIn"))}
+          >
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <Checkbox selected={watch("allIn")} width={18} height={18} />
+              <Typography fontFamily="Poppins-Medium" fontSize={12}>
+                ALL IN{" "}
+                <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                  ( Biaya Tol,Kapal dan Solar)
+                </Typography>
+              </Typography>
+            </View>
+          </TouchableWithoutFeedback>
           <View>
             <Typography fontFamily="Poppins-Medium" fontSize={14}>
               Harga/ Hari
@@ -234,7 +253,9 @@ export default function DetailRentCar() {
           </Typography>
         </View>
         <View style={{ flex: 1 }}>
-          <Button>Proses ke Pembayaran</Button>
+          <Button onPress={() => router.push("/rental/payment")}>
+            Proses ke Pembayaran
+          </Button>
         </View>
       </View>
     </View>

@@ -45,6 +45,53 @@ import { useRoute } from "@react-navigation/native";
 
 import { PromoItemList } from "../travel/booking-travel";
 
+export const pariwisataListQueryData = [
+  {
+    slug: "pantai-rio-beach",
+    judul: "Pantai Rio Beach",
+    lokasi: "Kalianda",
+    sub_judul: "Snorkling & Explore",
+    rating: 5,
+    konten: "<p> lorem ipsum dolor sit amet. </p>",
+    image_url:
+      "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
+    id: 1,
+  },
+  {
+    slug: "tegal-mas-island",
+    judul: "Tegal Mas Island",
+    lokasi: "Pesawaran",
+    sub_judul: "Snorkling & Explore",
+    rating: 4,
+    konten: "<p> lorem ipsum dolor sit amet. </p>",
+    image_url:
+      "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
+    id: 2,
+  },
+  {
+    slug: "pantai-rio-beach",
+    judul: "Pantai Rio Beach",
+    lokasi: "Kalianda",
+    sub_judul: "Snorkling & Explore",
+    rating: 5,
+    konten: "<p> lorem ipsum dolor sit amet. </p>",
+    image_url:
+      "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
+    id: 3,
+  },
+  {
+    slug: "tegal-mas-island",
+    judul: "Tegal Mas Island",
+    lokasi: "Pesawaran",
+    sub_judul: "Snorkling & Explore",
+    rating: 4,
+    konten: "<p> lorem ipsum dolor sit amet. </p>",
+    image_url:
+      "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
+    id: 4,
+  },
+];
+
 export default function HomeTabScreen() {
   const router = useRouter();
   const route = useRoute();
@@ -57,6 +104,23 @@ export default function HomeTabScreen() {
 
   const articleListQuery = useGetArticleList();
 
+  const ruteListQueryData = [
+    {
+      judul: "Lampung - Jakarta",
+      harga: 250000,
+      image_url:
+        "https://pict.sindonews.net/dyn/850/pena/news/2021/02/26/173/348284/beragam-nama-jakarta-sejak-tahun-397-sampai-sekarang-txm.jpg",
+      id: 1,
+    },
+    {
+      judul: "Lampung - Palembang",
+      harga: 350000,
+      image_url:
+        "https://kontainerindonesia.co.id/blog/wp-content/uploads/2023/02/Palembang-Panduan-Makanan-Budaya-dan-Sejarah-Kota-scaled.jpg",
+      id: 2,
+    },
+  ];
+
   const travelBranchQuery = useGetTravelBranch();
 
   const [activeFilter, setActiveFilter] = useState("Lampung");
@@ -68,12 +132,12 @@ export default function HomeTabScreen() {
     }));
   }, [travelBranchQuery.data]);
 
-  const handleRefresh = useCallback(() => {
-    articleListQuery.refetch();
-  }, [articleListQuery]);
+  // const handleRefresh = useCallback(() => {
+  //   articleListQuery.refetch();
+  // }, [articleListQuery]);
 
   useEffect(() => {
-    handleRefresh();
+    // handleRefresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,13 +145,13 @@ export default function HomeTabScreen() {
     <>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.paper }}
-        refreshControl={
-          <RefreshControl
-            refreshing={articleListQuery.isRefetching}
-            onRefresh={handleRefresh}
-            progressViewOffset={20}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={articleListQuery.isRefetching}
+        //     onRefresh={handleRefresh}
+        //     progressViewOffset={20}
+        //   />
+        // }
       >
         <View
           style={[styles.headerContainer, { height: haightHeaderContent }]}
@@ -116,7 +180,7 @@ export default function HomeTabScreen() {
                 borderRadius: 20,
                 overflow: "hidden",
                 paddingHorizontal: 20,
-                // marginBottom: 43,
+                marginHorizontal: "auto",
               }}
             >
               <View style={styles.contentGreetingWrapper}>
@@ -208,9 +272,10 @@ export default function HomeTabScreen() {
               horizontal
               showsHorizontalScrollIndicator={false}
               data={
-                articleListQuery.isFetching
-                  ? articleListPlaceholderData
-                  : articleListQuery.data?.data || []
+                // articleListQuery.isFetching
+                //   ? articleListPlaceholderData
+                //   : articleListQuery.data?.data || []
+                ruteListQueryData
               }
               renderItem={({ item, index }) =>
                 articleListQuery.isFetching ? (
@@ -221,16 +286,15 @@ export default function HomeTabScreen() {
                     width={Dimensions.get("window").width / 2.3 + index}
                     imgSource={{ uri: item.image_url }}
                     title={item.judul}
-                    subtitle={item.konten}
                     price={formatCurrency(item.harga)}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/article/[id]",
-                        params: {
-                          id: item.id,
-                        },
-                      })
-                    }
+                    // onPress={() =>
+                    //   router.push({
+                    //     pathname: "/article/[id]",
+                    //     params: {
+                    //       id: item.id,
+                    //     },
+                    //   })
+                    // }
                   />
                 )
               }
@@ -283,9 +347,10 @@ export default function HomeTabScreen() {
               horizontal
               showsHorizontalScrollIndicator={false}
               data={
-                articleListQuery.isFetching
-                  ? articleListPlaceholderData
-                  : articleListQuery.data?.data || []
+                // articleListQuery.isFetching
+                //   ? articleListPlaceholderData
+                //   : articleListQuery.data?.data || []
+                pariwisataListQueryData
               }
               renderItem={({ item, index }) =>
                 articleListQuery.isFetching ? (
@@ -293,19 +358,19 @@ export default function HomeTabScreen() {
                 ) : (
                   <ArticleItem
                     width={Dimensions.get("window").width / 2.3 + index}
-                    badgeLocation="Location"
+                    badgeLocation={item.lokasi}
                     imgSource={{ uri: item.image_url }}
                     title={item.judul}
                     subtitle={item.konten}
-                    price={formatCurrency(item.harga)}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/article/[id]",
-                        params: {
-                          id: item.id,
-                        },
-                      })
-                    }
+                    rating={item.rating}
+                    // onPress={() =>
+                    //   router.push({
+                    //     pathname: "/article/[id]",
+                    //     params: {
+                    //       id: item.id,
+                    //     },
+                    //   })
+                    // }
                   />
                 )
               }
@@ -340,6 +405,7 @@ export default function HomeTabScreen() {
               </Typography>
             </View>
             <HotelItem
+              badge="Apartemen"
               width={Dimensions.get("window").width - 40}
               imgSource={require("@/assets/images/tmp_img.png")}
               location="Bogor, Jawa Barat"
@@ -348,13 +414,17 @@ export default function HomeTabScreen() {
               title="Podomoro Golf View "
             />
           </View>
-          <View
+          {/* <View
             style={{
               marginBottom: insets.bottom + 10,
               marginTop: 20,
               marginHorizontal: 20,
+              gap: 10,
             }}
           >
+            <Typography fontFamily="Poppins-Bold" fontSize={16}>
+              Berbagai promo menarik dari kami..
+            </Typography>
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -369,7 +439,7 @@ export default function HomeTabScreen() {
               snapToInterval={336}
               contentContainerStyle={{ gap: 10 }}
             />
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </>

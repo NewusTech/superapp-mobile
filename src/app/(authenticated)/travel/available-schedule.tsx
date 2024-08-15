@@ -205,10 +205,10 @@ export default function TravelOptionScreen() {
 
           return (
             <TravelTicketItem
-              departureDate={new Date(item.departureDate)}
-              destinationCity={item.originCity}
+              departureTime={item.departureTime}
+              destinationCity={item.destinationCity}
               destinationDepartureDate={new Date(item.destinationDepartureDate)}
-              originCity={item.destinationCity}
+              originCity={item.originCity}
               originDepartureDate={new Date(item.originDepartureDate)}
               onPress={() => handleSelectSchedule(item)}
               icon={<IconCarSide color="main" />}
@@ -322,9 +322,10 @@ function TouchableWithIcon({
       >
         {icon}
         <Typography
-          fontFamily="OpenSans-Bold"
+          fontFamily="Poppins-Bold"
           fontSize={12}
           color={disabled ? "main" : "paper"}
+          numberOfLines={1}
         >
           {label}
         </Typography>
@@ -360,11 +361,13 @@ const style = StyleSheet.create({
   },
   touchableContainer: {
     padding: 10,
-    gap: 5,
+    paddingEnd: 20,
+    gap: 2,
     flexGrow: 1,
     borderWidth: 1,
     borderRadius: 100,
     flexDirection: "row",
+    overflow: "hidden",
   },
   headerWrapper: {
     flexDirection: "row",

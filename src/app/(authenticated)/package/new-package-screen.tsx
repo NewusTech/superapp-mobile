@@ -1,4 +1,10 @@
-import { Image, Linking, Pressable, ScrollView } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Linking,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -12,7 +18,7 @@ export default function NewPackageScreen() {
   const { Colors } = useAppTheme();
 
   const handloToWa = () => {
-    Linking.openURL(`http://api.whatsapp.com/send?phone=+6285736471993`);
+    Linking.openURL(`http://api.whatsapp.com/send?phone=+6281315395019`);
   };
 
   return (
@@ -34,7 +40,7 @@ export default function NewPackageScreen() {
         >
           <PromoItem
             imgUrl={require("@/assets/images/promo/4.png")}
-            width={326}
+            width={Dimensions.get("window").width - 40}
             borderRadius={20}
           />
         </View>
@@ -107,7 +113,7 @@ export default function NewPackageScreen() {
         >
           <Image source={require("@/assets/images/phone-call 1.png")} />
           <Typography fontFamily="Poppins-Medium" fontSize={14} color="paper">
-            +6285736471993
+            +6281315395019
           </Typography>
         </Pressable>
       </View>

@@ -24,13 +24,16 @@ export function PaymentComponent(props: PaymentComponentProps) {
   console.log({ paymentMethodQuery });
 
   return (
-    <View style={{ gap: 16 }}>
+    <View style={{ gap: 5 }}>
       <Typography fontFamily="Poppins-Bold" fontSize={16}>
         Metode Pembayaran
       </Typography>
 
       <View
-        style={[styles.paymentContainer, { borderColor: Colors.outlineborder }]}
+        style={[
+          styles.paymentContainer,
+          { borderColor: Colors.outlineborder, borderRadius: 20 },
+        ]}
       >
         {paymentMethodQuery.isFetching ? (
           <View style={styles.loadingContainer}>

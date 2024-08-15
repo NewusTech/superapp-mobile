@@ -14,7 +14,6 @@ import { useAppTheme } from "@/context/theme-context";
 export type RuteItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
-  subtitle: string;
   price: string;
   badgePromo?: boolean;
   width?: number | "auto" | any;
@@ -24,7 +23,6 @@ export function RuteItem(props: RuteItemProps) {
   const {
     title,
     imgSource,
-    subtitle,
     price,
     badgePromo,
     width = 155,
@@ -104,7 +102,7 @@ export function RuteItem(props: RuteItemProps) {
           />
           <View style={style.contentWrapper}>
             <Typography
-              fontFamily="OpenSans-Regular"
+              fontFamily="Poppins-Medium"
               fontSize={14}
               numberOfLines={1}
             >
@@ -112,20 +110,13 @@ export function RuteItem(props: RuteItemProps) {
             </Typography>
             <View>
               <Typography
-                fontFamily="OpenSans-Regular"
+                fontFamily="Poppins-Regular"
                 fontSize={12}
                 color="textsecondary"
                 numberOfLines={1}
               >
-                {subtitle.replace(/<[^>]*>?/gm, "")}
+                {price}
               </Typography>
-              {/* <Typography
-                  fontFamily="OpenSans-Semibold"
-                  fontSize={16}
-                  numberOfLines={1}
-                >
-                  {price}
-                </Typography> */}
             </View>
           </View>
         </View>

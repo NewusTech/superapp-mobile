@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import {
   Dimensions,
   FlatList,
+  Image,
   ImageBackground,
   ImageProps,
   ScrollView,
@@ -11,7 +12,7 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, SectionWrapper, View } from "@/components";
+import { Appbar, SectionWrapper, Typography, View } from "@/components";
 import { IconArrowRight } from "@/components/icons";
 import { PromoItem } from "@/components/promo-item/PromoItem";
 import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
@@ -46,7 +47,7 @@ export default function BookingTravelScreen() {
     >
       <View
         backgroundColor="paper"
-        style={[style.headerBack, { height: insets.top + 130 }]}
+        style={[style.headerBack, { height: insets.top + 170 }]}
       >
         <ImageBackground
           source={require("@/assets/images/header_banner_travel.png")}
@@ -55,26 +56,79 @@ export default function BookingTravelScreen() {
       </View>
 
       <Appbar
-        title={"Travel"}
+        title={
+          <Typography
+            style={{
+              textAlign: "center",
+              width: "100%",
+            }}
+            fontFamily="Poppins-Medium"
+            color="paper"
+            fontSize={16}
+          >
+            Travel
+          </Typography>
+        }
         backgroundColor="transparent"
         hasBorder={false}
         colorSheme="dark"
         backIconPress={() => router.back()}
         variant="light"
       />
-
       <View
         style={{
-          backgroundColor: "white",
-          borderWidth: 0.5,
-          borderColor: AppColor.light.textsecondary,
-          borderRadius: 20,
-          margin: 20,
+          backgroundColor:
+            "linear-gradient(90deg, rgba(7,5,236,1) 0%, rgba(4,3,134,1) 100%)",
+          marginHorizontal: 20,
+          marginBottom: 40,
+          marginTop: 20,
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
+          borderBottomRightRadius: 40,
+          borderBottomLeftRadius: 40,
         }}
       >
-        <SelectTravelComponent
-          handleAfterSubmit={() => router.push("/travel/available-schedule")}
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            paddingBottom: 10,
+          }}
+        >
+          <Image source={require("@/assets/images/tickets.png")} />
+          <Typography
+            fontFamily="Poppins-Medium"
+            fontSize={14}
+            color="paper"
+            style={{ width: "90%" }}
+          >
+            Pesan Tiket dengan Mudah dan Terjamin Secara Online.
+          </Typography>
+        </View>
+        <View
+          style={{
+            backgroundColor: "white",
+            borderWidth: 0.5,
+            borderColor: AppColor.light.textsecondary,
+            borderRadius: 20,
+            // margin: 20,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.18,
+            shadowRadius: 1.0,
+            elevation: 1,
+          }}
+        >
+          <SelectTravelComponent
+            handleAfterSubmit={() => router.push("/travel/available-schedule")}
+          />
+        </View>
       </View>
 
       <SectionWrapper

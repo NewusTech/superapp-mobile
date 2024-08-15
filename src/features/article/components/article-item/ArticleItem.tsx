@@ -16,7 +16,7 @@ export type ArticleItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
   subtitle: string;
-  price: string;
+  rating: number;
   badgeLocation?: string;
   width?: number | "auto" | any;
   height?: number | "auto" | any;
@@ -26,10 +26,10 @@ export function ArticleItem(props: ArticleItemProps) {
     title,
     imgSource,
     subtitle,
-    price,
+    rating,
     badgeLocation,
     width = 155,
-    height = 220,
+    height = 240,
     ...rest
   } = props;
 
@@ -95,7 +95,7 @@ export function ArticleItem(props: ArticleItemProps) {
                   backgroundColor: Colors.badgeMain,
                 }}
               >
-                Hot Promo
+                {badgeLocation}
               </Typography>
             </View>
           )}
@@ -115,7 +115,7 @@ export function ArticleItem(props: ArticleItemProps) {
             ]}
           >
             <Typography
-              fontFamily="OpenSans-Regular"
+              fontFamily="Poppins-Medium"
               fontSize={14}
               numberOfLines={1}
             >
@@ -123,7 +123,7 @@ export function ArticleItem(props: ArticleItemProps) {
             </Typography>
             <View style={{ flexDirection: "column" }}>
               <Typography
-                fontFamily="OpenSans-Regular"
+                fontFamily="Poppins-Regular"
                 fontSize={12}
                 color="textsecondary"
                 numberOfLines={1}
@@ -135,13 +135,17 @@ export function ArticleItem(props: ArticleItemProps) {
                 style={{
                   flexDirection: "row",
                   gap: 2,
-                  marginTop: 5,
+                  marginTop: 2,
                 }}
               >
-                <IconStar height={14} width={14} color="yellow" />
-                <IconStar height={14} width={14} color="yellow" />
-                <IconStar height={14} width={14} color="yellow" />
-                <IconStar height={14} width={14} color="yellow" />
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <IconStar
+                    key={index}
+                    height={14}
+                    width={14}
+                    color={index < rating ? "yellow" : "textsecondary"} // warna kuning untuk bintang aktif, abu-abu untuk bintang non-aktif
+                  />
+                ))}
               </View>
               <Typography
                 fontFamily="OpenSans-Regular"
@@ -199,6 +203,8 @@ function Placeholder({ height = 10, width = "50%" }: ViewStyle) {
 
 const style = StyleSheet.create({
   container: {
+    width: 155,
+    height: 220,
     borderWidth: 0.5,
     borderRadius: 12,
     overflow: "hidden",

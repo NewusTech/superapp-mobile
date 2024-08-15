@@ -103,6 +103,7 @@ export type TravelScheduleResponseSuccess = {
     availableSeat: number;
     carModel: string;
     carSeat: number;
+    departureTime: string;
     departureDate: string;
     destinationCity: string;
     destinationDepartureDate: string;
