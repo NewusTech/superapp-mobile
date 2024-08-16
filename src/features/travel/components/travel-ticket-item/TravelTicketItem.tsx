@@ -32,6 +32,7 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
     icon,
     customHeader,
     customFooter,
+    disabled,
     ...rest
   } = props;
 
@@ -41,14 +42,14 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
     <Pressable {...rest}>
       {({ pressed }) => (
         <>
-          {pressed && (
+          {pressed && !disabled && (
             <View
               style={[
                 style.container,
                 style.mask,
                 {
                   borderWidth: 0,
-                  backgroundColor: Colors.outlineborder,
+                  backgroundColor: Colors.textsecondary,
                 },
               ]}
             />
@@ -58,7 +59,10 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
               style.container,
               {
                 backgroundColor: Colors.paper,
-                borderColor: Colors.outlineborder,
+                borderColor:
+                  pressed && !disabled
+                    ? Colors.badgeMain
+                    : Colors.outlineborder,
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
@@ -199,7 +203,7 @@ const style = StyleSheet.create({
     width: "100%",
     height: "100%",
     zIndex: 2,
-    opacity: 0.25,
+    opacity: 0.15,
     position: "absolute",
     top: 0,
     left: 0,

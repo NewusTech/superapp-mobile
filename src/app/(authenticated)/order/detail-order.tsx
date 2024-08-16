@@ -321,6 +321,7 @@ export default function DetailOrder() {
           {/* perjalanan */}
           <SectionWrapper title="Perjalanan">
             <TravelTicketItem
+              disabled
               destinationCity={orderDetail?.pesanan.kota_tujuan || ""}
               destinationDepartureDate={
                 new Date(orderDetail?.pesanan.tanggal || "2024-08-10")

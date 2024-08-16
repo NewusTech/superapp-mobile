@@ -59,7 +59,7 @@ export default function DetailRentCar() {
       title: "Dalam Kota",
     },
     {
-      title: "Luar Dalam Kota",
+      title: "Luar Kota",
     },
   ];
 
@@ -70,7 +70,7 @@ export default function DetailRentCar() {
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
       <Appbar
-        title={"Detail Informasi Penyewa"}
+        title={"Detail Sewa & Rental Mobil"}
         backgroundColor="paper"
         hasBorder={false}
         backIconPress={() => router.back()}

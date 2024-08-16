@@ -6,6 +6,7 @@ export * from "./IconCar";
 export * from "./IconCarSide";
 export * from "./IconChevronDown";
 export * from "./IconChevronLeft";
+export * from "./IconChevronRight";
 export * from "./IconCiChecklist";
 export * from "./IconCiDiscountLight";
 export * from "./IconCiHide";

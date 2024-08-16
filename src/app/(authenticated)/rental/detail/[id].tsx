@@ -18,6 +18,7 @@ import { Button, Typography, View } from "@/components";
 import { IconChevronLeft } from "@/components/icons";
 import RenderImg from "@/components/image/RenderImg";
 import { useAppTheme } from "@/context/theme-context";
+import { useRentActions } from "@/features/rental/store/rental-store";
 
 export const RentalImgDump: { imgUrl: ImageProps["source"] }[] = [
   { imgUrl: require("@/assets/images/default_rent_car_2.png") },
@@ -40,6 +41,7 @@ export default function DetailRentalCar() {
     setActiveImg(url);
     setActivePopupImg(true);
   };
+  const { setUserRentalPayload } = useRentActions();
 
   const handleViewAllImage = () => {
     router.navigate("/travel/partials/list-car-image");
@@ -47,6 +49,13 @@ export default function DetailRentalCar() {
 
   const handleToDetailUserRentcar = () => {
     router.push("/rental/detail-user-rent");
+    setUserRentalPayload({
+      alamat: "",
+      email: "",
+      nama: "",
+      nik: "",
+      no_telp: "",
+    });
   };
 
   const params = useLocalSearchParams<{

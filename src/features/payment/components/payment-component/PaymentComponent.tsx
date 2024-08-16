@@ -3,6 +3,7 @@ import {
   Image,
   StyleSheet,
   TouchableWithoutFeedback,
+  ViewProps as RNViewProps,
 } from "react-native";
 
 import { Checkbox, Loader, Typography, View } from "@/components";
@@ -13,9 +14,9 @@ import { useGetPaymentMethodQuery } from "../../api/useGetPaymentMethodQuery";
 export type PaymentComponentProps = {
   selectedMethod: any;
   onMethodSelected: (id: number) => void;
-};
+} & RNViewProps;
 export function PaymentComponent(props: PaymentComponentProps) {
-  const { selectedMethod, onMethodSelected } = props;
+  const { selectedMethod, onMethodSelected, ...rest } = props;
 
   const { Colors } = useAppTheme();
 
@@ -24,7 +25,7 @@ export function PaymentComponent(props: PaymentComponentProps) {
   console.log({ paymentMethodQuery });
 
   return (
-    <View style={{ gap: 5 }}>
+    <View style={{ gap: 5 }} {...rest}>
       <Typography fontFamily="Poppins-Bold" fontSize={16}>
         Metode Pembayaran
       </Typography>

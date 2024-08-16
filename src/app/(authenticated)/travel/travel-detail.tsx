@@ -19,10 +19,11 @@ import RenderImg from "@/components/image/RenderImg";
 import { useAppTheme } from "@/context/theme-context";
 import {
   useTravelbookingPayload,
+  useTravelPointToPointPayload,
   useTravelSchedule,
 } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
-import { formatTime } from "@/utils/datetime";
+import { formatTime, formatTimeString } from "@/utils/datetime";
 
 import { RentalImgDump } from "../rental/detail/[id]";
 
@@ -38,6 +39,7 @@ export default function TravelDetailScreen() {
 
   const travelSchedule = useTravelSchedule();
   const travelBookingPayload = useTravelbookingPayload();
+  const pointToPointPayload = useTravelPointToPointPayload();
 
   const handleSelectedImg = (url: any) => {
     setActiveImg(url);
@@ -187,79 +189,105 @@ export default function TravelDetailScreen() {
                     Fasilitas
                   </Typography>
                   <Typography fontFamily="Poppins-Medium" fontSize={13}>
-                    {travelSchedule?.fasilitas || "-"}
+                    {travelSchedule?.facility || "-"}
                   </Typography>
                 </View>
               </View>
             )}
 
             {activeTab === "rute" && (
-              <View
-                style={[
-                  style.routeContainer,
-                  { borderColor: Colors.outlineborder },
-                ]}
-              >
-                <View style={style.routeTitle}>
-                  <Typography
-                    fontFamily="Poppins-Medium"
-                    fontSize={8}
-                    style={{ textAlign: "center" }}
-                  >
-                    Jam{`\n`}Berangkat
-                  </Typography>
-                  <Typography fontFamily="Poppins-Medium" fontSize={8}>
-                    {travelSchedule?.departureDate &&
-                      formatTime(new Date(travelSchedule?.departureDate))}
-                  </Typography>
-                </View>
-
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginHorizontal: 5,
-                      width: 1,
-                      backgroundColor: Colors.outlineborder,
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: 12,
-                        width: 12,
-                        borderWidth: 1,
-                        borderColor: Colors.main,
-                        backgroundColor: Colors.paper,
-                        borderRadius: 99,
-                      }}
-                    />
-                    <View
-                      style={{
-                        height: 12,
-                        width: 12,
-                        borderWidth: 1,
-                        backgroundColor: Colors.main,
-                        borderRadius: 99,
-                      }}
-                    />
+              <View>
+                <View
+                  style={[
+                    style.routeContainer,
+                    { borderColor: Colors.outlineborder },
+                  ]}
+                >
+                  <View style={style.routeTitle}>
+                    <Typography
+                      fontFamily="Poppins-Medium"
+                      fontSize={8}
+                      style={{ textAlign: "center" }}
+                    >
+                      Jam{`\n`}Berangkat
+                    </Typography>
+                    <Typography fontFamily="Poppins-Medium" fontSize={8}>
+                      {/* {travelSchedule?.departureDate &&
+                      formatTime(new Date(travelSchedule?.departureDate))} */}
+                      {formatTimeString(
+                        travelSchedule?.departureTime || "00.00.00"
+                      )}
+                    </Typography>
                   </View>
-                  <View style={{ gap: 24 }}>
-                    <View>
-                      <Typography fontFamily="Poppins-Medium" fontSize={13}>
-                        {travelSchedule?.originCity}
-                      </Typography>
-                      <Typography fontFamily="Poppins-Light" fontSize={12}>
-                        Titik jemput
-                      </Typography>
+
+                  <View style={{ flexDirection: "row", gap: 10 }}>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginHorizontal: 5,
+                        width: 1,
+                        backgroundColor: Colors.outlineborder,
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: 12,
+                          width: 12,
+                          borderWidth: 1,
+                          backgroundColor: Colors.main,
+                          borderRadius: 99,
+                        }}
+                      />
+                      {travelSchedule?.transitionCity.trim() !== "" && (
+                        <View
+                          style={{
+                            height: 12,
+                            width: 12,
+                            borderWidth: 1,
+                            borderColor: Colors.main,
+                            backgroundColor: Colors.paper,
+                            borderRadius: 99,
+                          }}
+                        />
+                      )}
+                      <View
+                        style={{
+                          height: 12,
+                          width: 12,
+                          borderWidth: 1,
+                          backgroundColor: Colors.main,
+                          borderRadius: 99,
+                        }}
+                      />
                     </View>
-                    <View>
-                      <Typography fontFamily="Poppins-Medium" fontSize={13}>
-                        {travelSchedule?.destinationCity}
-                      </Typography>
-                      <Typography fontFamily="Poppins-Light" fontSize={12}>
-                        Titik jemput
-                      </Typography>
+                    <View style={{ gap: 24 }}>
+                      <View>
+                        <Typography fontFamily="Poppins-Medium" fontSize={13}>
+                          {travelSchedule?.originCity}
+                        </Typography>
+                        <Typography fontFamily="Poppins-Light" fontSize={12}>
+                          {pointToPointPayload?.from?.point || "Titik Jemput"}
+                        </Typography>
+                      </View>
+                      {travelSchedule?.transitionCity.trim() !== "" && (
+                        <View>
+                          <Typography fontFamily="Poppins-Medium" fontSize={12}>
+                            Transit
+                          </Typography>
+                          <Typography fontFamily="Poppins-Light" fontSize={12}>
+                            {travelSchedule?.transitionCity}
+                          </Typography>
+                        </View>
+                      )}
+                      <View>
+                        <Typography fontFamily="Poppins-Medium" fontSize={13}>
+                          {travelSchedule?.destinationCity}
+                        </Typography>
+                        <Typography fontFamily="Poppins-Light" fontSize={12}>
+                          {pointToPointPayload?.to?.point || "Titik Antar"}
+                        </Typography>
+                      </View>
                     </View>
                   </View>
                 </View>

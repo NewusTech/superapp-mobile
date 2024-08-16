@@ -1,11 +1,16 @@
+import { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
 import { Appbar, Button, TextInput, View } from "@/components";
 import { useAppTheme } from "@/context/theme-context";
+import {
+  useRentActions,
+  useUserRentalPayload,
+} from "@/features/rental/store/rental-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const userRentSchema = z.object({
@@ -21,16 +26,37 @@ export default function DetailUserRent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const params = useLocalSearchParams<{
+    isEdit: string;
+  }>();
+
   const { Colors } = useAppTheme();
+
+  //store
+  const userRent = useUserRentalPayload();
+  const { setUserRentalPayload } = useRentActions();
 
   const { control, formState, handleSubmit, setValue } = useForm<UserRent>({
     resolver: zodResolver(userRentSchema),
     mode: "all",
   });
 
-  //   const handleSubmitForm = handleSubmit((data) => {
-  //     router.push("/travel/detail-rent-car");
-  //   });
+  const handleSubmitForm = handleSubmit((data) => {
+    console.log(data);
+    setUserRentalPayload(data);
+    if (params.isEdit === "true") return router.back();
+    router.push("/rental/detail-rent-car");
+  });
+
+  console.log({ userRent });
+
+  useEffect(() => {
+    setValue("nama", userRent?.nama || "");
+    setValue("email", userRent?.email || "");
+    setValue("nik", userRent?.nik || "");
+    setValue("no_telp", userRent?.no_telp || "");
+    setValue("alamat", userRent?.alamat || "");
+  }, [userRent, setValue]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -127,8 +153,8 @@ export default function DetailUserRent() {
           />
           <View style={styles.buttonWrapper}>
             <Button
-              onPress={() => router.push("/rental/detail-rent-car")}
-              // disabled={!formState.isValid}
+              disabled={!formState.isValid}
+              onPress={handleSubmitForm}
               style={{ height: 45, width: 120 }}
             >
               Simpan

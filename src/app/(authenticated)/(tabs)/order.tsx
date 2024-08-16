@@ -83,6 +83,7 @@ export default function OrderTabScreen() {
           data={orderListQuery.data?.data}
           renderItem={({ item }) => (
             <TravelTicketItem
+              disabled
               originCity={item.kota_asal}
               originDepartureDate={new Date(item.tanggal)}
               destinationCity={item.kota_tujuan}
@@ -137,7 +138,8 @@ export default function OrderTabScreen() {
                       backgroundColor:
                         item.status === "Sukses"
                           ? Colors.success
-                          : item.status === "Menunggu pembayaran"
+                          : item.status.toLocaleLowerCase() ===
+                              "menunggu pembayaran"
                             ? Colors.textsecondary
                             : Colors.dangerbase,
                       borderRadius: 100,

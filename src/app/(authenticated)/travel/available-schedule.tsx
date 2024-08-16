@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
   TouchableNativeFeedbackProps,
   TouchableWithoutFeedback,
@@ -199,10 +200,15 @@ export default function TravelOptionScreen() {
       </View>
 
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={travelScheduleQuery.isFetching}
+            onRefresh={travelScheduleQuery.refetch}
+          />
+        }
         data={travelScheduleQuery.data?.data || []}
         renderItem={({ item }) => {
           const availableSeat = item.carSeat - item.seatTaken.length;
-
           return (
             <TravelTicketItem
               departureTime={item.departureTime}
@@ -214,6 +220,18 @@ export default function TravelOptionScreen() {
               icon={<IconCarSide color="main" />}
               customHeader={
                 <ScheduleHeader item={item} availableSeat={availableSeat} />
+              }
+              customFooter={
+                item.transitionCity.trim() !== "" ? (
+                  <Typography
+                    fontFamily="OpenSans-Medium"
+                    fontSize={14}
+                    style={{ textAlign: "center" }}
+                    color="textsecondary"
+                  >
+                    Transit di Lampung
+                  </Typography>
+                ) : null
               }
             />
           );

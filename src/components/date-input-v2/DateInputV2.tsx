@@ -76,6 +76,7 @@ export function DateInputV2(props: DateInputV2Props) {
 
       {showDatePicker && (
         <RNDateTimePicker
+          minimumDate={new Date()}
           value={value || new Date()}
           mode="date"
           accentColor={Colors.main}

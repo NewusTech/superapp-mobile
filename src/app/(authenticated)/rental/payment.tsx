@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Appbar, Button, Checkbox, Typography, View } from "@/components";
+import { IconChevronRight } from "@/components/icons";
+import ModalSwipe from "@/components/modal/ModalSwipe";
 import { useAppTheme } from "@/context/theme-context";
 import { PaymentComponent } from "@/features/payment/components";
+import { useUserRentalPayload } from "@/features/rental/store/rental-store";
 import { formatCurrency } from "@/utils/common";
 
 export default function Payment() {
@@ -19,7 +28,20 @@ export default function Payment() {
   >(null);
 
   const [tna, setTna] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalTnc, setOpenModalTnc] = useState(false);
+  const [modalDetailPenyewa, setModalDetailPenyewa] = useState(false);
+
+  const userRent = useUserRentalPayload();
+
+  const handleToEditDataPenyewa = () => {
+    setModalDetailPenyewa(false);
+    router.push({
+      pathname: "/rental/detail-user-rent",
+      params: {
+        isEdit: "true",
+      },
+    });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -102,7 +124,49 @@ export default function Payment() {
             </View>
           </View>
         </View>
+
+        <Pressable onPress={() => setModalDetailPenyewa(true)}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 10,
+              marginBottom: 5,
+            }}
+          >
+            <Typography fontFamily="Poppins-Bold" fontSize={16}>
+              Detail Informasi Penyewa
+            </Typography>
+          </View>
+          <View
+            style={{
+              borderColor: Colors.outlineborder,
+              borderWidth: 1,
+              borderRadius: 20,
+              width: "100%",
+              padding: 10,
+              paddingHorizontal: 20,
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Typography fontFamily="Poppins-Bold" fontSize={18}>
+                {userRent.nama}
+              </Typography>
+              <IconChevronRight width={26} height={26} color="main" />
+            </View>
+            <Typography fontFamily="Poppins-Regular" fontSize={16}>
+              {userRent.no_telp}
+              {"\n"}
+              {userRent.email}
+            </Typography>
+          </View>
+        </Pressable>
+
         <PaymentComponent
+          style={{ marginTop: 10 }}
           selectedMethod={selectedPaymentMethod}
           onMethodSelected={setSelectedPaymentMethod}
         />
@@ -118,7 +182,7 @@ export default function Payment() {
                   fontFamily="Poppins-Regular"
                   fontSize={12}
                   color="main"
-                  onPress={() => setOpenModal(true)}
+                  onPress={() => setOpenModalTnc(true)}
                 >
                   Sytarat & Ketentuan
                 </Typography>{" "}
@@ -153,9 +217,85 @@ export default function Payment() {
           <Button>Bayar</Button>
         </View>
       </View>
-      {openModal && (
+      <ModalSwipe
+        modalVisible={modalDetailPenyewa}
+        setModalVisible={setModalDetailPenyewa}
+      >
+        <View
+          style={{
+            height: Dimensions.get("window").height / 3,
+            gap: 5,
+          }}
+        >
+          <Typography fontFamily="Poppins-Bold" fontSize={16}>
+            Detail Penyewa
+          </Typography>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              Nama Lengkap
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {userRent.nama}
+            </Typography>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              NIK
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {userRent.nik}
+            </Typography>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              Email
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {userRent.email}
+            </Typography>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              Nomor Telepon
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {userRent.no_telp}
+            </Typography>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography fontFamily="Poppins-Medium" fontSize={14}>
+              Alamat
+            </Typography>
+            <Typography
+              fontFamily="Poppins-Regular"
+              fontSize={14}
+              numberOfLines={2}
+              style={{ width: "50%", textAlign: "right" }}
+            >
+              {userRent.alamat}
+            </Typography>
+          </View>
+          <Button style={{ marginTop: 20 }} onPress={handleToEditDataPenyewa}>
+            Edit Data Penyewa
+          </Button>
+        </View>
+      </ModalSwipe>
+      {openModalTnc && (
         <View style={styles.containerPopup}>
-          <TouchableWithoutFeedback onPress={() => setOpenModal(false)}>
+          <TouchableWithoutFeedback onPress={() => setOpenModalTnc(false)}>
             <BlurView
               intensity={100}
               blurReductionFactor={100}

@@ -110,13 +110,24 @@ export type TravelScheduleResponseSuccess = {
     originCity: string;
     originDepartureDate: string;
     price: number;
-    fasilitas: string;
+    facility: string;
+    transitionCity: string;
     syarat_dan_ketentuan: string;
     seatTaken: string[];
   }[];
   message: string;
   success: boolean;
 };
+export const rentalCarQuerySchema = z.object({
+  durasi_sewa: z.string(),
+  area: z.string(),
+  rute: z.string(),
+  tanggal_mulai: z.date(),
+  tanggal_selesai: z.date(),
+  alamat_keberangkatan: z.date(),
+  all_in: z.string(),
+});
+export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
 export type TravelPointToPointApiParams = {
   point: string;
   id: string;
