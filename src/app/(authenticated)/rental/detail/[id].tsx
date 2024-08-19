@@ -18,7 +18,10 @@ import { Button, Typography, View } from "@/components";
 import { IconChevronLeft } from "@/components/icons";
 import RenderImg from "@/components/image/RenderImg";
 import { useAppTheme } from "@/context/theme-context";
-import { useRentActions } from "@/features/rental/store/rental-store";
+import {
+  useRentActions,
+  useRentalCarData,
+} from "@/features/rental/store/rental-store";
 
 export const RentalImgDump: { imgUrl: ImageProps["source"] }[] = [
   { imgUrl: require("@/assets/images/default_rent_car_2.png") },
@@ -31,11 +34,17 @@ export default function DetailRentalCar() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const params = useLocalSearchParams<{
+    id: string;
+  }>();
+
   const { Colors } = useAppTheme();
 
   const [activePopupImg, setActivePopupImg] = useState(false);
 
   const [activeImg, setActiveImg] = useState<any>();
+
+  const rentalCarData = useRentalCarData();
 
   const handleSelectedImg = (url: any) => {
     setActiveImg(url);
@@ -58,9 +67,6 @@ export default function DetailRentalCar() {
     });
   };
 
-  const params = useLocalSearchParams<{
-    id: string;
-  }>();
   return (
     <View style={{ flex: 1, backgroundColor: Colors.paper }}>
       <ScrollView>
@@ -216,7 +222,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  -
+                  {rentalCarData?.body}
                 </Typography>
               </View>
               {/* col 2 */}
@@ -235,7 +241,7 @@ export default function DetailRentalCar() {
                     width: Dimensions.get("window").width / 2.5,
                   }}
                 >
-                  Engine
+                  BBM
                 </Typography>
                 <Typography
                   fontFamily="Poppins-Bold"
@@ -257,7 +263,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Dex-Lite
+                  {rentalCarData?.bahan_bakar}
                 </Typography>
               </View>
               {/* col 3 */}
@@ -298,7 +304,8 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  16 Kursi
+                  {rentalCarData?.seat}
+                  Kursi
                 </Typography>
               </View>
               {/* col 4 */}
@@ -339,7 +346,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Diesel
+                  {rentalCarData?.engine}
                 </Typography>
               </View>
               {/* col 5 */}
@@ -380,7 +387,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  -
+                  {rentalCarData?.bagasi}
                 </Typography>
               </View>
               {/* col 6 */}
@@ -421,7 +428,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Manual
+                  {rentalCarData?.transmisi}
                 </Typography>
               </View>
             </View>

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BlurView } from "expo-blur";
 
 type ModalSwipeProp = {
   children: React.ReactNode;
@@ -56,7 +57,12 @@ export default function ModalSwipe(props: ModalSwipeProp) {
       visible={modalVisible}
       onRequestClose={() => setModalVisible(false)}
     >
-      <View style={styles.modalOverlay}>
+      <BlurView
+        intensity={100}
+        blurReductionFactor={100}
+        experimentalBlurMethod="dimezisBlurView"
+        style={styles.modalOverlay}
+      >
         <Animated.View
           style={[styles.modalContent, { transform: [{ translateY: pan.y }] }]}
           {...panResponder.panHandlers}
@@ -66,7 +72,7 @@ export default function ModalSwipe(props: ModalSwipeProp) {
           </TouchableOpacity>
           <View style={{ paddingVertical: 10 }}>{children}</View>
         </Animated.View>
-      </View>
+      </BlurView>
     </Modal>
   );
 }
@@ -80,9 +86,17 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: "white",
     padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     minHeight: 200,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalHandle: {
     width: "25%",

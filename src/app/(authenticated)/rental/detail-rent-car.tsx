@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   DateInputV2,
+  DateInputV3,
   SelectInputV2,
   TextInput,
   Typography,
@@ -54,6 +55,8 @@ export default function DetailRentCar() {
     console.log(data);
     router.push("/rental/payment");
   });
+
+  const dumpyDisableDate = ["2024-8-24", "2024-8-25", "2024-8-27", "2024-8-28"];
 
   const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: i + 1,
@@ -144,7 +147,7 @@ export default function DetailRentCar() {
             control={control}
             name="dateStart"
             render={({ field }) => (
-              <DateInputV2
+              <DateInputV3
                 withBorder
                 label={"Tanggal Mulai Sewa"}
                 trailingIcon={
@@ -154,6 +157,7 @@ export default function DetailRentCar() {
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
+                disabledDates={dumpyDisableDate}
               />
             )}
           />
@@ -161,7 +165,8 @@ export default function DetailRentCar() {
             control={control}
             name="dateEnd"
             render={({ field }) => (
-              <DateInputV2
+              <DateInputV3
+                minDate={watch("dateStart") || new Date()}
                 withBorder
                 label={"Tanggal Selesai Sewa"}
                 trailingIcon={
@@ -171,6 +176,7 @@ export default function DetailRentCar() {
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
+                disabledDates={dumpyDisableDate}
               />
             )}
           />

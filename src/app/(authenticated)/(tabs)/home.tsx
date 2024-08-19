@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -37,9 +36,14 @@ import {
   articleListPlaceholderData,
 } from "@/features/article/components";
 import { HotelItem } from "@/features/article/components/hotel-item/HotelItem";
-import { RuteItem } from "@/features/article/components/rute-item/RuteItem";
+import {
+  RuteItem,
+  RuteItemEmpty,
+} from "@/features/article/components/rute-item/RuteItem";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
+import { useGetTravelRute } from "@/features/travel/api/useGetTravelRutes";
+import { useTravelActions } from "@/features/travel/store/travel-store";
 import { formatCurrency } from "@/utils/common";
 import { useRoute } from "@react-navigation/native";
 
@@ -104,7 +108,9 @@ export default function HomeTabScreen() {
 
   const articleListQuery = useGetArticleList();
 
-  const ruteListQueryData = [
+  const ruteListQuery = useGetTravelRute();
+
+  const ruteListQueryDataDummy = [
     {
       judul: "Lampung - Jakarta",
       harga: 250000,
@@ -123,6 +129,8 @@ export default function HomeTabScreen() {
 
   const travelBranchQuery = useGetTravelBranch();
 
+  const { setBookingPayload } = useTravelActions();
+
   const [activeFilter, setActiveFilter] = useState("Lampung");
 
   const branchList = useMemo(() => {
@@ -131,6 +139,10 @@ export default function HomeTabScreen() {
       title: item.nama,
     }));
   }, [travelBranchQuery.data]);
+
+  const ruteListQueryFilter = ruteListQuery.data?.data.filter(
+    (data) => data.kota_asal === activeFilter
+  );
 
   // const handleRefresh = useCallback(() => {
   //   articleListQuery.refetch();
@@ -271,35 +283,33 @@ export default function HomeTabScreen() {
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={
-                // articleListQuery.isFetching
-                //   ? articleListPlaceholderData
-                //   : articleListQuery.data?.data || []
-                ruteListQueryData
-              }
+              data={ruteListQueryFilter}
               renderItem={({ item, index }) =>
-                articleListQuery.isFetching ? (
+                ruteListQuery.isFetching ? (
                   <ArticleItemPlaceholder />
                 ) : (
                   <RuteItem
                     badgePromo
-                    width={Dimensions.get("window").width / 2.3 + index}
-                    imgSource={{ uri: item.image_url }}
-                    title={item.judul}
+                    width={Dimensions.get("window").width / 2.3}
+                    imgSource={{
+                      uri: "https://bandarlampungkota.go.id/new/images/destinasi/462_tugugajah.jpg",
+                    }}
+                    title={`${item.kota_asal} - ${item.kota_tujuan}`}
                     price={formatCurrency(item.harga)}
-                    // onPress={() =>
-                    //   router.push({
-                    //     pathname: "/article/[id]",
-                    //     params: {
-                    //       id: item.id,
-                    //     },
-                    //   })
-                    // }
+                    onPress={() => {
+                      setBookingPayload({
+                        date: new Date(),
+                        from: item.kota_asal,
+                        to: item.kota_tujuan,
+                        seats: 1,
+                      });
+                      router.push("/travel/booking-travel");
+                    }}
                   />
                 )
               }
               style={{ width: "100%" }}
-              ListEmptyComponent={() => <ArticleEmpty />}
+              ListEmptyComponent={() => <RuteItemEmpty />}
               contentContainerStyle={styles.listArticleContainer}
               snapToStart
               decelerationRate={"normal"}

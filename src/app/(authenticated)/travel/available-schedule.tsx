@@ -24,6 +24,7 @@ import {
   IconIcArrowRight,
   IconPinSharp,
 } from "@/components/icons";
+import ModalSwipe from "@/components/modal/ModalSwipe";
 import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
 import { AppColor } from "@/constants/Colors";
 import { useGetTravelSchedule } from "@/features/travel/api/useGetSchedule";
@@ -256,26 +257,14 @@ export default function TravelOptionScreen() {
           paddingBottom: insets.bottom + 20,
         }}
       />
-      {openPopupRute && (
-        <View style={style.containerPopup}>
-          <TouchableWithoutFeedback onPress={() => setOpenPopupRute(false)}>
-            <BlurView
-              intensity={100}
-              blurReductionFactor={100}
-              experimentalBlurMethod="dimezisBlurView"
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            />
-          </TouchableWithoutFeedback>
-          <View style={style.containerPopupItem}>
-            <SelectTravelComponent
-              handleAfterSubmit={() => setOpenPopupRute(false)}
-            />
-          </View>
-        </View>
-      )}
+      <ModalSwipe
+        modalVisible={openPopupRute}
+        setModalVisible={setOpenPopupRute}
+      >
+        <SelectTravelComponent
+          handleAfterSubmit={() => setOpenPopupRute(false)}
+        />
+      </ModalSwipe>
     </View>
   );
 }

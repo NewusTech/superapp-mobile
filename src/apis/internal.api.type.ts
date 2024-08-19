@@ -88,6 +88,19 @@ export type GetTravelBranchResponseSuccess = {
   message: string;
   success: boolean;
 };
+export type GetTravelRutesResponseSuccess = {
+  data: {
+    id: string;
+    kota_asal: string;
+    kota_tujuan: string;
+    harga: number;
+    created_at: string;
+    updated_at: string;
+    waktu_keberangkatan: string;
+  }[];
+  message: string;
+  success: boolean;
+};
 
 export const travelScheduleQuerySchema = z.object({
   from: z.string(),

@@ -19,6 +19,7 @@ import {
   GetPaymentMethodResponseSuccess,
   GetPaymentStatusResponseSuccess,
   GetTravelBranchResponseSuccess,
+  GetTravelRutesResponseSuccess,
   OrderDetailResponseSuccess,
   OrderListResponseSuccess,
   PostLoginPayload,
@@ -152,6 +153,14 @@ export const getTravelSchedule = async (params: TravelScheduleQuery) => {
   return response.data;
 };
 
+export const getTravelRute = async () => {
+  const response = await apiClientMock<GetTravelRutesResponseSuccess>({
+    method: "GET",
+    url: "/api/rute/master_rute",
+  });
+
+  return response.data;
+};
 export const getTravelBranch = async () => {
   const response = await apiClientMock<GetTravelBranchResponseSuccess>({
     method: "GET",

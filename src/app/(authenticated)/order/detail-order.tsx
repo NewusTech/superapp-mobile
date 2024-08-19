@@ -89,6 +89,13 @@ export default function DetailOrder() {
         variant: "danger",
       });
     }
+    // router.push({
+    //   pathname: "/order/view-pdf",
+    //   params: {
+    //     link: orderDetail?.pembayaran.link_tiket,
+    //     title: "e-Tiket",
+    //   },
+    // });
   };
 
   const handleToDownloadInvoice = async () => {

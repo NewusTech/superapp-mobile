@@ -83,6 +83,7 @@ export function DateInputV2(props: DateInputV2Props) {
           onChange={(_, date) => {
             setShowDatePicker(false);
             onChange(date);
+            console.log(date);
           }}
         />
       )}

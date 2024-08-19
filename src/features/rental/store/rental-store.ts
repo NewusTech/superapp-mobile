@@ -5,13 +5,27 @@ import { RentalCarQuery } from "@/apis/internal.api.type";
 import { UserRent } from "@/app/(authenticated)/rental/detail-user-rent";
 import { ExtractState } from "@/libs/zustand";
 
+export type rentalCarData = {
+  id: string;
+  title: string;
+  body: string;
+  engine: string;
+  seat: string;
+  bahan_bakar: string;
+  bagasi: string;
+  transmisi: string;
+  harga: number;
+};
+
 type RentalStore = {
   rentalCarPayload: RentalCarQuery;
   userRentalPayload: UserRent;
+  rentalCarData?: rentalCarData;
 
   actions: {
     setRentalPayload: (rentalCarPayload?: RentalCarQuery) => void;
     setUserRentalPayload: (userRentalPayload?: UserRent) => void;
+    setRentalCarData: (rentalCarData?: rentalCarData) => void;
   };
 };
 
@@ -33,9 +47,12 @@ const rentalStore = createStore<RentalStore>()((set, get) => ({
     alamat: "",
   },
 
+  rentalCarData: undefined,
+
   actions: {
     setRentalPayload: (rentalCarPayload) => set({ rentalCarPayload }),
     setUserRentalPayload: (userRentalPayload) => set({ userRentalPayload }),
+    setRentalCarData: (rentalCarData: any) => set({ rentalCarData }),
   },
 }));
 
@@ -46,6 +63,8 @@ const rentalPayloadSelector = (state: ExtractState<typeof rentalStore>) =>
   state.rentalCarPayload;
 const userRentalPayloadSelector = (state: ExtractState<typeof rentalStore>) =>
   state.userRentalPayload;
+const userRentalCarSelector = (state: ExtractState<typeof rentalStore>) =>
+  state.rentalCarData;
 const actionsSelector = (state: ExtractState<typeof rentalStore>) =>
   state.actions;
 
@@ -54,6 +73,8 @@ export const getrentalPayload = () =>
   rentalPayloadSelector(rentalStore.getState());
 export const getUserRentalPayload = () =>
   userRentalPayloadSelector(rentalStore.getState());
+export const getRentalCarData = () =>
+  userRentalCarSelector(rentalStore.getState());
 export const getTravelActions = () => actionsSelector(rentalStore.getState());
 
 function useRentalStore<U>(selector: Params<U>[1]) {
@@ -65,4 +86,5 @@ export const useRentalBookingPayload = () =>
   useRentalStore(rentalPayloadSelector);
 export const useUserRentalPayload = () =>
   useRentalStore(userRentalPayloadSelector);
+export const useRentalCarData = () => useRentalStore(userRentalCarSelector);
 export const useRentActions = () => useRentalStore(actionsSelector);

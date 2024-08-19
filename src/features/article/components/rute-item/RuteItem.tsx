@@ -82,6 +82,7 @@ export function RuteItem(props: RuteItemProps) {
               <Typography
                 fontFamily="Poppins-Medium"
                 fontSize={10}
+                numberOfLines={2}
                 color="paper"
                 style={{
                   height: 30,
@@ -102,17 +103,25 @@ export function RuteItem(props: RuteItemProps) {
           />
           <View style={style.contentWrapper}>
             <Typography
-              fontFamily="Poppins-Medium"
-              fontSize={14}
-              numberOfLines={1}
+              fontFamily="Poppins-SemiBold"
+              fontSize={13}
+              numberOfLines={2}
             >
               {title}
             </Typography>
-            <View>
+            <View style={{ flexDirection: "column", marginTop: "auto" }}>
+              <Typography
+                fontFamily="Poppins-Light"
+                fontSize={10}
+                color="textsecondary"
+                numberOfLines={1}
+              >
+                Mulai dari
+              </Typography>
               <Typography
                 fontFamily="Poppins-Regular"
                 fontSize={12}
-                color="textsecondary"
+                color="secondary"
                 numberOfLines={1}
               >
                 {price}
@@ -125,44 +134,24 @@ export function RuteItem(props: RuteItemProps) {
   );
 }
 
-export const articleListPlaceholderData = [
-  {},
-  {},
-  {},
-] as GetArticleResponseSuccess["data"];
-export function ArticleItemPlaceholder() {
-  const { Colors } = useAppTheme();
-
+export function RuteItemEmpty() {
   return (
-    <View
-      style={[
-        style.container,
-        { borderColor: Colors.outlineborder, marginHorizontal: "auto" },
-      ]}
-    >
-      <Image style={[style.image, { backgroundColor: Colors.bgsecondary }]} />
-
-      <View style={style.contentWrapper}>
-        <Placeholder width={"90%"} height={16} />
-        <View style={{ gap: 4 }}>
-          <Placeholder />
-          <Placeholder height={16} width={"70%"} />
-        </View>
-      </View>
+    <View backgroundColor="outlineborder" style={style.containerItemEmpty}>
+      <Typography fontFamily="Poppins-Regular">
+        Belum ada Rute yang tersedia
+      </Typography>
     </View>
   );
 }
 
-function Placeholder({ height = 10, width = "50%" }: ViewStyle) {
-  return (
-    <View
-      backgroundColor="outlineborder"
-      style={[style.placeholder, { height, width }]}
-    />
-  );
-}
-
 const style = StyleSheet.create({
+  containerItemEmpty: {
+    flex: 1,
+    padding: 24,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     borderWidth: 0.5,
     borderRadius: 12,
@@ -176,6 +165,7 @@ const style = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     padding: 12,
+    paddingTop: 5,
     justifyContent: "space-between",
   },
   placeholder: {},

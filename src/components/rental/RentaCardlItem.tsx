@@ -15,20 +15,17 @@ import { IconCar, IconGasPump, IconGitBranch, IconSeat } from "../icons";
 import { Typography } from "../typography/Typography";
 
 export type RentaCardlItemProps = {
-  //   imgSource: ImageSourcePropType;
-  //   title: string;
-  //   subtitle: string;
-  //   price: string;
-  //   badgePromo?: boolean;
+  id: string;
+  title: string;
 } & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
-  const { ...rest } = props;
+  const { id, title, ...rest } = props;
   const router = useRouter();
 
   const { Colors } = useAppTheme();
 
   const handleOnDetailRentalCard = () => {
-    router.push("/rental/detail/1");
+    router.push(`/rental/detail/${id}`);
   };
 
   return (
@@ -71,7 +68,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             }}
           >
             <Typography fontFamily="Poppins-Bold" fontSize={18}>
-              Toyota Hiace Premio
+              {title}
             </Typography>
             <Typography
               fontFamily="Poppins-Regular"
