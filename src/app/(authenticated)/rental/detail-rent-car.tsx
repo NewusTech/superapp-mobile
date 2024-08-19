@@ -1,14 +1,15 @@
+import { useEffect } from "react";
 import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { z } from "zod";
+import { number, z } from "zod";
 
+import { rentalCarQuerySchema } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
   Checkbox,
-  DateInputV2,
   DateInputV3,
   SelectInputV2,
   TextInput,
@@ -17,49 +18,53 @@ import {
 } from "@/components";
 import { IconCalendar, IconChevronDown } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
+import {
+  useRentActions,
+  useRentalCarData,
+} from "@/features/rental/store/rental-store";
 import { formatCurrency } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export const sewaRentSchema = z.object({
-  duration: z.number(),
-  area: z.string(),
-  rute: z.string(),
-  dateStart: z.date(),
-  dateEnd: z.date(),
-  alamat: z.string(),
-  allIn: z.boolean(),
-});
-export type SewaRent = z.infer<typeof sewaRentSchema>;
+export type SewaRent = z.infer<typeof rentalCarQuerySchema>;
 
 export default function DetailRentCar() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const maxDayRentDuration = 7;
 
   const { Colors } = useAppTheme();
 
+  const rentalCarData = useRentalCarData();
+
+  const { setRentalPayload } = useRentActions();
+
   const { control, formState, handleSubmit, setValue, watch } =
     useForm<SewaRent>({
-      resolver: zodResolver(sewaRentSchema),
+      resolver: zodResolver(rentalCarQuerySchema),
       mode: "all",
       defaultValues: {
-        duration: 1,
-        dateStart: new Date(),
-        dateEnd: new Date(),
+        durasi_sewa: 1,
+        alamat_keberangkatan: "",
+        all_in: 0,
         area: "Dalam Kota",
-        allIn: false,
+        rute: "",
+        tanggal_mulai: new Date(),
+        tanggal_selesai: new Date(),
       },
     });
 
+  const maxDayRentDuration =
+    watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 7;
+
   const handleSubmitForm = handleSubmit((data) => {
+    setRentalPayload(data);
     console.log(data);
     router.push("/rental/payment");
   });
 
-  const dumpyDisableDate = ["2024-8-24", "2024-8-25", "2024-8-27", "2024-8-28"];
+  const dummyDisableDate = ["2024-8-24", "2024-8-25", "2024-8-27", "2024-8-28"];
 
   const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
-    title: i + 1,
+    title: i + (watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 1),
   }));
 
   const areList = [
@@ -74,6 +79,22 @@ export default function DetailRentCar() {
   const dumpData = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: "Dummy Data " + i,
   }));
+
+  const calculatePrice = () => {
+    const durationPrice = watch("durasi_sewa");
+    const allInPrice = watch("all_in") ? 1000000 : 0;
+    const carPrice = rentalCarData?.harga || 0;
+    return carPrice * durationPrice + allInPrice;
+  };
+
+  const areaWatch = watch("area").toLocaleLowerCase();
+  const durationWatch = watch("durasi_sewa");
+  useEffect(() => {
+    if (areaWatch === "luar kota" && durationWatch < 4) {
+      console.log(areaWatch);
+      return setValue("durasi_sewa", 4);
+    }
+  }, [areaWatch, durationWatch, setValue]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -96,7 +117,7 @@ export default function DetailRentCar() {
         >
           <Controller
             control={control}
-            name="duration"
+            name="durasi_sewa"
             render={({ field }) => (
               <SelectInputV2
                 label="Durasi Sewa *"
@@ -145,7 +166,7 @@ export default function DetailRentCar() {
           />
           <Controller
             control={control}
-            name="dateStart"
+            name="tanggal_mulai"
             render={({ field }) => (
               <DateInputV3
                 withBorder
@@ -157,16 +178,16 @@ export default function DetailRentCar() {
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
-                disabledDates={dumpyDisableDate}
+                disabledDates={dummyDisableDate}
               />
             )}
           />
           <Controller
             control={control}
-            name="dateEnd"
+            name="tanggal_selesai"
             render={({ field }) => (
               <DateInputV3
-                minDate={watch("dateStart") || new Date()}
+                minDate={new Date(watch("tanggal_mulai")).toISOString()}
                 withBorder
                 label={"Tanggal Selesai Sewa"}
                 trailingIcon={
@@ -176,13 +197,13 @@ export default function DetailRentCar() {
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
-                disabledDates={dumpyDisableDate}
+                disabledDates={dummyDisableDate}
               />
             )}
           />
           <Controller
             control={control}
-            name="alamat"
+            name="alamat_keberangkatan"
             render={({ field }) => (
               <TextInput
                 label="Alamat Keberangkatan *"
@@ -198,12 +219,16 @@ export default function DetailRentCar() {
             )}
           />
           <TouchableWithoutFeedback
-            onPress={() => setValue("allIn", !watch("allIn"))}
+            onPress={() => setValue("all_in", watch("all_in") ? 0 : 1)}
           >
             <View
               style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
             >
-              <Checkbox selected={watch("allIn")} width={18} height={18} />
+              <Checkbox
+                selected={Boolean(watch("all_in"))}
+                width={18}
+                height={18}
+              />
               <Typography fontFamily="Poppins-Medium" fontSize={12}>
                 ALL IN{" "}
                 <Typography fontFamily="Poppins-Regular" fontSize={12}>
@@ -227,7 +252,7 @@ export default function DetailRentCar() {
                 borderRadius: 100,
               }}
             >
-              {formatCurrency(1500000)}
+              {formatCurrency(rentalCarData?.harga || 0)}
             </Typography>
           </View>
         </View>
@@ -253,7 +278,7 @@ export default function DetailRentCar() {
       >
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Typography fontFamily="OpenSans-Semibold" fontSize={16} color="main">
-            {formatCurrency(1500000)}
+            {formatCurrency(calculatePrice())}
           </Typography>
           <Typography
             fontFamily="OpenSans-Regular"
@@ -264,7 +289,7 @@ export default function DetailRentCar() {
           </Typography>
         </View>
         <View style={{ flex: 1 }}>
-          <Button onPress={() => router.push("/rental/payment")}>
+          <Button disabled={!formState.isValid} onPress={handleSubmitForm}>
             Proses ke Pembayaran
           </Button>
         </View>

@@ -132,13 +132,13 @@ export type TravelScheduleResponseSuccess = {
   success: boolean;
 };
 export const rentalCarQuerySchema = z.object({
-  durasi_sewa: z.string(),
+  durasi_sewa: z.number(),
   area: z.string(),
   rute: z.string(),
   tanggal_mulai: z.date(),
   tanggal_selesai: z.date(),
   alamat_keberangkatan: z.string(),
-  all_in: z.string(),
+  all_in: z.number(),
 });
 export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
 export type TravelPointToPointApiParams = {

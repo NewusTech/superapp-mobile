@@ -15,8 +15,13 @@ import { IconChevronRight } from "@/components/icons";
 import ModalSwipe from "@/components/modal/ModalSwipe";
 import { useAppTheme } from "@/context/theme-context";
 import { PaymentComponent } from "@/features/payment/components";
-import { useUserRentalPayload } from "@/features/rental/store/rental-store";
+import {
+  useRentalBookingPayload,
+  useRentalCarData,
+  useUserRentalPayload,
+} from "@/features/rental/store/rental-store";
 import { formatCurrency } from "@/utils/common";
+import { formatLocalDate } from "@/utils/datetime";
 
 export default function Payment() {
   const router = useRouter();
@@ -32,6 +37,8 @@ export default function Payment() {
   const [modalDetailPenyewa, setModalDetailPenyewa] = useState(false);
 
   const userRent = useUserRentalPayload();
+  const rentCarData = useRentalCarData();
+  const rentCarPayload = useRentalBookingPayload();
 
   const handleToEditDataPenyewa = () => {
     setModalDetailPenyewa(false);
@@ -41,6 +48,13 @@ export default function Payment() {
         isEdit: "true",
       },
     });
+  };
+
+  const calculatePrice = () => {
+    const durationPrice = rentCarPayload.durasi_sewa;
+    const allInPrice = rentCarPayload.all_in ? 1000000 : 0;
+    const carPrice = rentCarData?.harga || 0;
+    return carPrice * durationPrice + allInPrice;
   };
 
   return (
@@ -67,7 +81,7 @@ export default function Payment() {
             fontSize={16}
             style={{ marginBottom: 1 }}
           >
-            Toyota Haice Premio
+            {rentCarData?.title}
           </Typography>
           <View style={{ flexDirection: "row", marginVertical: 5 }}>
             <View style={{ width: "50%" }}>
@@ -75,7 +89,7 @@ export default function Payment() {
                 Durasi Sewa
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                3 Hari
+                {rentCarPayload.durasi_sewa}
               </Typography>
             </View>
             <View>
@@ -83,7 +97,7 @@ export default function Payment() {
                 Area
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                Dalam Kota
+                {rentCarPayload.area}
               </Typography>
             </View>
           </View>
@@ -93,7 +107,7 @@ export default function Payment() {
                 Rute
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                Lampung - Jakarta
+                {rentCarPayload.rute}
               </Typography>
             </View>
             <View style={{ width: "50%" }}>
@@ -101,7 +115,7 @@ export default function Payment() {
                 Alamat Penjemputan
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                Jl. Pangeran Antasari Gg.Morotai
+                {rentCarPayload.alamat_keberangkatan}
               </Typography>
             </View>
           </View>
@@ -111,7 +125,7 @@ export default function Payment() {
                 Tanggal Mulai Sewa
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                11/08/2024
+                {formatLocalDate(rentCarPayload.tanggal_mulai)}
               </Typography>
             </View>
             <View style={{ width: "50%" }}>
@@ -119,7 +133,7 @@ export default function Payment() {
                 Tanggal Selesai Sewa
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                15/08/2024
+                {formatLocalDate(rentCarPayload.tanggal_selesai)}
               </Typography>
             </View>
           </View>
@@ -203,7 +217,7 @@ export default function Payment() {
       >
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Typography fontFamily="OpenSans-Semibold" fontSize={16} color="main">
-            {formatCurrency(1500000)}
+            {formatCurrency(calculatePrice())}
           </Typography>
           <Typography
             fontFamily="OpenSans-Regular"

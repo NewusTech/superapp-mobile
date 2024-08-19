@@ -31,9 +31,9 @@ type RentalStore = {
 
 const rentalStore = createStore<RentalStore>()((set, get) => ({
   rentalCarPayload: {
-    all_in: "",
+    all_in: 0,
     area: "",
-    durasi_sewa: "",
+    durasi_sewa: 1,
     alamat_keberangkatan: "",
     rute: "",
     tanggal_mulai: new Date(),

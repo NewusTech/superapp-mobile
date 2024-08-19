@@ -9,24 +9,30 @@ import {
 import { useRouter } from "expo-router";
 
 import { useAppTheme } from "@/context/theme-context";
+import { rentalCarData } from "@/features/rental/store/rental-store";
 
 import { Button } from "../button/Button";
 import { IconCar, IconGasPump, IconGitBranch, IconSeat } from "../icons";
 import { Typography } from "../typography/Typography";
 
 export type RentaCardlItemProps = {
-  id: string;
-  title: string;
-} & PressableProps;
+  handleOnDetailRentalCard: () => void;
+} & PressableProps &
+  rentalCarData;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
-  const { id, title, ...rest } = props;
+  const {
+    id,
+    title,
+    engine,
+    seat,
+    transmisi,
+    bagasi,
+    handleOnDetailRentalCard,
+    ...rest
+  } = props;
   const router = useRouter();
 
   const { Colors } = useAppTheme();
-
-  const handleOnDetailRentalCard = () => {
-    router.push(`/rental/detail/${id}`);
-  };
 
   return (
     <Pressable {...rest}>
@@ -104,7 +110,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Heatback
+                    {bagasi}
                   </Typography>
                 </View>
                 <View
@@ -121,7 +127,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Diesel
+                    {engine}
                   </Typography>
                 </View>
               </View>
@@ -141,7 +147,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    16 Kursi
+                    {seat} Kursi
                   </Typography>
                 </View>
 
@@ -159,7 +165,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Manual
+                    {transmisi}
                   </Typography>
                 </View>
               </View>

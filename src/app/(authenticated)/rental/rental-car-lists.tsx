@@ -23,24 +23,24 @@ export default function RentalCarLists() {
     {
       id: "1",
       title: "Toyota Hiace Premio",
-      bagasi: "-",
+      bagasi: "Heatback",
       bahan_bakar: "Dex-Lite",
       body: "-",
       engine: "Diesel",
-      seat: "-",
+      seat: "16",
       transmisi: "Manual",
       harga: 1500000,
     },
     {
       id: "2",
       title: "Toyota Hiace Commuter",
-      bagasi: "-",
+      bagasi: "Heatback",
       bahan_bakar: "Dex-Lite",
       body: "-",
       engine: "Diesel",
-      seat: "-",
+      seat: "16",
       transmisi: "Manual",
-      harga: 1500000,
+      harga: 1800000,
     },
   ];
 
@@ -56,6 +56,7 @@ export default function RentalCarLists() {
       transmisi: data.transmisi,
       harga: data.harga,
     });
+    router.push(`/rental/detail/${data.id}`);
   };
   return (
     <>
@@ -76,7 +77,14 @@ export default function RentalCarLists() {
                 <RentaCardlItem
                   id={item.id}
                   title={item.title}
-                  onPress={() => handleRentCar(item)}
+                  bagasi={item.bagasi}
+                  bahan_bakar={item.bahan_bakar}
+                  body={item.body}
+                  engine={item.engine}
+                  harga={item.harga}
+                  seat={item.seat}
+                  transmisi={item.transmisi}
+                  handleOnDetailRentalCard={() => handleRentCar(item)}
                 />
               );
             }}
