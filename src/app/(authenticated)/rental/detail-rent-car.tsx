@@ -50,6 +50,11 @@ export default function DetailRentCar() {
       },
     });
 
+  const handleSubmitForm = handleSubmit((data) => {
+    console.log(data);
+    router.push("/rental/payment");
+  });
+
   const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
     title: i + 1,
   }));

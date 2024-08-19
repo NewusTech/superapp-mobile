@@ -6,7 +6,7 @@ import { UserRent } from "@/app/(authenticated)/rental/detail-user-rent";
 import { ExtractState } from "@/libs/zustand";
 
 type RentalStore = {
-  rentalCarPayload?: RentalCarQuery;
+  rentalCarPayload: RentalCarQuery;
   userRentalPayload: UserRent;
 
   actions: {
@@ -16,7 +16,15 @@ type RentalStore = {
 };
 
 const rentalStore = createStore<RentalStore>()((set, get) => ({
-  rentalCarPayload: undefined,
+  rentalCarPayload: {
+    all_in: "",
+    area: "",
+    durasi_sewa: "",
+    alamat_keberangkatan: "",
+    rute: "",
+    tanggal_mulai: new Date(),
+    tanggal_selesai: new Date(),
+  },
   userRentalPayload: {
     nama: "",
     email: "",

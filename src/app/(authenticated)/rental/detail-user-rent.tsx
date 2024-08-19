@@ -26,6 +26,8 @@ export default function DetailUserRent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+
   const params = useLocalSearchParams<{
     isEdit: string;
   }>();
@@ -36,7 +38,15 @@ export default function DetailUserRent() {
   const userRent = useUserRentalPayload();
   const { setUserRentalPayload } = useRentActions();
 
-  const { control, formState, handleSubmit, setValue } = useForm<UserRent>({
+  const {
+    control,
+    formState,
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    watch,
+  } = useForm<UserRent>({
     resolver: zodResolver(userRentSchema),
     mode: "all",
   });
@@ -48,15 +58,26 @@ export default function DetailUserRent() {
     router.push("/rental/detail-rent-car");
   });
 
-  console.log({ userRent });
+  useEffect(() => {
+    setValue("nama", userRent?.nama || "tes");
+    setValue("email", userRent?.email || "tes@tes.com");
+    setValue("nik", userRent?.nik || "123");
+    setValue("no_telp", userRent?.no_telp || "123");
+    setValue("alamat", userRent?.alamat || "123");
+  }, [userRent, setValue]);
+
+  const emailValue = watch("email");
 
   useEffect(() => {
-    setValue("nama", userRent?.nama || "");
-    setValue("email", userRent?.email || "");
-    setValue("nik", userRent?.nik || "");
-    setValue("no_telp", userRent?.no_telp || "");
-    setValue("alamat", userRent?.alamat || "");
-  }, [userRent, setValue]);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailValue && !emailRegex.test(emailValue)) {
+      setError("email", {
+        type: "manual",
+        message:
+          "Email tidak valid. Harus berisi '@' dan diakhiri dengan '.com'.",
+      });
+    }
+  }, [emailValue, setError, clearErrors]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -116,6 +137,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.email?.message}
               />
             )}
           />
@@ -153,7 +175,7 @@ export default function DetailUserRent() {
           />
           <View style={styles.buttonWrapper}>
             <Button
-              disabled={!formState.isValid}
+              disabled={!formState.isValid || !emailRegex.test(emailValue)}
               onPress={handleSubmitForm}
               style={{ height: 45, width: 120 }}
             >

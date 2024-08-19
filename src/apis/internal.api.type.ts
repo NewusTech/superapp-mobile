@@ -124,7 +124,7 @@ export const rentalCarQuerySchema = z.object({
   rute: z.string(),
   tanggal_mulai: z.date(),
   tanggal_selesai: z.date(),
-  alamat_keberangkatan: z.date(),
+  alamat_keberangkatan: z.string(),
   all_in: z.string(),
 });
 export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
