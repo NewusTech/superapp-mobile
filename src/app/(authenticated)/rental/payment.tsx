@@ -10,18 +10,27 @@ import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, Button, Checkbox, Typography, View } from "@/components";
+import { PostProcessPaymentRentalPayload } from "@/apis/internal.api.type";
+import {
+  Appbar,
+  Button,
+  Checkbox,
+  Snackbar,
+  Typography,
+  View,
+} from "@/components";
 import { IconChevronRight } from "@/components/icons";
 import ModalSwipe from "@/components/modal/ModalSwipe";
 import { useAppTheme } from "@/context/theme-context";
 import { PaymentComponent } from "@/features/payment/components";
+import { usePostProcessPaymentMutationRental } from "@/features/rental/api/usePostProcessPaymentMutationRental";
 import {
   useRentalBookingPayload,
   useRentalCarData,
   useUserRentalPayload,
 } from "@/features/rental/store/rental-store";
 import { formatCurrency } from "@/utils/common";
-import { formatLocalDate } from "@/utils/datetime";
+import { formatDateYMD, formatLocalDate } from "@/utils/datetime";
 
 export default function Payment() {
   const router = useRouter();
@@ -40,6 +49,8 @@ export default function Payment() {
   const rentCarData = useRentalCarData();
   const rentCarPayload = useRentalBookingPayload();
 
+  const processPaymentRentalMutation = usePostProcessPaymentMutationRental();
+
   const handleToEditDataPenyewa = () => {
     setModalDetailPenyewa(false);
     router.push({
@@ -52,9 +63,49 @@ export default function Payment() {
 
   const calculatePrice = () => {
     const durationPrice = rentCarPayload.durasi_sewa;
-    const allInPrice = rentCarPayload.all_in ? 1000000 : 0;
-    const carPrice = rentCarData?.harga || 0;
+    const allInPrice =
+      (rentCarPayload.all_in
+        ? Number.parseFloat(rentCarData?.biaya_all_in || "0")
+        : 0) * durationPrice;
+    const carPrice = Number.parseFloat(rentCarData?.biaya_sewa || "0");
     return carPrice * durationPrice + allInPrice;
+  };
+
+  const handleProcessPayment = () => {
+    const processPaymentData: PostProcessPaymentRentalPayload = {
+      durasi_sewa: rentCarPayload.durasi_sewa,
+      area: rentCarPayload.area,
+      tanggal_mulai_sewa: formatDateYMD(rentCarPayload.tanggal_mulai),
+      tanggal_akhir_sewa: formatDateYMD(rentCarPayload.tanggal_selesai),
+      alamat_keberangkatan: rentCarPayload.alamat_keberangkatan,
+      metode_id: selectedPaymentMethod || 1,
+      mobil_rental_id: rentCarData?.id || 1,
+      nama: userRent.nama,
+      nik: userRent.nik,
+      email: userRent.email,
+      no_telp: userRent.no_telp,
+      alamat: userRent.alamat,
+      all_in: rentCarPayload.all_in,
+    };
+    processPaymentRentalMutation.mutate(processPaymentData, {
+      onSuccess: (res) => {
+        console.log(res, "res");
+        router.dismissAll();
+        Snackbar.show({ message: "Order pesanan berhasil" });
+        router.push({
+          pathname: "/travel/link-transaction",
+          params: {
+            link: res.data.payment_url,
+          },
+        });
+      },
+      onError: (res) => {
+        Snackbar.show({
+          message: "Order pesanan gagal, coba setelah beberapa saat",
+          variant: "danger",
+        });
+      },
+    });
   };
 
   return (
@@ -81,7 +132,7 @@ export default function Payment() {
             fontSize={16}
             style={{ marginBottom: 1 }}
           >
-            {rentCarData?.title}
+            {rentCarData?.type}
           </Typography>
           <View style={{ flexDirection: "row", marginVertical: 5 }}>
             <View style={{ width: "50%" }}>
@@ -104,24 +155,6 @@ export default function Payment() {
           <View style={{ flexDirection: "row" }}>
             <View style={{ width: "50%" }}>
               <Typography fontFamily="Poppins-Light" fontSize={14}>
-                Rute
-              </Typography>
-              <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                {rentCarPayload.rute}
-              </Typography>
-            </View>
-            <View style={{ width: "50%" }}>
-              <Typography fontFamily="Poppins-Light" fontSize={14}>
-                Alamat Penjemputan
-              </Typography>
-              <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                {rentCarPayload.alamat_keberangkatan}
-              </Typography>
-            </View>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <View style={{ width: "50%" }}>
-              <Typography fontFamily="Poppins-Light" fontSize={14}>
                 Tanggal Mulai Sewa
               </Typography>
               <Typography fontFamily="Poppins-Regular" fontSize={14}>
@@ -136,6 +169,22 @@ export default function Payment() {
                 {formatLocalDate(rentCarPayload.tanggal_selesai)}
               </Typography>
             </View>
+          </View>
+          <View style={{ width: "100%", flexDirection: "row" }}>
+            <Typography
+              fontFamily="Poppins-Light"
+              fontSize={14}
+              style={{ width: "50%" }}
+            >
+              Alamat Penjemputan
+            </Typography>
+            <Typography
+              fontFamily="Poppins-Regular"
+              fontSize={14}
+              style={{ width: "50%" }}
+            >
+              {rentCarPayload.alamat_keberangkatan}
+            </Typography>
           </View>
         </View>
 
@@ -228,7 +277,12 @@ export default function Payment() {
           </Typography>
         </View>
         <View style={{ flex: 1 }}>
-          <Button>Bayar</Button>
+          <Button
+            disabled={!selectedPaymentMethod || !tna}
+            onPressIn={handleProcessPayment}
+          >
+            Bayar
+          </Button>
         </View>
       </View>
       <ModalSwipe

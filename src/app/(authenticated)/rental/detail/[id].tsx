@@ -222,7 +222,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  {rentalCarData?.body}
+                  -
                 </Typography>
               </View>
               {/* col 2 */}
@@ -304,8 +304,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  {rentalCarData?.seat}
-                  Kursi
+                  {rentalCarData?.jumlah_kursi} Kursi
                 </Typography>
               </View>
               {/* col 4 */}
@@ -346,7 +345,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  {rentalCarData?.engine}
+                  {rentalCarData?.mesin}
                 </Typography>
               </View>
               {/* col 5 */}
@@ -387,7 +386,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  {rentalCarData?.bagasi}
+                  {`${rentalCarData?.bagasi} ${rentalCarData?.kapasitas_bagasi}`}
                 </Typography>
               </View>
               {/* col 6 */}

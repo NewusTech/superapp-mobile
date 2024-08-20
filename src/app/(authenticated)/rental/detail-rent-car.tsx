@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { number, z } from "zod";
+import { z } from "zod";
 
 import { rentalCarQuerySchema } from "@/apis/internal.api.type";
 import {
@@ -43,10 +43,8 @@ export default function DetailRentCar() {
       mode: "all",
       defaultValues: {
         durasi_sewa: 1,
-        alamat_keberangkatan: "",
         all_in: 0,
         area: "Dalam Kota",
-        rute: "",
         tanggal_mulai: new Date(),
         tanggal_selesai: new Date(),
       },
@@ -76,14 +74,13 @@ export default function DetailRentCar() {
     },
   ];
 
-  const dumpData = Array.from({ length: maxDayRentDuration }, (v, i) => ({
-    title: "Dummy Data " + i,
-  }));
-
   const calculatePrice = () => {
     const durationPrice = watch("durasi_sewa");
-    const allInPrice = watch("all_in") ? 1000000 : 0;
-    const carPrice = rentalCarData?.harga || 0;
+    const allInPrice =
+      (watch("all_in")
+        ? Number.parseFloat(rentalCarData?.biaya_all_in || "0")
+        : 0) * durationPrice;
+    const carPrice = Number.parseFloat(rentalCarData?.biaya_sewa || "0");
     return carPrice * durationPrice + allInPrice;
   };
 
@@ -141,22 +138,6 @@ export default function DetailRentCar() {
                 placeholder="Pilih Area"
                 value={String(field.value)}
                 data={areList}
-                onSelect={(selectedItem) => field.onChange(selectedItem.title)}
-                trailingIcon={
-                  <IconChevronDown width={21} height={21} color="main" />
-                }
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="rute"
-            render={({ field }) => (
-              <SelectInputV2
-                label="Rute *"
-                placeholder="Pilih Rute"
-                value={String(field.value)}
-                data={dumpData}
                 onSelect={(selectedItem) => field.onChange(selectedItem.title)}
                 trailingIcon={
                   <IconChevronDown width={21} height={21} color="main" />
@@ -232,8 +213,12 @@ export default function DetailRentCar() {
               <Typography fontFamily="Poppins-Medium" fontSize={12}>
                 ALL IN{" "}
                 <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                  ( Biaya Tol,Kapal dan Solar)
-                </Typography>
+                  (Tol, Kapal dan Solar)
+                </Typography>{" "}
+                {formatCurrency(
+                  Number.parseFloat(rentalCarData?.biaya_all_in || "0")
+                )}
+                /hari
               </Typography>
             </View>
           </TouchableWithoutFeedback>
@@ -252,7 +237,9 @@ export default function DetailRentCar() {
                 borderRadius: 100,
               }}
             >
-              {formatCurrency(rentalCarData?.harga || 0)}
+              {formatCurrency(
+                Number.parseFloat(rentalCarData?.biaya_sewa || "0") || 0
+              )}
             </Typography>
           </View>
         </View>

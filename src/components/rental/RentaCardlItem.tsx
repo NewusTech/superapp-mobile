@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
+import { RentalCarData } from "@/apis/internal.api.type";
 import { useAppTheme } from "@/context/theme-context";
-import { rentalCarData } from "@/features/rental/store/rental-store";
 
 import { Button } from "../button/Button";
 import { IconCar, IconGasPump, IconGitBranch, IconSeat } from "../icons";
@@ -17,14 +17,18 @@ import { Typography } from "../typography/Typography";
 
 export type RentaCardlItemProps = {
   handleOnDetailRentalCard: () => void;
-} & PressableProps &
-  rentalCarData;
+  type: string;
+  bahan_bakar: string;
+  jumlah_kursi: string;
+  transmisi: string;
+  bagasi: string;
+} & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
   const {
     id,
-    title,
-    engine,
-    seat,
+    type,
+    bahan_bakar,
+    jumlah_kursi,
     transmisi,
     bagasi,
     handleOnDetailRentalCard,
@@ -74,7 +78,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             }}
           >
             <Typography fontFamily="Poppins-Bold" fontSize={18}>
-              {title}
+              {type}
             </Typography>
             <Typography
               fontFamily="Poppins-Regular"
@@ -127,7 +131,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    {engine}
+                    {bahan_bakar}
                   </Typography>
                 </View>
               </View>
@@ -147,7 +151,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    {seat} Kursi
+                    {jumlah_kursi} Kursi
                   </Typography>
                 </View>
 

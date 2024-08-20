@@ -15,9 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const userRentSchema = z.object({
   nama: z.string(),
-  nik: z.string(),
+  nik: z.string().min(16, "NIK Minimal 16 Digits"),
   email: z.string().email(),
-  no_telp: z.string(),
+  no_telp: z.string().min(8, "Nomor Telepon Minimal 8 Digit"),
   alamat: z.string(),
 });
 export type UserRent = z.infer<typeof userRentSchema>;
@@ -61,8 +61,8 @@ export default function DetailUserRent() {
   useEffect(() => {
     setValue("nama", userRent?.nama || "tes");
     setValue("email", userRent?.email || "tes@tes.com");
-    setValue("nik", userRent?.nik || "123");
-    setValue("no_telp", userRent?.no_telp || "123");
+    setValue("nik", userRent?.nik || "1234567890123456");
+    setValue("no_telp", userRent?.no_telp || "1234567890");
     setValue("alamat", userRent?.alamat || "123");
   }, [userRent, setValue]);
 
@@ -123,6 +123,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.nik?.message}
               />
             )}
           />
@@ -153,6 +154,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.no_telp?.message}
               />
             )}
           />

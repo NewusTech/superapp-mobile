@@ -1,31 +1,19 @@
 import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
 
-import { RentalCarQuery } from "@/apis/internal.api.type";
+import { RentalCarData, RentalCarQuery } from "@/apis/internal.api.type";
 import { UserRent } from "@/app/(authenticated)/rental/detail-user-rent";
 import { ExtractState } from "@/libs/zustand";
-
-export type rentalCarData = {
-  id: string;
-  title: string;
-  body: string;
-  engine: string;
-  seat: string;
-  bahan_bakar: string;
-  bagasi: string;
-  transmisi: string;
-  harga: number;
-};
 
 type RentalStore = {
   rentalCarPayload: RentalCarQuery;
   userRentalPayload: UserRent;
-  rentalCarData?: rentalCarData;
+  rentalCarData?: RentalCarData;
 
   actions: {
     setRentalPayload: (rentalCarPayload?: RentalCarQuery) => void;
     setUserRentalPayload: (userRentalPayload?: UserRent) => void;
-    setRentalCarData: (rentalCarData?: rentalCarData) => void;
+    setRentalCarData: (rentalCarData?: RentalCarData) => void;
   };
 };
 

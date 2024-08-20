@@ -220,8 +220,9 @@ export default function HomeTabScreen() {
 
     // Jika scroll berada di paling atas (gunakan rentang untuk pengecekan)
     if (offsetY <= 1) {
-      Animated.spring(pan, {
+      Animated.timing(pan, {
         toValue: { x: 0, y: 0 },
+        duration: 150,
         useNativeDriver: false,
       }).start(() => {
         setScollViewEnable(false);
