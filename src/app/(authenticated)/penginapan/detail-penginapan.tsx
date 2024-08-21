@@ -54,7 +54,7 @@ export default function DetailPenginapan() {
   };
 
   const handleViewAllImage = () => {
-    router.navigate("/travel/partials/list-car-image");
+    router.navigate("/penginapan/list-penginapan-image");
   };
 
   const handleLanjutPemesanan = () => {
