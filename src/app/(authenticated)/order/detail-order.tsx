@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
-import * as FileSystem from "expo-file-system";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Iconify } from "react-native-iconify";
 
 import {
   Appbar,
@@ -12,13 +11,7 @@ import {
   Typography,
   View,
 } from "@/components";
-import {
-  IconCarSide,
-  IconDownload,
-  IconPinSharp,
-  IconSeat,
-} from "@/components/icons";
-import { API_URL } from "@/constants/Constant";
+import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
 import { TravelTicketItem } from "@/features/travel/components";
@@ -28,7 +21,6 @@ import downloadFile from "@/utils/downloadFile";
 
 export default function DetailOrder() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
   const params = useLocalSearchParams<{
@@ -68,57 +60,26 @@ export default function DetailOrder() {
     return new Date(expirationTime).getTime() - new Date().getTime() > 0;
   };
 
-  const handleToDownloadTiket = async () => {
-    try {
-      if (!orderDetail)
-        return Snackbar.show({
-          message: "Gagal Mendownload File",
-          variant: "danger",
-        });
-      await downloadFile(
-        orderDetail?.pembayaran.link_tiket,
-        `Tiket-${orderDetail?.pembayaran.kode_pembayaran}`
-      );
-      Snackbar.show({
-        message: "Berhasil Mendownload File",
-      });
-    } catch (error) {
-      console.error(error);
-      Snackbar.show({
-        message: "Gagal Mendownload File",
-        variant: "danger",
-      });
-    }
-    // router.push({
-    //   pathname: "/order/view-pdf",
-    //   params: {
-    //     link: orderDetail?.pembayaran.link_tiket,
-    //     title: "e-Tiket",
-    //   },
-    // });
+  const handleToViewTiket = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.pembayaran.link_tiket,
+        title: "e-Tiket",
+        kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran,
+      },
+    });
   };
 
-  const handleToDownloadInvoice = async () => {
-    try {
-      if (!orderDetail)
-        return Snackbar.show({
-          message: "Gagal Mendownload File",
-          variant: "danger",
-        });
-      await downloadFile(
-        orderDetail?.pembayaran.link_invoice,
-        `Invoice-${orderDetail?.pembayaran.kode_pembayaran}`
-      );
-      Snackbar.show({
-        message: "Berhasil Mendownload File",
-      });
-    } catch (error) {
-      console.error(error);
-      Snackbar.show({
-        message: "Gagal Mendownload File",
-        variant: "danger",
-      });
-    }
+  const handleToViewInvoice = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.pembayaran.link_invoice,
+        title: "Invoice",
+        kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran,
+      },
+    });
   };
 
   useEffect(() => {
@@ -306,18 +267,23 @@ export default function DetailOrder() {
                       borderColor: Colors.textsecondary,
                     }}
                     variant="secondary"
-                    onPress={handleToDownloadTiket}
+                    onPress={handleToViewTiket}
                   >
-                    <IconDownload size={24} color="main" />
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.main}
+                    />
                     <Typography fontFamily="Poppins-Regular" color="main">
                       e-tiket
                     </Typography>
                   </Button>
-                  <Button
-                    style={{ width: 150 }}
-                    onPress={handleToDownloadInvoice}
-                  >
-                    <IconDownload size={24} color="paper" />
+                  <Button style={{ width: 150 }} onPress={handleToViewInvoice}>
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.paper}
+                    />
                     <Typography fontFamily="Poppins-Regular" color="paper">
                       Invoice
                     </Typography>

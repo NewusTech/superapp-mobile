@@ -86,12 +86,19 @@ export default function DetailRentCar() {
 
   const areaWatch = watch("area").toLocaleLowerCase();
   const durationWatch = watch("durasi_sewa");
+
+  const tanggalMulai = watch("tanggal_mulai");
+
   useEffect(() => {
     if (areaWatch === "luar kota" && durationWatch < 4) {
       console.log(areaWatch);
       return setValue("durasi_sewa", 4);
     }
   }, [areaWatch, durationWatch, setValue]);
+
+  useEffect(() => {
+    setValue("tanggal_selesai", tanggalMulai);
+  }, [tanggalMulai, setValue]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>

@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { BlurView } from "expo-blur";
 
+import { IconCross } from "../icons";
+
 type ModalSwipeProp = {
   children: React.ReactNode;
   setModalVisible: (value: boolean) => void;
@@ -67,7 +69,13 @@ export default function ModalSwipe(props: ModalSwipeProp) {
           style={[styles.modalContent, { transform: [{ translateY: pan.y }] }]}
           {...panResponder.panHandlers}
         >
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            style={{ width: "auto" }}
+          >
+            <IconCross size={21} />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ position: "relative", top: -55 }}>
             <View style={styles.modalHandle} />
           </TouchableOpacity>
           <View style={{ paddingVertical: 10 }}>{children}</View>
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(20, 21, 17, 0.5)",
   },
   modalContent: {
     backgroundColor: "white",
@@ -101,9 +109,17 @@ const styles = StyleSheet.create({
   modalHandle: {
     width: "25%",
     height: 5,
-    backgroundColor: "#ccc",
+    backgroundColor: "#FFFFFF",
     borderRadius: 2.5,
     alignSelf: "center",
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

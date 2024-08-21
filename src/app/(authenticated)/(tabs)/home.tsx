@@ -301,20 +301,18 @@ export default function HomeTabScreen() {
                   icon={<IconPackage width={24} height={24} color="paper" />}
                   iconColor="secondary"
                   onPress={() => router.push("/package/new-package-screen")}
-                  // disabled
                 />
                 <RoundedButton
                   label="Rental"
                   icon={<IconCarSide width={24} height={24} color="paper" />}
                   iconColor="dangerbase"
                   onPress={() => router.push("/rental/rental-car-lists")}
-                  // disabled
                 />
                 <RoundedButton
                   label="Penginapan"
                   icon={<IconBuilding width={24} height={24} color="paper" />}
                   iconColor="quarternary"
-                  disabled
+                  onPress={() => router.push("/penginapan/penginapan-list")}
                 />
               </View>
             </View>
