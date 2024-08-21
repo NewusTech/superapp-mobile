@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import {
   FlatList,
+  RefreshControl,
   StyleSheet,
   TouchableNativeFeedbackProps,
   TouchableWithoutFeedback,
@@ -23,6 +24,7 @@ import {
   IconIcArrowRight,
   IconPinSharp,
 } from "@/components/icons";
+import ModalSwipe from "@/components/modal/ModalSwipe";
 import SelectTravelComponent from "@/components/travel/SelectTravelComponent";
 import { AppColor } from "@/constants/Colors";
 import { useGetTravelSchedule } from "@/features/travel/api/useGetSchedule";
@@ -199,21 +201,38 @@ export default function TravelOptionScreen() {
       </View>
 
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={travelScheduleQuery.isFetching}
+            onRefresh={travelScheduleQuery.refetch}
+          />
+        }
         data={travelScheduleQuery.data?.data || []}
         renderItem={({ item }) => {
           const availableSeat = item.carSeat - item.seatTaken.length;
-
           return (
             <TravelTicketItem
-              departureDate={new Date(item.departureDate)}
-              destinationCity={item.originCity}
+              departureTime={item.departureTime}
+              destinationCity={item.destinationCity}
               destinationDepartureDate={new Date(item.destinationDepartureDate)}
-              originCity={item.destinationCity}
+              originCity={item.originCity}
               originDepartureDate={new Date(item.originDepartureDate)}
               onPress={() => handleSelectSchedule(item)}
               icon={<IconCarSide color="main" />}
               customHeader={
                 <ScheduleHeader item={item} availableSeat={availableSeat} />
+              }
+              customFooter={
+                item.transitionCity.trim() !== "" ? (
+                  <Typography
+                    fontFamily="OpenSans-Medium"
+                    fontSize={14}
+                    style={{ textAlign: "center" }}
+                    color="textsecondary"
+                  >
+                    Transit di Lampung
+                  </Typography>
+                ) : null
               }
             />
           );
@@ -238,26 +257,14 @@ export default function TravelOptionScreen() {
           paddingBottom: insets.bottom + 20,
         }}
       />
-      {openPopupRute && (
-        <View style={style.containerPopup}>
-          <TouchableWithoutFeedback onPress={() => setOpenPopupRute(false)}>
-            <BlurView
-              intensity={100}
-              blurReductionFactor={100}
-              experimentalBlurMethod="dimezisBlurView"
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            />
-          </TouchableWithoutFeedback>
-          <View style={style.containerPopupItem}>
-            <SelectTravelComponent
-              handleAfterSubmit={() => setOpenPopupRute(false)}
-            />
-          </View>
-        </View>
-      )}
+      <ModalSwipe
+        modalVisible={openPopupRute}
+        setModalVisible={setOpenPopupRute}
+      >
+        <SelectTravelComponent
+          handleAfterSubmit={() => setOpenPopupRute(false)}
+        />
+      </ModalSwipe>
     </View>
   );
 }
@@ -322,9 +329,10 @@ function TouchableWithIcon({
       >
         {icon}
         <Typography
-          fontFamily="OpenSans-Bold"
+          fontFamily="Poppins-Bold"
           fontSize={12}
           color={disabled ? "main" : "paper"}
+          numberOfLines={1}
         >
           {label}
         </Typography>
@@ -360,11 +368,13 @@ const style = StyleSheet.create({
   },
   touchableContainer: {
     padding: 10,
-    gap: 5,
+    paddingEnd: 20,
+    gap: 2,
     flexGrow: 1,
     borderWidth: 1,
     borderRadius: 100,
     flexDirection: "row",
+    overflow: "hidden",
   },
   headerWrapper: {
     flexDirection: "row",

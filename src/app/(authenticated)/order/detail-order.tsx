@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Iconify } from "react-native-iconify";
 
 import {
   Appbar,
@@ -11,21 +11,16 @@ import {
   Typography,
   View,
 } from "@/components";
-import {
-  IconCarSide,
-  IconDownload,
-  IconPinSharp,
-  IconSeat,
-} from "@/components/icons";
+import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
 import { TravelTicketItem } from "@/features/travel/components";
 import { formatCurrency } from "@/utils/common";
 import { formatLocalDate, formatTimeString } from "@/utils/datetime";
+import downloadFile from "@/utils/downloadFile";
 
 export default function DetailOrder() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
   const params = useLocalSearchParams<{
@@ -63,6 +58,28 @@ export default function DetailOrder() {
       return false;
     }
     return new Date(expirationTime).getTime() - new Date().getTime() > 0;
+  };
+
+  const handleToViewTiket = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.pembayaran.link_tiket,
+        title: "e-Tiket",
+        kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran,
+      },
+    });
+  };
+
+  const handleToViewInvoice = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.pembayaran.link_invoice,
+        title: "Invoice",
+        kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran,
+      },
+    });
   };
 
   useEffect(() => {
@@ -233,38 +250,51 @@ export default function DetailOrder() {
                 )}
               </Typography>
             </View>
-            {/* <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingTop: 10,
-                gap: 5,
-              }}
-            >
-              <Button
-                style={{
-                  width: 150,
-                  alignItems: "center",
-                  borderColor: Colors.textsecondary,
-                }}
-                variant="secondary"
-              >
-                <IconDownload size={24} color="main" />
-                <Typography fontFamily="Poppins-Regular" color="main">
-                  e-tiket
-                </Typography>
-              </Button>
-              <Button style={{ width: 150 }}>
-                <IconDownload size={24} color="paper" />
-                <Typography fontFamily="Poppins-Regular" color="paper">
-                  Invoice
-                </Typography>
-              </Button>
-            </View> */}
+            {!orderDetailQuery.isFetching &&
+              orderDetail.pembayaran.status === "Sukses" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: 10,
+                    gap: 5,
+                  }}
+                >
+                  <Button
+                    style={{
+                      width: 150,
+                      alignItems: "center",
+                      borderColor: Colors.textsecondary,
+                    }}
+                    variant="secondary"
+                    onPress={handleToViewTiket}
+                  >
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.main}
+                    />
+                    <Typography fontFamily="Poppins-Regular" color="main">
+                      e-tiket
+                    </Typography>
+                  </Button>
+                  <Button style={{ width: 150 }} onPress={handleToViewInvoice}>
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.paper}
+                    />
+                    <Typography fontFamily="Poppins-Regular" color="paper">
+                      Invoice
+                    </Typography>
+                  </Button>
+                </View>
+              )}
           </View>
           {/* perjalanan */}
           <SectionWrapper title="Perjalanan">
             <TravelTicketItem
+              disabled
               destinationCity={orderDetail?.pesanan.kota_tujuan || ""}
               destinationDepartureDate={
                 new Date(orderDetail?.pesanan.tanggal || "2024-08-10")

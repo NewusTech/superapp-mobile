@@ -65,7 +65,11 @@ export default function OrderTabScreen() {
           />
 
           <Tab
-            tabs={[{ key: "travel", label: "Travel" }]}
+            tabs={[
+              { key: "travel", label: "Travel" },
+              { key: "rental", label: "Rental" },
+              { key: "penginapan", label: "Penginapan" },
+            ]}
             activeTab={activeFilter}
             onPress={(key) => setActiveFilter(key as string)}
             variant="button"
@@ -83,6 +87,7 @@ export default function OrderTabScreen() {
           data={orderListQuery.data?.data}
           renderItem={({ item }) => (
             <TravelTicketItem
+              disabled
               originCity={item.kota_asal}
               originDepartureDate={new Date(item.tanggal)}
               destinationCity={item.kota_tujuan}
@@ -137,7 +142,8 @@ export default function OrderTabScreen() {
                       backgroundColor:
                         item.status === "Sukses"
                           ? Colors.success
-                          : item.status === "Menunggu pembayaran"
+                          : item.status.toLocaleLowerCase() ===
+                              "menunggu pembayaran"
                             ? Colors.textsecondary
                             : Colors.dangerbase,
                       borderRadius: 100,

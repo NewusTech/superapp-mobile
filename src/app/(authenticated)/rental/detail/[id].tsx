@@ -3,6 +3,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ImageBackground,
   ImageProps,
   Pressable,
   ScrollView,
@@ -15,9 +16,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Button, Typography, View } from "@/components";
 import { IconChevronLeft } from "@/components/icons";
+import RenderImg from "@/components/image/RenderImg";
 import { useAppTheme } from "@/context/theme-context";
+import {
+  useRentActions,
+  useRentalCarData,
+} from "@/features/rental/store/rental-store";
 
-const RentalImgDump: { imgUrl: ImageProps["source"] }[] = [
+export const RentalImgDump: { imgUrl: ImageProps["source"] }[] = [
   { imgUrl: require("@/assets/images/default_rent_car_2.png") },
   { imgUrl: require("@/assets/images/default_rent_car_2.png") },
   { imgUrl: require("@/assets/images/default_rent_car_2.png") },
@@ -28,24 +34,39 @@ export default function DetailRentalCar() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const params = useLocalSearchParams<{
+    id: string;
+  }>();
+
   const { Colors } = useAppTheme();
 
   const [activePopupImg, setActivePopupImg] = useState(false);
 
   const [activeImg, setActiveImg] = useState<any>();
 
+  const rentalCarData = useRentalCarData();
+
   const handleSelectedImg = (url: any) => {
     setActiveImg(url);
     setActivePopupImg(true);
   };
+  const { setUserRentalPayload } = useRentActions();
+
+  const handleViewAllImage = () => {
+    router.navigate("/travel/partials/list-car-image");
+  };
 
   const handleToDetailUserRentcar = () => {
     router.push("/rental/detail-user-rent");
+    setUserRentalPayload({
+      alamat: "",
+      email: "",
+      nama: "",
+      nik: "",
+      no_telp: "",
+    });
   };
 
-  const params = useLocalSearchParams<{
-    id: string;
-  }>();
   return (
     <View style={{ flex: 1, backgroundColor: Colors.paper }}>
       <ScrollView>
@@ -102,14 +123,41 @@ export default function DetailRentalCar() {
               horizontal
               scrollEnabled={false}
               data={RentalImgDump.slice(0, 3)} // Only render the main image
-              renderItem={({ item }) => (
-                <RenderImg
-                  height={120}
-                  width={Dimensions.get("window").width / 3.07}
-                  imgUrl={item.imgUrl}
-                  onPressImg={() => handleSelectedImg(item.imgUrl)}
-                />
-              )}
+              renderItem={({ item, index }) =>
+                index === 2 ? (
+                  <ImageBackground
+                    source={RentalImgDump.slice(0, -1)[0].imgUrl}
+                    style={{
+                      height: 120,
+                      width: Dimensions.get("window").width / 3.07,
+                    }}
+                  >
+                    <TouchableWithoutFeedback onPress={handleViewAllImage}>
+                      <Typography
+                        fontFamily="Poppins-Medium"
+                        fontSize={14}
+                        style={{
+                          backgroundColor: "rgba(255 255 255 / 0.8)",
+                          height: "100%",
+                          width: "100%",
+                          alignItems: "center",
+                          textAlignVertical: "center",
+                          textAlign: "center",
+                        }}
+                      >
+                        2+ Lainnya
+                      </Typography>
+                    </TouchableWithoutFeedback>
+                  </ImageBackground>
+                ) : (
+                  <RenderImg
+                    height={120}
+                    width={Dimensions.get("window").width / 3.07}
+                    imgUrl={item.imgUrl}
+                    onPressImg={() => handleSelectedImg(item.imgUrl)}
+                  />
+                )
+              }
               contentContainerStyle={{ gap: 5 }}
               style={style.detailImageContainer}
             />
@@ -193,7 +241,7 @@ export default function DetailRentalCar() {
                     width: Dimensions.get("window").width / 2.5,
                   }}
                 >
-                  Engine
+                  BBM
                 </Typography>
                 <Typography
                   fontFamily="Poppins-Bold"
@@ -215,7 +263,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Dex-Lite
+                  {rentalCarData?.bahan_bakar}
                 </Typography>
               </View>
               {/* col 3 */}
@@ -256,7 +304,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  16 Kursi
+                  {rentalCarData?.jumlah_kursi} Kursi
                 </Typography>
               </View>
               {/* col 4 */}
@@ -297,7 +345,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Diesel
+                  {rentalCarData?.mesin}
                 </Typography>
               </View>
               {/* col 5 */}
@@ -338,7 +386,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  -
+                  {`${rentalCarData?.bagasi} ${rentalCarData?.kapasitas_bagasi}`}
                 </Typography>
               </View>
               {/* col 6 */}
@@ -379,7 +427,7 @@ export default function DetailRentalCar() {
                     width: "100%",
                   }}
                 >
-                  Manual
+                  {rentalCarData?.transmisi}
                 </Typography>
               </View>
             </View>
@@ -430,24 +478,6 @@ export default function DetailRentalCar() {
   );
 }
 
-const RenderImg = ({
-  imgUrl,
-  height,
-  width,
-  onPressImg,
-}: {
-  imgUrl: ImageProps["source"];
-  height: any;
-  width: any;
-  onPressImg?: () => void;
-}) => {
-  return (
-    <TouchableWithoutFeedback onPress={onPressImg}>
-      <Image source={imgUrl} style={[style.image, { height, width }]} />
-    </TouchableWithoutFeedback>
-  );
-};
-
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -458,10 +488,6 @@ const style = StyleSheet.create({
   },
   mainImageContainer: {
     backgroundColor: "transparent",
-  },
-  image: {
-    width: "auto",
-    resizeMode: "cover",
   },
   containerPopup: {
     position: "absolute",

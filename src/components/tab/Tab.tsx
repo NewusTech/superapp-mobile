@@ -96,8 +96,9 @@ function TabItemButton({
     >
       <Typography
         fontFamily="OpenSans-Regular"
-        fontSize={10}
+        fontSize={14}
         color={isActive ? "paper" : "textprimary"}
+        style={{ textAlignVertical: "center" }}
       >
         {label}
       </Typography>
@@ -118,13 +119,14 @@ const style = StyleSheet.create({
     justifyContent: "center",
   },
   touchableContainerButton: {
-    minWidth: 80,
-    height: 24,
+    // minWidth: 80,
+    // minHeight: 24,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 100,
     borderWidth: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
   },
   indicator: {
     height: 2,

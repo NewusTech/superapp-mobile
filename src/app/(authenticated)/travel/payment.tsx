@@ -232,28 +232,25 @@ export default function TravelPaymentScreen() {
             selectedMethod={selectedPaymentMethod}
             onMethodSelected={setSelectedPaymentMethod}
           />
-          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            <TouchableWithoutFeedback
-              onPress={() => setTna((prev) => !prev)}
-              style={{ backgroundColor: "red" }}
+          <TouchableWithoutFeedback onPress={() => setTna((prev) => !prev)}>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
             >
-              <View>
-                <Checkbox selected={tna} />
-              </View>
-            </TouchableWithoutFeedback>
-            <Typography fontFamily="Poppins-Regular" fontSize={12}>
-              Saya Menyetuji{" "}
-              <Typography
-                fontFamily="Poppins-Regular"
-                fontSize={12}
-                color="main"
-                onPress={() => setOpenModal(true)}
-              >
-                Sytarat & Ketentuan
-              </Typography>{" "}
-              Rama Tranz
-            </Typography>
-          </View>
+              <Checkbox selected={tna} />
+              <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                Saya Menyetuji{" "}
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={12}
+                  color="main"
+                  onPress={() => setOpenModal(true)}
+                >
+                  Sytarat & Ketentuan
+                </Typography>{" "}
+                Rama Tranz
+              </Typography>
+            </View>
+          </TouchableWithoutFeedback>
 
           <View backgroundColor="dangerlight" style={styles.warningWrapper}>
             <Typography

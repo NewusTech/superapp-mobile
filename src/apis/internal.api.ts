@@ -19,13 +19,16 @@ import {
   GetPaymentMethodResponseSuccess,
   GetPaymentStatusResponseSuccess,
   GetTravelBranchResponseSuccess,
+  GetTravelRutesResponseSuccess,
   OrderDetailResponseSuccess,
   OrderListResponseSuccess,
   PostLoginPayload,
   PostLoginResponseSuccess,
   PostProcessPaymentPayload,
+  PostProcessPaymentRentalPayload,
   PostRegisterPayload,
   PostUpdateProfileData as PutUpdateProfileData,
+  RentalCarListResponseSuccess,
   TravelPointToPointApiParams,
   TravelScheduleQuery,
   TravelScheduleResponseSuccess,
@@ -152,6 +155,14 @@ export const getTravelSchedule = async (params: TravelScheduleQuery) => {
   return response.data;
 };
 
+export const getTravelRute = async () => {
+  const response = await apiClientMock<GetTravelRutesResponseSuccess>({
+    method: "GET",
+    url: "/api/rute/master_rute",
+  });
+
+  return response.data;
+};
 export const getTravelBranch = async () => {
   const response = await apiClientMock<GetTravelBranchResponseSuccess>({
     method: "GET",
@@ -200,6 +211,20 @@ export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
   return response.data;
 };
 
+export const postProcessPaymentRental = async (
+  data: PostProcessPaymentRentalPayload
+) => {
+  const response = await apiClientMock({
+    method: "POST",
+    url: "/api/rental/process-payment",
+    data,
+  });
+
+  console.error(response.data + " Tes Log");
+
+  return response.data;
+};
+
 export const getOrderList = async (status: string) => {
   const response = await apiClientMock<OrderListResponseSuccess>({
     method: "GET",
@@ -207,6 +232,14 @@ export const getOrderList = async (status: string) => {
     params: {
       status,
     },
+  });
+
+  return response.data;
+};
+export const getRentalCarLIst = async () => {
+  const response = await apiClientMock<RentalCarListResponseSuccess>({
+    method: "GET",
+    url: "/api/rental/mobil",
   });
 
   return response.data;
@@ -220,10 +253,10 @@ export const getOrderDetail = async (kode_pesanan: string) => {
   return response.data;
 };
 
-export const getPaymentStatusDetail = async (id: string) => {
+export const getPaymentStatusDetail = async (kode_pesanan: string) => {
   const response = await apiClientMock<GetPaymentStatusResponseSuccess>({
     method: "GET",
-    url: "/api/pesanan/" + id,
+    url: "/api/pesanan/" + kode_pesanan,
   });
 
   return response.data;

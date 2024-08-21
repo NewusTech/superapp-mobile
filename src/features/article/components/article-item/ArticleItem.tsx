@@ -9,17 +9,29 @@ import {
 
 import { GetArticleResponseSuccess } from "@/apis/internal.api.type";
 import { Typography, View } from "@/components";
+import { IconStar } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 
 export type ArticleItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
   subtitle: string;
-  price: string;
+  rating: number;
   badgeLocation?: string;
+  width?: number | "auto" | any;
+  height?: number | "auto" | any;
 } & PressableProps;
 export function ArticleItem(props: ArticleItemProps) {
-  const { title, imgSource, subtitle, price, badgeLocation, ...rest } = props;
+  const {
+    title,
+    imgSource,
+    subtitle,
+    rating,
+    badgeLocation,
+    width = 155,
+    height = 240,
+    ...rest
+  } = props;
 
   const { Colors } = useAppTheme();
 
@@ -30,6 +42,8 @@ export function ArticleItem(props: ArticleItemProps) {
           style={[
             style.container,
             {
+              height,
+              width,
               borderColor: Colors.outlineborder,
               backgroundColor: Colors.paper,
               shadowColor: "#000",
@@ -81,7 +95,7 @@ export function ArticleItem(props: ArticleItemProps) {
                   backgroundColor: Colors.badgeMain,
                 }}
               >
-                Hot Promo
+                {badgeLocation}
               </Typography>
             </View>
           )}
@@ -90,30 +104,58 @@ export function ArticleItem(props: ArticleItemProps) {
             style={[style.image, { backgroundColor: Colors.bgsecondary }]}
           />
 
-          <View style={style.contentWrapper}>
+          <View
+            style={[
+              style.contentWrapper,
+              {
+                paddingHorizontal: 12,
+                paddingTop: 10,
+                justifyContent: "flex-start",
+              },
+            ]}
+          >
             <Typography
-              fontFamily="OpenSans-Regular"
+              fontFamily="Poppins-Medium"
               fontSize={14}
               numberOfLines={1}
             >
               {title}
             </Typography>
-            <View>
+            <View style={{ flexDirection: "column" }}>
               <Typography
-                fontFamily="OpenSans-Regular"
+                fontFamily="Poppins-Regular"
                 fontSize={12}
                 color="textsecondary"
                 numberOfLines={1}
               >
-                {subtitle.replace(/<[^>]*>?/gm, "")}
+                {/* {subtitle} */}
+                Snorkeling & Explore
               </Typography>
-              {/* <Typography
-                fontFamily="OpenSans-Semibold"
-                fontSize={16}
-                numberOfLines={1}
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 2,
+                  marginTop: 2,
+                }}
               >
-                {price}
-              </Typography> */}
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <IconStar
+                    key={index}
+                    height={14}
+                    width={14}
+                    color={index < rating ? "yellow" : "textsecondary"} // warna kuning untuk bintang aktif, abu-abu untuk bintang non-aktif
+                  />
+                ))}
+              </View>
+              <Typography
+                fontFamily="OpenSans-Regular"
+                fontSize={12}
+                numberOfLines={1}
+                color="main"
+                style={{ marginTop: 5, textDecorationLine: "underline" }}
+              >
+                Lihat Selengkapnya
+              </Typography>
             </View>
           </View>
         </View>
@@ -162,7 +204,7 @@ function Placeholder({ height = 10, width = "50%" }: ViewStyle) {
 const style = StyleSheet.create({
   container: {
     width: 155,
-    height: 200,
+    height: 220,
     borderWidth: 0.5,
     borderRadius: 12,
     overflow: "hidden",

@@ -11,15 +11,24 @@ import { GetArticleResponseSuccess } from "@/apis/internal.api.type";
 import { Typography, View } from "@/components";
 import { useAppTheme } from "@/context/theme-context";
 
-export type ArticleItemProps = {
+export type RuteItemProps = {
   imgSource: ImageSourcePropType;
   title: string;
-  subtitle: string;
   price: string;
   badgePromo?: boolean;
+  width?: number | "auto" | any;
+  height?: number | "auto" | any;
 } & PressableProps;
-export function RuteItem(props: ArticleItemProps) {
-  const { title, imgSource, subtitle, price, badgePromo, ...rest } = props;
+export function RuteItem(props: RuteItemProps) {
+  const {
+    title,
+    imgSource,
+    price,
+    badgePromo,
+    width = 155,
+    height = 220,
+    ...rest
+  } = props;
 
   const { Colors } = useAppTheme();
 
@@ -30,6 +39,8 @@ export function RuteItem(props: ArticleItemProps) {
           style={[
             style.container,
             {
+              height,
+              width,
               borderColor: Colors.outlineborder,
               backgroundColor: Colors.paper,
               shadowColor: "#000",
@@ -71,6 +82,7 @@ export function RuteItem(props: ArticleItemProps) {
               <Typography
                 fontFamily="Poppins-Medium"
                 fontSize={10}
+                numberOfLines={2}
                 color="paper"
                 style={{
                   height: 30,
@@ -91,28 +103,29 @@ export function RuteItem(props: ArticleItemProps) {
           />
           <View style={style.contentWrapper}>
             <Typography
-              fontFamily="OpenSans-Regular"
-              fontSize={14}
-              numberOfLines={1}
+              fontFamily="Poppins-SemiBold"
+              fontSize={13}
+              numberOfLines={2}
             >
               {title}
             </Typography>
-            <View>
+            <View style={{ flexDirection: "column", marginTop: "auto" }}>
               <Typography
-                fontFamily="OpenSans-Regular"
-                fontSize={12}
+                fontFamily="Poppins-Light"
+                fontSize={10}
                 color="textsecondary"
                 numberOfLines={1}
               >
-                {subtitle.replace(/<[^>]*>?/gm, "")}
+                Mulai dari
               </Typography>
-              {/* <Typography
-                  fontFamily="OpenSans-Semibold"
-                  fontSize={16}
-                  numberOfLines={1}
-                >
-                  {price}
-                </Typography> */}
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="secondary"
+                numberOfLines={1}
+              >
+                {price}
+              </Typography>
             </View>
           </View>
         </View>
@@ -121,47 +134,25 @@ export function RuteItem(props: ArticleItemProps) {
   );
 }
 
-export const articleListPlaceholderData = [
-  {},
-  {},
-  {},
-] as GetArticleResponseSuccess["data"];
-export function ArticleItemPlaceholder() {
-  const { Colors } = useAppTheme();
-
+export function RuteItemEmpty() {
   return (
-    <View
-      style={[
-        style.container,
-        { borderColor: Colors.outlineborder, marginHorizontal: "auto" },
-      ]}
-    >
-      <Image style={[style.image, { backgroundColor: Colors.bgsecondary }]} />
-
-      <View style={style.contentWrapper}>
-        <Placeholder width={"90%"} height={16} />
-        <View style={{ gap: 4 }}>
-          <Placeholder />
-          <Placeholder height={16} width={"70%"} />
-        </View>
-      </View>
+    <View backgroundColor="outlineborder" style={style.containerItemEmpty}>
+      <Typography fontFamily="Poppins-Regular">
+        Belum ada Rute yang tersedia
+      </Typography>
     </View>
   );
 }
 
-function Placeholder({ height = 10, width = "50%" }: ViewStyle) {
-  return (
-    <View
-      backgroundColor="outlineborder"
-      style={[style.placeholder, { height, width }]}
-    />
-  );
-}
-
 const style = StyleSheet.create({
+  containerItemEmpty: {
+    flex: 1,
+    padding: 24,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
-    width: 155,
-    height: 200,
     borderWidth: 0.5,
     borderRadius: 12,
     overflow: "hidden",
@@ -174,6 +165,7 @@ const style = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     padding: 12,
+    paddingTop: 5,
     justifyContent: "space-between",
   },
   placeholder: {},

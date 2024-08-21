@@ -15,7 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "../button/Button";
-import { DateInputV2 } from "../date-input-v2/DateInputV2";
+import { DateInputV3 } from "../date-input-v3/DateInputV3";
 import {
   IconCalendar,
   IconCarSide,
@@ -142,7 +142,7 @@ export default function SelectTravelComponent({
         control={control}
         name="date"
         render={({ field }) => (
-          <DateInputV2
+          <DateInputV3
             withBorder
             placeholder={"Tanggal Berangkat"}
             leadingIcon={<IconCalendar width={21} height={21} color="main" />}
@@ -157,7 +157,7 @@ export default function SelectTravelComponent({
         render={({ field }) => (
           <SelectInputV2
             placeholder="1 Sheat"
-            suffix="Sheat"
+            suffix="Kursi"
             value={String(field.value)}
             data={chairList}
             onSelect={(selectedItem) => field.onChange(selectedItem.title)}
@@ -194,7 +194,7 @@ const style = StyleSheet.create({
     overflow: "hidden",
   },
   orderBox: {
-    margin: 24,
+    // margin: 24,
     gap: 16,
   },
   destinationBox: {

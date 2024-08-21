@@ -88,6 +88,19 @@ export type GetTravelBranchResponseSuccess = {
   message: string;
   success: boolean;
 };
+export type GetTravelRutesResponseSuccess = {
+  data: {
+    id: string;
+    kota_asal: string;
+    kota_tujuan: string;
+    harga: number;
+    created_at: string;
+    updated_at: string;
+    waktu_keberangkatan: string;
+  }[];
+  message: string;
+  success: boolean;
+};
 
 export const travelScheduleQuerySchema = z.object({
   from: z.string(),
@@ -103,19 +116,30 @@ export type TravelScheduleResponseSuccess = {
     availableSeat: number;
     carModel: string;
     carSeat: number;
+    departureTime: string;
     departureDate: string;
     destinationCity: string;
     destinationDepartureDate: string;
     originCity: string;
     originDepartureDate: string;
     price: number;
-    fasilitas: string;
+    facility: string;
+    transitionCity: string;
     syarat_dan_ketentuan: string;
     seatTaken: string[];
   }[];
   message: string;
   success: boolean;
 };
+export const rentalCarQuerySchema = z.object({
+  durasi_sewa: z.number(),
+  area: z.string(),
+  tanggal_mulai: z.date(),
+  tanggal_selesai: z.date(),
+  alamat_keberangkatan: z.string(),
+  all_in: z.number(),
+});
+export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
 export type TravelPointToPointApiParams = {
   point: string;
   id: string;
@@ -168,6 +192,22 @@ export type PostProcessPaymentPayload = {
   metode_id: string;
 };
 
+export type PostProcessPaymentRentalPayload = {
+  durasi_sewa: number;
+  area: string;
+  tanggal_mulai_sewa: string;
+  tanggal_akhir_sewa: string;
+  alamat_keberangkatan: string;
+  metode_id: number;
+  mobil_rental_id: number;
+  nama: string;
+  nik: string;
+  email: string;
+  no_telp: string;
+  alamat: string;
+  all_in: number;
+};
+
 export type OrderListResponseSuccess = {
   data: {
     created_at: string;
@@ -181,6 +221,28 @@ export type OrderListResponseSuccess = {
   message: string;
   success: boolean;
 };
+export type RentalCarData = {
+  id: number;
+  nopol: string;
+  type: string;
+  jumlah_kursi: string;
+  fasilitas: string;
+  image_url: string;
+  mesin: string;
+  transmisi: string;
+  kapasitas_bagasi: string;
+  bahan_bakar: string;
+  biaya_sewa: string;
+  created_at: string;
+  updated_at: string;
+  biaya_all_in: string;
+  bagasi: string;
+};
+export type RentalCarListResponseSuccess = {
+  data: RentalCarData[];
+  message: string;
+  success: boolean;
+};
 export type OrderDetailResponseSuccess = {
   data: {
     pembayaran: {
@@ -191,6 +253,8 @@ export type OrderDetailResponseSuccess = {
       created_at: string;
       expired_at: string;
       nominal: string;
+      link_tiket: string;
+      link_invoice: string;
     };
     penumpang: [
       {

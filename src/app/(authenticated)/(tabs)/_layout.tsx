@@ -101,22 +101,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="article"
         options={{
-          title: "Explor",
+          title: "explore",
           tabBarIcon: ({ focused }) => (
             <IconPromo
-              color={focused ? "main" : "textsecondary"}
-              width={24}
-              height={24}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="promo"
-        options={{
-          title: "Promo",
-          tabBarIcon: ({ focused }) => (
-            <IconCiDiscountLight
               color={focused ? "main" : "textsecondary"}
               width={24}
               height={24}

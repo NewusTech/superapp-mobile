@@ -8,7 +8,7 @@ import {
 import { Separator, Typography, View } from "@/components";
 import { AppColor } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
-import { formatDate, formatTime } from "@/utils/datetime";
+import { formatDate, formatTimeString } from "@/utils/datetime";
 
 export type TravelTicketItemProps = {
   originCity: string;
@@ -16,6 +16,7 @@ export type TravelTicketItemProps = {
   destinationCity: string;
   destinationDepartureDate: Date;
   departureDate?: Date;
+  departureTime?: string;
   customHeader?: ReactNode;
   customFooter?: ReactNode;
   icon?: ReactNode;
@@ -27,9 +28,11 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
     destinationDepartureDate,
     originCity,
     originDepartureDate,
+    departureTime,
     icon,
     customHeader,
     customFooter,
+    disabled,
     ...rest
   } = props;
 
@@ -39,14 +42,14 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
     <Pressable {...rest}>
       {({ pressed }) => (
         <>
-          {pressed && (
+          {pressed && !disabled && (
             <View
               style={[
                 style.container,
                 style.mask,
                 {
                   borderWidth: 0,
-                  backgroundColor: Colors.outlineborder,
+                  backgroundColor: Colors.textsecondary,
                 },
               ]}
             />
@@ -56,7 +59,10 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
               style.container,
               {
                 backgroundColor: Colors.paper,
-                borderColor: Colors.outlineborder,
+                borderColor:
+                  pressed && !disabled
+                    ? Colors.badgeMain
+                    : Colors.outlineborder,
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
@@ -131,10 +137,10 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
               </View>
             </View>
 
-            {!!departureDate && (
+            {!!departureTime && (
               <View style={style.center}>
                 <Typography fontFamily="OpenSans-Regular" fontSize={12}>
-                  {formatTime(departureDate)}
+                  {formatTimeString(departureTime)}
                 </Typography>
               </View>
             )}
@@ -197,7 +203,7 @@ const style = StyleSheet.create({
     width: "100%",
     height: "100%",
     zIndex: 2,
-    opacity: 0.25,
+    opacity: 0.15,
     position: "absolute",
     top: 0,
     left: 0,

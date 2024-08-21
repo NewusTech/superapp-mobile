@@ -2,6 +2,7 @@ export * from "./appbar/Appbar";
 export * from "./button/Button";
 export * from "./checkbox/Checkbox";
 export * from "./date-input-v2/DateInputV2";
+export * from "./date-input-v3/DateInputV3";
 export * from "./loader/Loader";
 export * from "./page-wrapper/PageWrapper";
 export * from "./promo-list-item/PromoListItem";

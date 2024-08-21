@@ -70,11 +70,13 @@ export default function PaymentStatusScreen() {
           >
             <Loader />
           </View>
-        ) : paymentStatusQuery.data?.data.status === "success" ? (
+        ) : paymentStatusQuery.data?.data.status.toLowerCase() === "sukses" ? (
           <PaymentStatusSuccess />
-        ) : paymentStatusQuery.data?.data.status === "failed" ? (
+        ) : paymentStatusQuery.data?.data.status.toLowerCase() ===
+          "kadaluarsa" ? (
           <PaymentStatusFailed />
-        ) : paymentStatusQuery.data?.data.status === "waiting" ? (
+        ) : paymentStatusQuery.data?.data.status.toLocaleLowerCase() ===
+          "menunggu pembayaran" ? (
           paymentStatusQuery.data?.data.type === "va" ? (
             <PaymentStatusWaitingVA data={paymentStatusQuery.data?.data} />
           ) : (

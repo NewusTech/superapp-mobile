@@ -1,18 +1,23 @@
+import { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
 import { Appbar, Button, TextInput, View } from "@/components";
 import { useAppTheme } from "@/context/theme-context";
+import {
+  useRentActions,
+  useUserRentalPayload,
+} from "@/features/rental/store/rental-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const userRentSchema = z.object({
   nama: z.string(),
-  nik: z.string(),
+  nik: z.string().min(16, "NIK Minimal 16 Digits"),
   email: z.string().email(),
-  no_telp: z.string(),
+  no_telp: z.string().min(8, "Nomor Telepon Minimal 8 Digit"),
   alamat: z.string(),
 });
 export type UserRent = z.infer<typeof userRentSchema>;
@@ -21,16 +26,58 @@ export default function DetailUserRent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+
+  const params = useLocalSearchParams<{
+    isEdit: string;
+  }>();
+
   const { Colors } = useAppTheme();
 
-  const { control, formState, handleSubmit, setValue } = useForm<UserRent>({
+  //store
+  const userRent = useUserRentalPayload();
+  const { setUserRentalPayload } = useRentActions();
+
+  const {
+    control,
+    formState,
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    watch,
+  } = useForm<UserRent>({
     resolver: zodResolver(userRentSchema),
     mode: "all",
   });
 
-  //   const handleSubmitForm = handleSubmit((data) => {
-  //     router.push("/travel/detail-rent-car");
-  //   });
+  const handleSubmitForm = handleSubmit((data) => {
+    console.log(data);
+    setUserRentalPayload(data);
+    if (params.isEdit === "true") return router.back();
+    router.push("/rental/detail-rent-car");
+  });
+
+  useEffect(() => {
+    setValue("nama", userRent?.nama || "tes");
+    setValue("email", userRent?.email || "tes@tes.com");
+    setValue("nik", userRent?.nik || "1234567890123456");
+    setValue("no_telp", userRent?.no_telp || "1234567890");
+    setValue("alamat", userRent?.alamat || "123");
+  }, [userRent, setValue]);
+
+  const emailValue = watch("email");
+
+  useEffect(() => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailValue && !emailRegex.test(emailValue)) {
+      setError("email", {
+        type: "manual",
+        message:
+          "Email tidak valid. Harus berisi '@' dan diakhiri dengan '.com'.",
+      });
+    }
+  }, [emailValue, setError, clearErrors]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -76,6 +123,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.nik?.message}
               />
             )}
           />
@@ -90,6 +138,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.email?.message}
               />
             )}
           />
@@ -105,6 +154,7 @@ export default function DetailUserRent() {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                errorMessage={formState?.errors?.no_telp?.message}
               />
             )}
           />
@@ -127,8 +177,8 @@ export default function DetailUserRent() {
           />
           <View style={styles.buttonWrapper}>
             <Button
-              onPress={() => router.push("/rental/detail-rent-car")}
-              // disabled={!formState.isValid}
+              disabled={!formState.isValid || !emailRegex.test(emailValue)}
+              onPress={handleSubmitForm}
               style={{ height: 45, width: 120 }}
             >
               Simpan

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
+import { RentalCarData } from "@/apis/internal.api.type";
 import { useAppTheme } from "@/context/theme-context";
 
 import { Button } from "../button/Button";
@@ -15,21 +16,27 @@ import { IconCar, IconGasPump, IconGitBranch, IconSeat } from "../icons";
 import { Typography } from "../typography/Typography";
 
 export type RentaCardlItemProps = {
-  //   imgSource: ImageSourcePropType;
-  //   title: string;
-  //   subtitle: string;
-  //   price: string;
-  //   badgePromo?: boolean;
+  handleOnDetailRentalCard: () => void;
+  type: string;
+  bahan_bakar: string;
+  jumlah_kursi: string;
+  transmisi: string;
+  bagasi: string;
 } & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
-  const { ...rest } = props;
+  const {
+    id,
+    type,
+    bahan_bakar,
+    jumlah_kursi,
+    transmisi,
+    bagasi,
+    handleOnDetailRentalCard,
+    ...rest
+  } = props;
   const router = useRouter();
 
   const { Colors } = useAppTheme();
-
-  const handleOnDetailRentalCard = () => {
-    router.push("/rental/detail/1");
-  };
 
   return (
     <Pressable {...rest}>
@@ -71,7 +78,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             }}
           >
             <Typography fontFamily="Poppins-Bold" fontSize={18}>
-              Toyota Hiace Premio
+              {type}
             </Typography>
             <Typography
               fontFamily="Poppins-Regular"
@@ -107,7 +114,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Heatback
+                    {bagasi}
                   </Typography>
                 </View>
                 <View
@@ -124,7 +131,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Diesel
+                    {bahan_bakar}
                   </Typography>
                 </View>
               </View>
@@ -144,7 +151,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    16 Kursi
+                    {jumlah_kursi} Kursi
                   </Typography>
                 </View>
 
@@ -162,7 +169,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                     color="textsecondary"
                     fontSize={14}
                   >
-                    Manual
+                    {transmisi}
                   </Typography>
                 </View>
               </View>

@@ -187,6 +187,7 @@ export default function TravelOrderDetailScreen() {
             Perjalananmu
           </Typography>
           <TravelTicketItem
+            disabled
             departureDate={new Date(travelSchedule?.departureDate)}
             destinationCity={travelSchedule?.originCity}
             destinationDepartureDate={
