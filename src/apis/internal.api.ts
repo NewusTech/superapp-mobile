@@ -21,6 +21,7 @@ import {
   GetTravelBranchResponseSuccess,
   GetTravelRutesResponseSuccess,
   OrderDetailResponseSuccess,
+  OrderListRentalResponseSuccess,
   OrderListTravelResponseSuccess,
   PostLoginPayload,
   PostLoginResponseSuccess,
@@ -236,6 +237,17 @@ export const getOrderListTravel = async (status: string) => {
 
   return response.data;
 };
+export const getOrderListRental = async (status: string) => {
+  const response = await apiClientMock<OrderListRentalResponseSuccess>({
+    method: "GET",
+    url: "/api/rental/riwayat",
+    params: {
+      status,
+    },
+  });
+
+  return response.data;
+};
 export const getRentalCarLIst = async () => {
   const response = await apiClientMock<RentalCarListResponseSuccess>({
     method: "GET",
@@ -244,7 +256,7 @@ export const getRentalCarLIst = async () => {
 
   return response.data;
 };
-export const getOrderDetail = async (kode_pesanan: string) => {
+export const getOrderTravelDetail = async (kode_pesanan: string) => {
   const response = await apiClientMock<OrderDetailResponseSuccess>({
     method: "GET",
     url: "/api/pesanan/riwayat/" + kode_pesanan,

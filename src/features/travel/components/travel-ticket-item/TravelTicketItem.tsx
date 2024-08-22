@@ -19,6 +19,9 @@ export type TravelTicketItemProps = {
   departureTime?: string;
   customHeader?: ReactNode;
   customFooter?: ReactNode;
+  originTime?: string;
+  destinationTime?: string;
+  estimationTime?: string;
   icon?: ReactNode;
 } & TouchableNativeFeedbackProps;
 export function TravelTicketItem(props: TravelTicketItemProps) {
@@ -29,6 +32,9 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
     originCity,
     originDepartureDate,
     departureTime,
+    destinationTime,
+    originTime,
+    estimationTime,
     icon,
     customHeader,
     customFooter,
@@ -86,11 +92,7 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                     width: "100%",
                   }}
                 >
-                  <Typography fontFamily="Poppins-Bold" fontSize={10}>
-                    Keberangkatan
-                  </Typography>
                   <Separator
-                    width="60%"
                     thickness={2}
                     style={{
                       backgroundColor: "transparent",
@@ -99,9 +101,6 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                       borderColor: AppColor.light.textsecondary,
                     }}
                   />
-                  <Typography fontFamily="Poppins-Bold" fontSize={10}>
-                    Tujuan
-                  </Typography>
                 </View>
               </>
             )}
@@ -109,10 +108,13 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
             <View style={style.contentContainer}>
               <View style={style.contentLeftWrapper}>
                 <Typography
-                  color="textsecondary"
-                  fontSize={14}
+                  fontFamily="OpenSans-Bold"
+                  fontSize={11}
                   numberOfLines={1}
                 >
+                  Keberangkatan
+                </Typography>
+                <Typography fontSize={14} numberOfLines={1}>
                   {originCity}
                 </Typography>
                 <Typography color="textsecondary" fontSize={12}>
@@ -122,6 +124,9 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                     year: "numeric",
                   })}
                 </Typography>
+                {originTime && (
+                  <Typography fontSize={10}>{originTime} WIB</Typography>
+                )}
               </View>
 
               <View style={style.contentSeparatorIndicator}>
@@ -130,16 +135,35 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                   backgroundColor="paper"
                   style={[style.separatorPoint, { borderColor: Colors.main }]}
                 />
-                {icon}
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                    top: estimationTime ? 5 : 0,
+                  }}
+                >
+                  {icon}
+                  {estimationTime && (
+                    <Typography
+                      fontSize={10}
+                      style={{ position: "relative", top: 10 }}
+                    >
+                      {estimationTime} Jam
+                    </Typography>
+                  )}
+                </View>
                 <View backgroundColor="main" style={style.separatorPoint} />
               </View>
 
               <View style={style.contentRightWrapper}>
                 <Typography
-                  color="textsecondary"
-                  fontSize={14}
+                  fontFamily="OpenSans-Bold"
+                  fontSize={11}
                   numberOfLines={1}
                 >
+                  Tujuan
+                </Typography>
+                <Typography fontSize={14} numberOfLines={1}>
                   {destinationCity}
                 </Typography>
                 <Typography color="textsecondary" fontSize={12}>
@@ -149,9 +173,11 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                     year: "numeric",
                   })}
                 </Typography>
+                {destinationTime && (
+                  <Typography fontSize={10}>{destinationTime} WIB</Typography>
+                )}
               </View>
             </View>
-
             {!!departureTime && (
               <View style={style.center}>
                 <Typography fontFamily="Poppins-Regular" fontSize={12}>

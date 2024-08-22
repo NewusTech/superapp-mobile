@@ -13,11 +13,10 @@ import {
 } from "@/components";
 import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
+import { useGetOrderTravelDetail } from "@/features/order/api/useGetOrderTravelDetail";
 import { TravelTicketItem } from "@/features/travel/components";
 import { formatCurrency } from "@/utils/common";
-import { formatLocalDate, formatTimeString } from "@/utils/datetime";
-import downloadFile from "@/utils/downloadFile";
+import { formatLocalDate } from "@/utils/datetime";
 
 export default function DetailOrder() {
   const router = useRouter();
@@ -27,7 +26,7 @@ export default function DetailOrder() {
     kode_pesanan: string;
   }>();
 
-  const orderDetailQuery = useGetOrderDetail(params.kode_pesanan);
+  const orderDetailQuery = useGetOrderTravelDetail(params.kode_pesanan);
   const orderDetail = orderDetailQuery.data?.data;
 
   const handleOnBeforePayment = () => {
@@ -201,7 +200,7 @@ export default function DetailOrder() {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
+                alignItems: "flex-start",
               }}
             >
               <Typography color="textsecondary">Nomor Pembayaran</Typography>
@@ -303,7 +302,10 @@ export default function DetailOrder() {
               originDepartureDate={
                 new Date(orderDetail?.pesanan.tanggal || "2024-08-10")
               }
-              icon={<IconCarSide color="main" />}
+              icon={<IconCarSide color="main" width={32} height={32} />}
+              destinationTime={orderDetail.pesanan.jam_tiba || "00.00"}
+              originTime={orderDetail.pesanan.jam_berangkat || "00.00"}
+              estimationTime="6"
               customHeader={
                 <View
                   style={{
@@ -351,7 +353,7 @@ export default function DetailOrder() {
                         alignItems: "center",
                         justifyContent: "flex-start",
                         gap: 1,
-                        width: "40%",
+                        width: "45%",
                         overflow: "hidden",
                       }}
                     >
@@ -360,39 +362,26 @@ export default function DetailOrder() {
                         {orderDetail?.pesanan.titik_jemput}
                       </Typography>
                     </View>
-                    <Typography fontFamily="Poppins-Bold">
-                      {/* {formatTimeString(orderDetail?.pesanan.jam || "00:00:00")} */}
-                      6 Jam
-                    </Typography>
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "flex-end",
                         gap: 1,
-                        width: "40%",
+                        width: "45%",
                         overflow: "hidden",
                       }}
                     >
                       <IconPinSharp color="main" />
-                      <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                      <Typography
+                        fontFamily="Poppins-Regular"
+                        fontSize={12}
+                        numberOfLines={2}
+                        style={{ width: "80%" }}
+                      >
                         {orderDetail?.pesanan.titik_antar}
                       </Typography>
                     </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      paddingHorizontal: 10,
-                    }}
-                  >
-                    <Typography fontFamily="Poppins-Bold" fontSize={8}>
-                      Estimasi waktu : {formatTimeString("10:00:00")} WIB
-                    </Typography>
-                    <Typography fontFamily="Poppins-Bold" fontSize={8}>
-                      Estimasi waktu : {formatTimeString("16:00:00")} WIB
-                    </Typography>
                   </View>
                 </View>
               }

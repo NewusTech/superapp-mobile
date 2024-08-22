@@ -1,13 +1,13 @@
-import { getOrderDetail } from "@/apis/internal.api";
+import { getOrderListRental } from "@/apis/internal.api";
 import { useAccessToken } from "@/features/auth/store/auth-store";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetOrderDetail = (kode_pesanan: string) => {
+export const useGetOrderRentalQuery = (status: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetOrderDetail"],
-    queryFn: () => getOrderDetail(kode_pesanan),
+    queryKey: ["useGetOrderRentalQuery"],
+    queryFn: () => getOrderListRental(status),
     enabled: !!accessToken,
   });
 };

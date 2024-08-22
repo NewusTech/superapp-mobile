@@ -17,7 +17,7 @@ import {
 } from "@/components";
 import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetOrderDetail } from "@/features/order/api/useGetOrderDetail";
+import { useGetOrderDetail } from "@/features/order/api/useGetOrderTravelDetail";
 import { usePostProcessPaymentMutation } from "@/features/payment/api/usePostProcessPaymentMutation";
 import { PaymentComponent } from "@/features/payment/components";
 import { TravelTicketItem } from "@/features/travel/components";

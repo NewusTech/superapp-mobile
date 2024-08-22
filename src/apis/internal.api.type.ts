@@ -221,6 +221,19 @@ export type OrderListTravelResponseSuccess = {
   message: string;
   success: boolean;
 };
+export type OrderListRentalResponseSuccess = {
+  data: {
+    created_at: string;
+    kode_pembayaran: string;
+    mobil_type: string;
+    area: string;
+    tanggal_awal_sewa: string;
+    tanggal_akhir_sewa: string;
+    status: string;
+  }[];
+  message: string;
+  success: boolean;
+};
 export type RentalCarData = {
   id: number;
   nopol: string;
@@ -267,7 +280,9 @@ export type OrderDetailResponseSuccess = {
     pesanan: {
       mobil: string;
       kode_pesanan: string;
-      jam: string;
+      jam_berangkat: string;
+      jam_tiba: string;
+      estimasi: string;
       tanggal: string;
       kota_asal: string;
       kota_tujuan: string;

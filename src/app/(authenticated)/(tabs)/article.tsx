@@ -50,7 +50,7 @@ export default function ArticleTabScreen() {
       //   />
       // }
     >
-      <Appbar title="explore" />
+      <Appbar title="Explore" />
 
       <View style={[styles.contentContainer, { paddingHorizontal: 20 }]}>
         <SectionWrapper title="Rekomendasi untuk anda">

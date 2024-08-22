@@ -231,15 +231,15 @@ export default function BookingTravelScreen() {
             }}
           >
             <Typography fontFamily="Poppins-Medium" fontSize={14}>
-              Cara memesan Travel
+              Persyaratan Perjalanan
             </Typography>
             <Typography
               fontFamily="Poppins-Regular"
               fontSize={12}
               color="textsecondary"
             >
-              Mari, cari tau mudahnya memesan tiket Travel di Rama Tranz dengan
-              cepat dan nyaman.
+              Check persyaratan yang telah disepakati oleh Rama Tranz untuk
+              kenyamanan bersama
             </Typography>
           </View>
           <IconChevronRight />
