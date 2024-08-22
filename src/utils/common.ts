@@ -35,3 +35,10 @@ export const plusDay = (date: Date, day: number) => {
   dateBefore.setDate(dateBefore.getDate() + day); // Tambah 1 hari
   return dateBefore;
 };
+
+export const checkExpired = (expirationTime: string, status: string) => {
+  if (status !== "Menunggu Pembayaran") {
+    return false;
+  }
+  return new Date(expirationTime).getTime() - new Date().getTime() > 0;
+};

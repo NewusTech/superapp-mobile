@@ -143,6 +143,7 @@ export default function SelectTravelComponent({
         name="date"
         render={({ field }) => (
           <DateInputV3
+            minDate={new Date().toString()}
             withBorder
             placeholder={"Tanggal Berangkat"}
             leadingIcon={<IconCalendar width={21} height={21} color="main" />}

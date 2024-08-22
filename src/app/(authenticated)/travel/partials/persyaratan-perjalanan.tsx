@@ -2,7 +2,7 @@ import { FlatList, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Appbar, SectionWrapper, Typography, View } from "@/components";
+import { Appbar, Typography, View } from "@/components";
 import {
   IconBus,
   IconExclamantionMark,
@@ -40,98 +40,110 @@ export default function PersyaratanPerjalanan() {
   ];
 
   return (
-    <ScrollView style={{ backgroundColor: Colors.paper }}>
+    <>
       <Appbar
         title={"Cara Persyaratan Perjalanan"}
         backIconPress={() => router.back()}
       />
-      <View style={{ paddingHorizontal: 25, paddingVertical: 20, gap: 10 }}>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <IconBus color="main" />
-          <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
-            Keberangkatan
-          </Typography>
+      <ScrollView style={{ backgroundColor: Colors.paper }}>
+        <View style={{ paddingHorizontal: 25, paddingVertical: 20, gap: 10 }}>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <IconBus color="main" />
+            <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
+              Keberangkatan
+            </Typography>
+          </View>
+          <FlatList
+            scrollEnabled={false}
+            data={dataKeberangkatan}
+            contentContainerStyle={{ gap: 10 }}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    {index + 1}.
+                  </Typography>
+                  <Typography
+                    fontFamily="Poppins-Regular"
+                    fontSize={12}
+                    color="textsecondary"
+                    style={{ width: "90%", textAlign: "justify" }}
+                  >
+                    {item.data}
+                  </Typography>
+                </View>
+              );
+            }}
+          />
         </View>
-        <FlatList
-          data={dataKeberangkatan}
-          contentContainerStyle={{ gap: 10 }}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={{ flexDirection: "row", gap: 5 }}>
-                <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                  {index + 1}.
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color="textsecondary"
-                  style={{ width: "90%", textAlign: "justify" }}
-                >
-                  {item.data}
-                </Typography>
-              </View>
-            );
-          }}
-        />
-      </View>
-      <View style={{ paddingHorizontal: 25, paddingVertical: 10, gap: 10 }}>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <IconSuitcase color="main" />
-          <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
-            Barang Bawaan
-          </Typography>
+        <View style={{ paddingHorizontal: 25, paddingVertical: 10, gap: 10 }}>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <IconSuitcase color="main" />
+            <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
+              Barang Bawaan
+            </Typography>
+          </View>
+          <FlatList
+            scrollEnabled={false}
+            data={dataBarangBawaan}
+            contentContainerStyle={{ gap: 10 }}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    {index + 1}.
+                  </Typography>
+                  <Typography
+                    fontFamily="Poppins-Regular"
+                    fontSize={12}
+                    color="textsecondary"
+                    style={{ width: "90%", textAlign: "justify" }}
+                  >
+                    {item.data}
+                  </Typography>
+                </View>
+              );
+            }}
+          />
         </View>
-        <FlatList
-          data={dataBarangBawaan}
-          contentContainerStyle={{ gap: 10 }}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={{ flexDirection: "row", gap: 5 }}>
-                <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                  {index + 1}.
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color="textsecondary"
-                  style={{ width: "90%", textAlign: "justify" }}
-                >
-                  {item.data}
-                </Typography>
-              </View>
-            );
+        <View
+          style={{
+            paddingHorizontal: 25,
+            paddingVertical: 10,
+            gap: 10,
+            paddingBottom: insets.bottom + 20,
           }}
-        />
-      </View>
-      <View style={{ paddingHorizontal: 25, paddingVertical: 10, gap: 10 }}>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <IconExclamantionMark color="main" />
-          <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
-            Himbauan
-          </Typography>
+        >
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <IconExclamantionMark color="main" />
+            <Typography fontFamily="Poppins-Regular" fontSize={16} color="main">
+              Himbauan
+            </Typography>
+          </View>
+          <FlatList
+            scrollEnabled={false}
+            data={dataBarangBawaan}
+            contentContainerStyle={{ gap: 10 }}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                    {index + 1}.
+                  </Typography>
+                  <Typography
+                    fontFamily="Poppins-Regular"
+                    fontSize={12}
+                    color="textsecondary"
+                    style={{ width: "90%", textAlign: "justify" }}
+                  >
+                    {item.data}
+                  </Typography>
+                </View>
+              );
+            }}
+          />
         </View>
-        <FlatList
-          data={dataBarangBawaan}
-          contentContainerStyle={{ gap: 10 }}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={{ flexDirection: "row", gap: 5 }}>
-                <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                  {index + 1}.
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color="textsecondary"
-                  style={{ width: "90%", textAlign: "justify" }}
-                >
-                  {item.data}
-                </Typography>
-              </View>
-            );
-          }}
-        />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
