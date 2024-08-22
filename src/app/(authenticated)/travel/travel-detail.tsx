@@ -188,9 +188,13 @@ export default function TravelDetailScreen() {
                   >
                     Fasilitas
                   </Typography>
-                  <Typography fontFamily="Poppins-Medium" fontSize={13}>
-                    {travelSchedule?.facility || "-"}
-                  </Typography>
+                  <RenderHTML
+                    systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
+                    contentWidth={Dimensions.get("screen").width - 48}
+                    source={{
+                      html: travelSchedule?.facility || "-",
+                    }}
+                  />
                 </View>
               </View>
             )}

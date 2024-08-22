@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useAppTheme } from "@/context/theme-context";
-import { formatCurrency } from "@/utils/common";
+import { calculateDaysBetween, formatCurrency, plusDay } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "../button/Button";
@@ -38,20 +38,6 @@ export default function PartialPesanan() {
       mode: "all",
     });
 
-  function calculateDaysBetween(startDate: Date, endDate: Date) {
-    // Ubah string menjadi Date objects
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    // Hitung perbedaan waktu dalam milidetik
-    const timeDifference = end.getTime() - start.getTime();
-
-    // Ubah perbedaan waktu menjadi jumlah hari
-    const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-
-    return daysDifference;
-  }
-
   const calculate = () => {
     const biayaSewa = 500000;
     const lamaSewa = calculateDaysBetween(
@@ -60,12 +46,6 @@ export default function PartialPesanan() {
     );
 
     return biayaSewa * lamaSewa;
-  };
-
-  const plusDay = (date: Date, day: number) => {
-    const dateBefore = new Date(date); // Ubah string tanggalMulai menjadi objek Date
-    dateBefore.setDate(dateBefore.getDate() + day); // Tambah 1 hari
-    return dateBefore;
   };
 
   const tanggalMulai = watch("tanggal_mulai");

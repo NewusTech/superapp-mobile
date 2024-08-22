@@ -1,4 +1,5 @@
-import { Linking, TouchableOpacity } from "react-native";
+import { Dimensions, Linking, TouchableOpacity } from "react-native";
+import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 
 import { useAppTheme } from "@/context/theme-context";
 

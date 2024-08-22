@@ -1,13 +1,13 @@
-import { getOrderList } from "@/apis/internal.api";
+import { getOrderListTravel } from "@/apis/internal.api";
 import { useAccessToken } from "@/features/auth/store/auth-store";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetOrderListQuery = (status: string) => {
+export const useGetOrderListTravelQuery = (status: string) => {
   const accessToken = useAccessToken();
 
   return useQuery({
-    queryKey: ["useGetOrderListQuery"],
-    queryFn: () => getOrderList(status),
+    queryKey: ["useGetOrderListTravelQuery"],
+    queryFn: () => getOrderListTravel(status),
     enabled: !!accessToken,
   });
 };

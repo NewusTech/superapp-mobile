@@ -21,7 +21,7 @@ import {
   GetTravelBranchResponseSuccess,
   GetTravelRutesResponseSuccess,
   OrderDetailResponseSuccess,
-  OrderListResponseSuccess,
+  OrderListTravelResponseSuccess,
   PostLoginPayload,
   PostLoginResponseSuccess,
   PostProcessPaymentPayload,
@@ -225,8 +225,8 @@ export const postProcessPaymentRental = async (
   return response.data;
 };
 
-export const getOrderList = async (status: string) => {
-  const response = await apiClientMock<OrderListResponseSuccess>({
+export const getOrderListTravel = async (status: string) => {
+  const response = await apiClientMock<OrderListTravelResponseSuccess>({
     method: "GET",
     url: "/api/pesanan/riwayat",
     params: {

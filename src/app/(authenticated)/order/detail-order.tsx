@@ -338,43 +338,60 @@ export default function DetailOrder() {
                 </View>
               }
               customFooter={
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
+                <View style={{ flexDirection: "column" }}>
                   <View
                     style={{
                       flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: 1,
-                      width: "40%",
-                      overflow: "hidden",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <IconPinSharp color="main" />
-                    <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                      {orderDetail?.pesanan.titik_jemput}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: 1,
+                        width: "40%",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <IconPinSharp color="main" />
+                      <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                        {orderDetail?.pesanan.titik_jemput}
+                      </Typography>
+                    </View>
+                    <Typography fontFamily="Poppins-Bold">
+                      {/* {formatTimeString(orderDetail?.pesanan.jam || "00:00:00")} */}
+                      6 Jam
                     </Typography>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        gap: 1,
+                        width: "40%",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <IconPinSharp color="main" />
+                      <Typography fontFamily="Poppins-Regular" fontSize={12}>
+                        {orderDetail?.pesanan.titik_antar}
+                      </Typography>
+                    </View>
                   </View>
-                  <Typography fontFamily="Poppins-Bold">
-                    {formatTimeString(orderDetail?.pesanan.jam || "00:00:00")}
-                  </Typography>
                   <View
                     style={{
                       flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      gap: 1,
-                      width: "40%",
-                      overflow: "hidden",
+                      justifyContent: "space-between",
+                      paddingHorizontal: 10,
                     }}
                   >
-                    <IconPinSharp color="main" />
-                    <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                      {orderDetail?.pesanan.titik_antar}
+                    <Typography fontFamily="Poppins-Bold" fontSize={8}>
+                      Estimasi waktu : {formatTimeString("10:00:00")} WIB
+                    </Typography>
+                    <Typography fontFamily="Poppins-Bold" fontSize={8}>
+                      Estimasi waktu : {formatTimeString("16:00:00")} WIB
                     </Typography>
                   </View>
                 </View>

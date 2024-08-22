@@ -211,7 +211,7 @@ export default function PenginapanCard(props: ArticleItemProps) {
                   style={{ width: "72%" }}
                   color="secondary"
                 >
-                  {formatCurrency(100000)}
+                  {formatCurrency(500000)}
                   <Typography
                     fontFamily="OpenSans-Regular"
                     fontSize={16}
