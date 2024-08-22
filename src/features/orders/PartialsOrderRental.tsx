@@ -1,0 +1,150 @@
+import { useEffect } from "react";
+import { FlatList, RefreshControl, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+
+import { Button, Loader, Typography, View } from "@/components";
+import { Card } from "@/components/card/Card";
+import { useAppTheme } from "@/context/theme-context";
+import { formatDate } from "@/utils/datetime";
+
+import { useGetOrderRentalQuery } from "../order/api/useGetOrderRentalQuery";
+
+type partialOrderRental = {
+  filterStatus: string;
+};
+
+export default function PartialsOrderRental(props: partialOrderRental) {
+  const { filterStatus } = props;
+
+  const router = useRouter();
+
+  const { Colors } = useAppTheme();
+
+  const orderListRentalQuery = useGetOrderRentalQuery(filterStatus);
+
+  const handleToOrderDetail = (kode_pesanan: string) => {
+    router.push({
+      pathname: "/order/detail/order-rental",
+      params: {
+        kode_pesanan: kode_pesanan,
+      },
+    });
+  };
+
+  useEffect(() => {
+    orderListRentalQuery.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterStatus]);
+
+  return (
+    <FlatList
+      refreshControl={
+        <RefreshControl
+          refreshing={orderListRentalQuery.isRefetching}
+          onRefresh={() => orderListRentalQuery.refetch()}
+          progressViewOffset={20}
+        />
+      }
+      data={orderListRentalQuery.data?.data}
+      renderItem={({ item }) => (
+        <Card onPress={() => handleToOrderDetail(item.kode_pembayaran)}>
+          <Typography fontFamily="Poppins-Bold" fontSize={14}>
+            {formatDate(new Date(item.created_at))}
+          </Typography>
+          <Typography
+            fontFamily="Poppins-Regular"
+            fontSize={10}
+            color="textsecondary"
+          >
+            {item.kode_pembayaran}
+          </Typography>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {item.mobil_type}
+            </Typography>
+            <Typography fontFamily="Poppins-Regular" fontSize={14}>
+              {item.area}
+            </Typography>
+          </View>
+          <Typography fontFamily="Poppins-Regular" fontSize={14}>
+            {formatDate(new Date(item.tanggal_awal_sewa), {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}{" "}
+            -{" "}
+            {formatDate(new Date(item.tanggal_akhir_sewa), {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </Typography>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography
+              fontFamily="Poppins-Regular"
+              fontSize={11}
+              color={"paper"}
+              style={{
+                backgroundColor:
+                  item.status === "Sukses"
+                    ? Colors.success
+                    : item.status.toLocaleLowerCase() === "menunggu pembayaran"
+                      ? Colors.textsecondary
+                      : Colors.dangerbase,
+                borderRadius: 100,
+                padding: 5,
+                paddingHorizontal: 10,
+              }}
+            >
+              {item.status}
+            </Typography>
+            <Button
+              style={{ paddingHorizontal: 10 }}
+              onPress={() => handleToOrderDetail(item.kode_pembayaran)}
+            >
+              Detail
+            </Button>
+          </View>
+        </Card>
+      )}
+      ListEmptyComponent={() => (
+        <View style={style.emptyContainer}>
+          {orderListRentalQuery.isFetching ? (
+            <Loader />
+          ) : (
+            <Typography fontFamily="OpenSans-Semibold">
+              Belum ada pesanan
+            </Typography>
+          )}
+        </View>
+      )}
+      contentContainerStyle={style.listContentContainer}
+      showsVerticalScrollIndicator={false}
+    />
+  );
+}
+
+const style = StyleSheet.create({
+  listContentContainer: {
+    flexGrow: 1,
+    gap: 16,
+    paddingBottom: 20,
+  },
+  emptyContainer: {
+    height: 400,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

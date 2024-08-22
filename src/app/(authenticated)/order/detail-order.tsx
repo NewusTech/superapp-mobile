@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Iconify } from "react-native-iconify";
@@ -15,7 +15,8 @@ import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderTravelDetail } from "@/features/order/api/useGetOrderTravelDetail";
 import { TravelTicketItem } from "@/features/travel/components";
-import { formatCurrency } from "@/utils/common";
+import { checkExpired, formatCurrency } from "@/utils/common";
+import CountdownTimer from "@/utils/CountdownTimer";
 import { formatLocalDate } from "@/utils/datetime";
 
 export default function DetailOrder() {
@@ -50,13 +51,6 @@ export default function DetailOrder() {
 
   const handleRefresh = () => {
     orderDetailQuery.refetch();
-  };
-
-  const checExpired = (expirationTime: string, status: string) => {
-    if (status !== "Menunggu Pembayaran") {
-      return false;
-    }
-    return new Date(expirationTime).getTime() - new Date().getTime() > 0;
   };
 
   const handleToViewTiket = async () => {
@@ -135,7 +129,7 @@ export default function DetailOrder() {
           }}
         >
           {/* Countdown */}
-          {checExpired(
+          {checkExpired(
             orderDetail.pembayaran.expired_at,
             orderDetail.pembayaran.status
           ) && (
@@ -464,55 +458,4 @@ export default function DetailOrder() {
     </>
   );
 }
-
-const CountdownTimer = ({
-  expirationTime,
-  handleAfterExpired,
-}: {
-  expirationTime: string;
-  handleAfterExpired?: () => void;
-}) => {
-  const calculateTimeLeft = () => {
-    const difference =
-      new Date(expirationTime).getTime() - new Date().getTime();
-    let timeLeft = {} as any;
-
-    if (difference > 0) {
-      timeLeft = {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    } else {
-      timeLeft = { hours: 0, minutes: 0, seconds: 0 };
-    }
-
-    return timeLeft;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expirationTime]);
-
-  return (
-    <Typography
-      fontFamily="Poppins-Regular"
-      color="dangerbase"
-      style={{ textAlign: "center" }}
-      fontSize={12}
-    >
-      Selesaikan Pembayaran Dalam {String(timeLeft.hours).padStart(2, "0")} :{" "}
-      {String(timeLeft.minutes).padStart(2, "0")} :{" "}
-      {String(timeLeft.seconds).padStart(2, "0")}
-    </Typography>
-  );
-};
-
 const styles = StyleSheet.create({});

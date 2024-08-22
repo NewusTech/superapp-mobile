@@ -14,13 +14,9 @@ import {
 import { IconCarSide, IconChevronDown } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderListTravelQuery } from "@/features/order/api/useGetOrderListTravelQuery";
-import { useGetOrderRentalQuery } from "@/features/order/api/useGetOrderRentalQuery";
+import PartialsOrderRental from "@/features/orders/PartialsOrderRental";
 import { TravelTicketItem } from "@/features/travel/components";
-import {
-  formatDate,
-  formatLocalDate,
-  formatTimeString,
-} from "@/utils/datetime";
+import { formatLocalDate, formatTimeString } from "@/utils/datetime";
 
 export default function OrderTabScreen() {
   const router = useRouter();
@@ -53,11 +49,13 @@ export default function OrderTabScreen() {
     });
   };
   const getStatusFilter = () => {
-    return statusFilter === "Status"
-      ? ""
-      : statusFilter === "Gagal"
-        ? "kadaluarsa"
-        : statusFilter;
+    return activeTab.toLocaleLowerCase() === "menunggu pembayaran"
+      ? "menunggu"
+      : statusFilter === "Status"
+        ? ""
+        : statusFilter === "Gagal"
+          ? "kadaluarsa"
+          : statusFilter;
   };
 
   // query & mutation
@@ -66,18 +64,10 @@ export default function OrderTabScreen() {
       ? "menunggu"
       : getStatusFilter()
   );
-  const orderListRentalQuery = useGetOrderRentalQuery(
-    activeTab.toLocaleLowerCase() === "menunggu pembayaran"
-      ? "menunggu"
-      : getStatusFilter()
-  );
 
   useEffect(() => {
     if (activeFilter.toLocaleLowerCase() === "travel") {
       orderListTravelQuery.refetch();
-    }
-    if (activeFilter.toLocaleLowerCase() === "rental") {
-      orderListRentalQuery.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter, activeTab, activeFilter]);
@@ -156,12 +146,12 @@ export default function OrderTabScreen() {
             data={orderListTravelQuery.data?.data}
             renderItem={({ item }) => (
               <TravelTicketItem
-                disabled
                 originCity={item.kota_asal}
                 originDepartureDate={new Date(item.tanggal)}
                 destinationCity={item.kota_tujuan}
                 destinationDepartureDate={new Date(item.tanggal)}
                 icon={<IconCarSide color="main" />}
+                onPress={() => handleDetailPesanan(item.kode_pesanan)}
                 customHeader={
                   <View
                     style={{
@@ -269,121 +259,7 @@ export default function OrderTabScreen() {
         )}
         {/* Rental */}
         {activeFilter.toLowerCase() === "rental" && (
-          <FlatList
-            refreshControl={
-              <RefreshControl
-                refreshing={orderListRentalQuery.isRefetching}
-                onRefresh={() => orderListRentalQuery.refetch()}
-                progressViewOffset={20}
-              />
-            }
-            data={orderListRentalQuery.data?.data}
-            renderItem={({ item }) => (
-              <View
-                backgroundColor="paper"
-                style={{
-                  padding: 20,
-                  gap: 5,
-                  borderWidth: 1,
-                  borderColor: Colors.outlineborder,
-                  borderRadius: 20,
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 1,
-                  },
-                  shadowOpacity: 0.18,
-                  shadowRadius: 1.0,
-                  elevation: 1,
-                }}
-              >
-                <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                  {formatDate(new Date(item.created_at))}
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={10}
-                  color="textsecondary"
-                >
-                  {item.kode_pembayaran}
-                </Typography>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                    {item.mobil_type}
-                  </Typography>
-                  <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                    {item.area}
-                  </Typography>
-                </View>
-                <Typography fontFamily="Poppins-Regular" fontSize={14}>
-                  {formatDate(new Date(item.tanggal_awal_sewa), {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}{" "}
-                  -{" "}
-                  {formatDate(new Date(item.tanggal_akhir_sewa), {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </Typography>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography
-                    fontFamily="Poppins-Regular"
-                    fontSize={11}
-                    color={"paper"}
-                    style={{
-                      backgroundColor:
-                        item.status === "Sukses"
-                          ? Colors.success
-                          : item.status.toLocaleLowerCase() ===
-                              "menunggu pembayaran"
-                            ? Colors.textsecondary
-                            : Colors.dangerbase,
-                      borderRadius: 100,
-                      padding: 5,
-                      paddingHorizontal: 10,
-                    }}
-                  >
-                    {item.status}
-                  </Typography>
-                  <Button
-                    style={{ paddingHorizontal: 10 }}
-                    onPress={() => handleDetailPesanan(item.kode_pembayaran)}
-                    disabled
-                  >
-                    Detail
-                  </Button>
-                </View>
-              </View>
-            )}
-            ListEmptyComponent={() => (
-              <View style={style.emptyContainer}>
-                {orderListTravelQuery.isFetching ? (
-                  <Loader />
-                ) : (
-                  <Typography fontFamily="OpenSans-Semibold">
-                    Belum ada pesanan
-                  </Typography>
-                )}
-              </View>
-            )}
-            contentContainerStyle={style.listContentContainer}
-            showsVerticalScrollIndicator={false}
-          />
+          <PartialsOrderRental filterStatus={getStatusFilter()} />
         )}
       </View>
     </View>

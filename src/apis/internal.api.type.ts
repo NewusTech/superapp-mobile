@@ -294,6 +294,23 @@ export type OrderDetailResponseSuccess = {
   message: string;
   success: boolean;
 };
+export type OrderRentalDetailResponseSuccess = {
+  data: {
+    created_at: string;
+    kode_pembayaran: string;
+    mobil_type: string;
+    metode: string;
+    nominal: string;
+    area: string;
+    tanggal_awal_sewa: string;
+    tanggal_akhir_sewa: string;
+    status: string;
+    durasi_sewa: number;
+    alamat_keberangkatan: string;
+  };
+  message: string;
+  success: boolean;
+};
 
 export type GetPaymentStatusResponseSuccess = {
   data: {

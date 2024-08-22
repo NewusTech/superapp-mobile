@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { BlurView } from "expo-blur";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PostProcessPaymentPayload } from "@/apis/internal.api.type";
@@ -17,7 +17,7 @@ import {
 } from "@/components";
 import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetOrderDetail } from "@/features/order/api/useGetOrderTravelDetail";
+import { useGetOrderTravelDetail } from "@/features/order/api/useGetOrderTravelDetail";
 import { usePostProcessPaymentMutation } from "@/features/payment/api/usePostProcessPaymentMutation";
 import { PaymentComponent } from "@/features/payment/components";
 import { TravelTicketItem } from "@/features/travel/components";
@@ -41,7 +41,7 @@ export default function TravelPaymentScreen() {
   const [tna, setTna] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-  const orderDetailQuery = useGetOrderDetail(params.kode_pesanan);
+  const orderDetailQuery = useGetOrderTravelDetail(params.kode_pesanan);
   const orderDetail = orderDetailQuery.data?.data;
 
   // query & mutation
@@ -88,6 +88,7 @@ export default function TravelPaymentScreen() {
         <View style={styles.contentContainer}>
           <SectionWrapper title="Perjalanan">
             <TravelTicketItem
+              disabled
               destinationCity={orderDetail?.pesanan.kota_tujuan || ""}
               destinationDepartureDate={
                 new Date(orderDetail?.pesanan.tanggal || "2024-08-10")
@@ -153,7 +154,9 @@ export default function TravelPaymentScreen() {
                     </Typography>
                   </View>
                   <Typography fontFamily="Poppins-Bold">
-                    {formatTimeString(orderDetail?.pesanan.jam || "00:00:00")}
+                    {formatTimeString(
+                      orderDetail?.pesanan.jam_berangkat || "00:00:00"
+                    )}
                   </Typography>
                   <View
                     style={{

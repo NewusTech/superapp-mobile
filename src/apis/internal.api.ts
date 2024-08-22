@@ -23,6 +23,7 @@ import {
   OrderDetailResponseSuccess,
   OrderListRentalResponseSuccess,
   OrderListTravelResponseSuccess,
+  OrderRentalDetailResponseSuccess,
   PostLoginPayload,
   PostLoginResponseSuccess,
   PostProcessPaymentPayload,
@@ -260,6 +261,14 @@ export const getOrderTravelDetail = async (kode_pesanan: string) => {
   const response = await apiClientMock<OrderDetailResponseSuccess>({
     method: "GET",
     url: "/api/pesanan/riwayat/" + kode_pesanan,
+  });
+
+  return response.data;
+};
+export const getOrderRentalDetail = async (kode_pesanan: string) => {
+  const response = await apiClientMock<OrderRentalDetailResponseSuccess>({
+    method: "GET",
+    url: "/api/rental/riwayat/" + kode_pesanan,
   });
 
   return response.data;

@@ -222,6 +222,7 @@ export default function BookingTravelScreen() {
             paddingHorizontal: 20,
             paddingVertical: 5,
           }}
+          onPress={() => router.navigate("/travel/partials/cara-memesan-tiket")}
         >
           <Image source={require("@/assets/images/compliant.png")} />
           <View
