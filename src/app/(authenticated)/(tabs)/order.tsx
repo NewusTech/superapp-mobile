@@ -1,11 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet } from "react-native";
+import { useState } from "react";
+import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
-import { Appbar, Button, Loader, Tab, Typography, View } from "@/components";
-import { IconCarSide, IconPackage } from "@/components/icons";
+import {
+  Appbar,
+  Button,
+  Loader,
+  SelectInputV2,
+  Tab,
+  Typography,
+  View,
+} from "@/components";
+import { IconCarSide, IconChevronDown } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
-import { useGetOrderListQuery } from "@/features/order/api/useGetOrderListQuery";
+import { useGetOrderListTravelQuery } from "@/features/order/api/useGetOrderListQuery";
 import { TravelTicketItem } from "@/features/travel/components";
 import { formatLocalDate, formatTimeString } from "@/utils/datetime";
 
@@ -17,11 +25,25 @@ export default function OrderTabScreen() {
   const [activeTab, setActiveTab] = useState("Menunggu pembayaran");
   const [activeFilter, setActiveFilter] = useState("travel");
 
-  // query & mutation
-  const orderListQuery = useGetOrderListQuery(activeFilter);
+  const [statusFilter, setStatusFilter] = useState("travel");
 
-  // methods
-  // const isHistoryTab = activeTab === "Menunggu Pembayaran";
+  const statusFilterData = [
+    {
+      title: "Status",
+      data: "",
+    },
+    {
+      title: "Sukses",
+      data: "sukses",
+    },
+    {
+      title: "Gagal",
+      data: "kadaluarsa",
+    },
+  ];
+
+  // query & mutation
+  const orderListTravelQuery = useGetOrderListTravelQuery(activeFilter);
 
   const handleDetailPesanan = (kode_pesanan: string) => {
     router.push({
@@ -63,28 +85,45 @@ export default function OrderTabScreen() {
             activeTab={activeTab}
             onPress={(key) => setActiveTab(key as string)}
           />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <Tab
+              tabs={[
+                { key: "travel", label: "Travel" },
+                { key: "rental", label: "Rental" },
+                { key: "penginapan", label: "Penginapan" },
+              ]}
+              activeTab={activeFilter}
+              onPress={(key) => setActiveFilter(key as string)}
+              variant="button"
+            />
 
-          <Tab
-            tabs={[
-              { key: "travel", label: "Travel" },
-              { key: "rental", label: "Rental" },
-              { key: "penginapan", label: "Penginapan" },
-            ]}
-            activeTab={activeFilter}
-            onPress={(key) => setActiveFilter(key as string)}
-            variant="button"
-          />
+            <View style={{ marginHorizontal: 10 }}>
+              <SelectInputV2
+                placeholder="Berangkat dari..."
+                value={statusFilter}
+                data={statusFilterData}
+                onSelect={(selectedItem) =>
+                  setStatusFilter(selectedItem.title.toString())
+                }
+                trailingIcon={<IconChevronDown color="main" />}
+                withBorder
+                borderRadius={100}
+                padding={2}
+                paddingHorizontal={12}
+              />
+            </View>
+          </ScrollView>
         </View>
 
         <FlatList
           refreshControl={
             <RefreshControl
-              refreshing={orderListQuery.isRefetching}
-              onRefresh={() => orderListQuery.refetch()}
+              refreshing={orderListTravelQuery.isRefetching}
+              onRefresh={() => orderListTravelQuery.refetch()}
               progressViewOffset={20}
             />
           }
-          data={orderListQuery.data?.data}
+          data={orderListTravelQuery.data?.data}
           renderItem={({ item }) => (
             <TravelTicketItem
               disabled
@@ -100,13 +139,18 @@ export default function OrderTabScreen() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <View style={{ alignItems: "flex-start" }}>
+                  <View
+                    style={{
+                      alignItems: "flex-start",
+                      flexDirection: "column",
+                    }}
+                  >
                     <Typography
                       fontFamily="Poppins-Bold"
                       fontSize={14}
                       color={"black"}
                     >
-                      {formatLocalDate(new Date())}
+                      {formatLocalDate(new Date(item.created_at))}
                     </Typography>
                     <Typography
                       fontFamily="Poppins-Regular"
@@ -116,13 +160,28 @@ export default function OrderTabScreen() {
                       {item.kode_pesanan}
                     </Typography>
                   </View>
-                  <Typography
-                    fontFamily="Poppins-Bold"
-                    fontSize={14}
-                    color={"black"}
+                  <View
+                    style={{
+                      alignItems: "flex-end",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
+                    }}
                   >
-                    {formatTimeString(item.jam || "00:00:00")}
-                  </Typography>
+                    <Typography
+                      fontFamily="OpenSans-Bold"
+                      fontSize={14}
+                      color={"black"}
+                    >
+                      Keberangkatan
+                    </Typography>
+                    <Typography
+                      fontFamily="OpenSans-Medium"
+                      fontSize={12}
+                      color={"black"}
+                    >
+                      {formatTimeString(item.jam || "00:00:00")}
+                    </Typography>
+                  </View>
                 </View>
               }
               customFooter={
@@ -165,7 +224,7 @@ export default function OrderTabScreen() {
           )}
           ListEmptyComponent={() => (
             <View style={style.emptyContainer}>
-              {orderListQuery.isFetching ? (
+              {orderListTravelQuery.isFetching ? (
                 <Loader />
               ) : (
                 <Typography fontFamily="OpenSans-Semibold">
@@ -177,67 +236,6 @@ export default function OrderTabScreen() {
           contentContainerStyle={style.listContentContainer}
           showsVerticalScrollIndicator={false}
         />
-
-        {/* <TravelTicketItem
-          originCity={"From"}
-          originDepartureDate={new Date()}
-          destinationCity={"To"}
-          destinationDepartureDate={new Date()}
-          icon={<IconCarSide color="main" />}
-          customHeader={
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <View style={{ alignItems: "flex-start" }}>
-                <Typography
-                  fontFamily="Poppins-Bold"
-                  fontSize={14}
-                  color={"black"}
-                >
-                  {formatLocalDate(new Date())}
-                </Typography>
-                <Typography
-                  fontFamily="Poppins-Regular"
-                  fontSize={12}
-                  color={"textsecondary"}
-                >
-                  TR-20240808152805-8506
-                </Typography>
-              </View>
-              <Typography
-                fontFamily="Poppins-Bold"
-                fontSize={14}
-                color={"black"}
-              >
-                {formatTime(new Date())}
-              </Typography>
-            </View>
-          }
-          customFooter={
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography
-                fontFamily="Poppins-Regular"
-                fontSize={14}
-                color={"black"}
-              >
-                Menunggu Pembayaran
-              </Typography>
-              <Button
-                style={{ paddingHorizontal: 10 }}
-                onPress={() => handleDetailPesanan("TRX")}
-              >
-                Detail
-              </Button>
-            </View>
-          }
-        /> */}
       </View>
     </View>
   );

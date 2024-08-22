@@ -208,7 +208,7 @@ export type PostProcessPaymentRentalPayload = {
   all_in: number;
 };
 
-export type OrderListResponseSuccess = {
+export type OrderListTravelResponseSuccess = {
   data: {
     created_at: string;
     jam: string;

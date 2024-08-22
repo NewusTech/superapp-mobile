@@ -77,8 +77,20 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
             {!!customHeader && (
               <>
                 {customHeader}
-                <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 5,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Typography fontFamily="Poppins-Bold" fontSize={10}>
+                    Keberangkatan
+                  </Typography>
                   <Separator
+                    width="60%"
                     thickness={2}
                     style={{
                       backgroundColor: "transparent",
@@ -87,6 +99,9 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                       borderColor: AppColor.light.textsecondary,
                     }}
                   />
+                  <Typography fontFamily="Poppins-Bold" fontSize={10}>
+                    Tujuan
+                  </Typography>
                 </View>
               </>
             )}
@@ -139,7 +154,7 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
 
             {!!departureTime && (
               <View style={style.center}>
-                <Typography fontFamily="OpenSans-Regular" fontSize={12}>
+                <Typography fontFamily="Poppins-Regular" fontSize={12}>
                   {formatTimeString(departureTime)}
                 </Typography>
               </View>

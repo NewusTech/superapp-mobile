@@ -14,6 +14,10 @@ export type SelectInputV2Props = {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
   withBorder?: boolean;
+  borderRadius?: number;
+  gap?: number;
+  padding?: number;
+  paddingHorizontal?: number;
   data: DataItem[];
   onSelect: (selectedItem: DataItem, index: number) => void;
   value: string | number;
@@ -27,6 +31,10 @@ export function SelectInputV2(props: SelectInputV2Props) {
     trailingIcon,
     value,
     withBorder = true,
+    borderRadius = 10,
+    gap = 12,
+    padding = 8,
+    paddingHorizontal = padding,
     data = [],
     onSelect = () => {},
     placeholder = "",
@@ -54,7 +62,10 @@ export function SelectInputV2(props: SelectInputV2Props) {
               {
                 borderWidth: withBorder ? 1 : 0,
                 borderColor: Colors.outlineborder,
-                padding: withBorder ? 12 : 0,
+                padding: withBorder ? padding : 0,
+                paddingHorizontal,
+                borderRadius,
+                gap,
               },
             ]}
           >
@@ -100,10 +111,8 @@ export function SelectInputV2(props: SelectInputV2Props) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    gap: 12,
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 10,
   },
   textInput: {
     flex: 1,
