@@ -104,7 +104,6 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                 </View>
               </>
             )}
-
             <View style={style.contentContainer}>
               <View style={style.contentLeftWrapper}>
                 <Typography
@@ -125,7 +124,9 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                   })}
                 </Typography>
                 {originTime && (
-                  <Typography fontSize={10}>{originTime} WIB</Typography>
+                  <Typography fontSize={10}>
+                    {formatTimeString(originTime || "00:00:00")} WIB
+                  </Typography>
                 )}
               </View>
 
@@ -174,18 +175,19 @@ export function TravelTicketItem(props: TravelTicketItemProps) {
                   })}
                 </Typography>
                 {destinationTime && (
-                  <Typography fontSize={10}>{destinationTime} WIB</Typography>
+                  <Typography fontSize={10}>
+                    {formatTimeString(destinationTime || "00:00:00")} WIB
+                  </Typography>
                 )}
               </View>
             </View>
             {!!departureTime && (
               <View style={style.center}>
                 <Typography fontFamily="Poppins-Regular" fontSize={12}>
-                  {formatTimeString(departureTime)}
+                  {formatTimeString(departureTime || "00:00:00")}
                 </Typography>
               </View>
             )}
-
             {customFooter}
           </View>
         </>

@@ -72,6 +72,8 @@ export default function Payment() {
   };
 
   const handleProcessPayment = () => {
+    const time = new Date(rentCarPayload.time);
+    const jam_keberangkatan = `${time.getHours}:${time.getMinutes}`;
     const processPaymentData: PostProcessPaymentRentalPayload = {
       durasi_sewa: rentCarPayload.durasi_sewa,
       area: rentCarPayload.area,
@@ -86,6 +88,7 @@ export default function Payment() {
       no_telp: userRent.no_telp,
       alamat: userRent.alamat,
       all_in: rentCarPayload.all_in,
+      jam_keberangkatan,
     };
     processPaymentRentalMutation.mutate(processPaymentData, {
       onSuccess: (res) => {

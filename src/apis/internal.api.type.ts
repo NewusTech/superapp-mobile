@@ -136,6 +136,7 @@ export const rentalCarQuerySchema = z.object({
   area: z.string(),
   tanggal_mulai: z.date(),
   tanggal_selesai: z.date(),
+  time: z.date(),
   alamat_keberangkatan: z.string(),
   all_in: z.number(),
 });
@@ -197,6 +198,7 @@ export type PostProcessPaymentRentalPayload = {
   area: string;
   tanggal_mulai_sewa: string;
   tanggal_akhir_sewa: string;
+  jam_keberangkatan: string;
   alamat_keberangkatan: string;
   metode_id: number;
   mobil_rental_id: number;
@@ -244,6 +246,7 @@ export type RentalCarData = {
   mesin: string;
   transmisi: string;
   kapasitas_bagasi: string;
+  deskripsi: string;
   bahan_bakar: string;
   biaya_sewa: string;
   created_at: string;
@@ -307,6 +310,8 @@ export type OrderRentalDetailResponseSuccess = {
     status: string;
     durasi_sewa: number;
     alamat_keberangkatan: string;
+    payment_link: string;
+    expired_at: string;
   };
   message: string;
   success: boolean;
