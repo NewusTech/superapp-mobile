@@ -16,13 +16,15 @@ import {
   Typography,
   View,
 } from "@/components";
-import { IconCalendar, IconChevronDown } from "@/components/icons";
+import { IconCalendar, IconChevronDown, IconClock } from "@/components/icons";
+import { TimeInput } from "@/components/time-input/TimeInput";
 import { useAppTheme } from "@/context/theme-context";
 import {
   useRentActions,
   useRentalCarData,
 } from "@/features/rental/store/rental-store";
-import { formatCurrency } from "@/utils/common";
+import { formatCurrency, plusDay } from "@/utils/common";
+import { formatDate } from "@/utils/datetime";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export type SewaRent = z.infer<typeof rentalCarQuerySchema>;
@@ -47,6 +49,7 @@ export default function DetailRentCar() {
         area: "Dalam Kota",
         tanggal_mulai: new Date(),
         tanggal_selesai: new Date(),
+        time: new Date(),
       },
     });
 
@@ -97,8 +100,8 @@ export default function DetailRentCar() {
   }, [areaWatch, durationWatch, setValue]);
 
   useEffect(() => {
-    setValue("tanggal_selesai", tanggalMulai);
-  }, [tanggalMulai, setValue]);
+    setValue("tanggal_selesai", plusDay(tanggalMulai, durationWatch));
+  }, [tanggalMulai, durationWatch, setValue]);
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.paper }]}>
@@ -119,23 +122,6 @@ export default function DetailRentCar() {
             },
           ]}
         >
-          <Controller
-            control={control}
-            name="durasi_sewa"
-            render={({ field }) => (
-              <SelectInputV2
-                label="Durasi Sewa *"
-                placeholder="Pilih Durasi Sewa"
-                suffix="Hari"
-                value={String(field.value)}
-                data={rentDuration}
-                onSelect={(selectedItem) => field.onChange(selectedItem.title)}
-                trailingIcon={
-                  <IconChevronDown width={21} height={21} color="main" />
-                }
-              />
-            )}
-          />
           <Controller
             control={control}
             name="area"
@@ -172,20 +158,56 @@ export default function DetailRentCar() {
           />
           <Controller
             control={control}
-            name="tanggal_selesai"
+            name="durasi_sewa"
             render={({ field }) => (
-              <DateInputV3
-                minDate={new Date(watch("tanggal_mulai")).toISOString()}
+              <SelectInputV2
+                label="Durasi Sewa *"
+                placeholder="Pilih Durasi Sewa"
+                suffix="Hari"
+                value={String(field.value)}
+                data={rentDuration}
+                onSelect={(selectedItem) => field.onChange(selectedItem.title)}
+                trailingIcon={
+                  <IconChevronDown width={21} height={21} color="main" />
+                }
+              />
+            )}
+          />
+          <View style={{ gap: 10 }}>
+            <Typography fontFamily="Poppins-Medium">
+              Tanggal Selesai Sewa
+            </Typography>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                padding: 15,
+                borderWidth: 1,
+                borderColor: Colors.outlineborder,
+                borderRadius: 10,
+                backgroundColor: Colors.outlineborder,
+              }}
+            >
+              <Typography>
+                {formatDate(plusDay(tanggalMulai, durationWatch))}
+              </Typography>
+              <IconCalendar width={21} height={21} color="main" />
+            </View>
+          </View>
+          <Controller
+            control={control}
+            name="time"
+            render={({ field }) => (
+              <TimeInput
                 withBorder
-                label={"Tanggal Selesai Sewa"}
+                label={"Jam Keberangkatan"}
                 trailingIcon={
                   <View style={{ marginLeft: "auto" }}>
-                    <IconCalendar width={21} height={21} color="main" />
+                    <IconClock width={21} height={21} color="main" />
                   </View>
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
-                disabledDates={dummyDisableDate}
               />
             )}
           />

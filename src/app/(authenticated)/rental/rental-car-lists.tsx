@@ -54,6 +54,7 @@ export default function RentalCarLists() {
                   bahan_bakar={item.jumlah_kursi}
                   jumlah_kursi={item.jumlah_kursi}
                   transmisi={item.transmisi}
+                  deskripsi={item.deskripsi}
                   handleOnDetailRentalCard={() => handleRentCar(item)}
                 />
               );

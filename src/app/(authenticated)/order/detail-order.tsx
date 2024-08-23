@@ -299,7 +299,7 @@ export default function DetailOrder() {
               icon={<IconCarSide color="main" width={32} height={32} />}
               destinationTime={orderDetail.pesanan.jam_tiba || "00.00"}
               originTime={orderDetail.pesanan.jam_berangkat || "00.00"}
-              estimationTime="6"
+              estimationTime={orderDetail.pesanan.estimasi || "0"}
               customHeader={
                 <View
                   style={{

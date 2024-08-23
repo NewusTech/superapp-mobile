@@ -2,7 +2,7 @@ import { RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { Appbar, SectionWrapper, Typography, View } from "@/components";
+import { Appbar, Button, SectionWrapper, Typography, View } from "@/components";
 import { Card } from "@/components/card/Card";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderRentalDetailQuery } from "@/features/order/api/useGetOrderRentalDetailQuery";
@@ -24,6 +24,18 @@ export default function OrderRental() {
   const handleRefresh = () => {
     orderDetailQuery.refetch();
   };
+
+  const handleOnToPayment = () => {
+    router.dismissAll();
+    router.push({
+      pathname: "/travel/link-transaction",
+      params: {
+        link: orderDetail?.payment_link,
+      },
+    });
+  };
+
+  if (!orderDetail) return router.back();
 
   return (
     <>
@@ -65,10 +77,7 @@ export default function OrderRental() {
           }}
         >
           {/* Countdown */}
-          {/* {checkExpired(
-            orderDetail.pembayaran.expired_at,
-            orderDetail.pembayaran.status
-          ) && (
+          {checkExpired(orderDetail?.expired_at, orderDetail?.status) && (
             <View
               style={{
                 backgroundColor: Colors.dangerlight,
@@ -76,9 +85,9 @@ export default function OrderRental() {
                 padding: 5,
               }}
             >
-              <CountdownTimer expirationTime={new Date().toDateString()} />
+              <CountdownTimer expirationTime={orderDetail.expired_at} />
             </View>
-          )} */}
+          )}
           {/* ticket */}
           <View
             style={{
@@ -241,6 +250,16 @@ export default function OrderRental() {
                     </Typography>
                   </View>
                 </View>
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={14}
+                  color="textsecondary"
+                >
+                  Alamat Penjemputan
+                </Typography>
+                <Typography fontFamily="Poppins-Regular" fontSize={14}>
+                  {orderDetail?.alamat_keberangkatan || "-"}
+                </Typography>
               </View>
             </Card>
           </SectionWrapper>
@@ -255,15 +274,10 @@ export default function OrderRental() {
           padding: 10,
         }}
       >
-        {/* {orderDetail.pembayaran.payment_link &&
-          orderDetail.pembayaran.status === "Menunggu Pembayaran" && (
+        {orderDetail?.payment_link &&
+          orderDetail?.status === "Menunggu Pembayaran" && (
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
-        {!orderDetail.pembayaran.payment_link && (
-          <Button onPress={handleOnBeforePayment}>
-            Lanjut Pilih Metode Pembayaran
-          </Button>
-        )} */}
       </View>
     </>
   );

@@ -24,6 +24,7 @@ export type SelectInputV2Props = {
   placeholder?: string;
   suffix?: string;
   label?: string;
+  disabled?: boolean;
 };
 export function SelectInputV2(props: SelectInputV2Props) {
   const {
@@ -40,12 +41,14 @@ export function SelectInputV2(props: SelectInputV2Props) {
     placeholder = "",
     suffix = "",
     label,
+    disabled = false,
   } = props;
 
   const { Colors } = useAppTheme();
 
   return (
     <SelectDropdown
+      disabled={disabled}
       data={data}
       onSelect={onSelect}
       renderButton={(selected, isOpened) => (
@@ -66,6 +69,9 @@ export function SelectInputV2(props: SelectInputV2Props) {
                 paddingHorizontal,
                 borderRadius,
                 gap,
+                backgroundColor: disabled
+                  ? Colors.outlineborder
+                  : "transparent",
               },
             ]}
           >

@@ -23,9 +23,9 @@ const rentalStore = createStore<RentalStore>()((set, get) => ({
     area: "",
     durasi_sewa: 1,
     alamat_keberangkatan: "",
-    rute: "",
     tanggal_mulai: new Date(),
     tanggal_selesai: new Date(),
+    time: new Date(),
   },
   userRentalPayload: {
     nama: "",

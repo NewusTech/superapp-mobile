@@ -59,18 +59,17 @@ export default function OrderTabScreen() {
   };
 
   // query & mutation
-  const orderListTravelQuery = useGetOrderListTravelQuery(
-    activeTab.toLocaleLowerCase() === "menunggu pembayaran"
-      ? "menunggu"
-      : getStatusFilter()
-  );
+  const orderListTravelQuery = useGetOrderListTravelQuery(getStatusFilter());
 
   useEffect(() => {
     if (activeFilter.toLocaleLowerCase() === "travel") {
       orderListTravelQuery.refetch();
     }
+    if (activeTab.toLocaleLowerCase() === "menunggu pembayaran") {
+      setStatusFilter("Status");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter, activeTab, activeFilter]);
+  }, [statusFilter, activeTab, activeFilter, setStatusFilter]);
 
   return (
     <View backgroundColor="paper" style={style.container}>
@@ -117,6 +116,9 @@ export default function OrderTabScreen() {
 
             <View style={{ marginHorizontal: 10 }}>
               <SelectInputV2
+                disabled={
+                  activeTab.toLocaleLowerCase() === "menunggu pembayaran"
+                }
                 placeholder="Filter"
                 value={statusFilter}
                 data={statusFilterData}

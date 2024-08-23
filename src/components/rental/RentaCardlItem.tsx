@@ -1,14 +1,12 @@
 import React from "react";
 import {
   Image,
-  ImageSourcePropType,
   Pressable,
   PressableProps,
+  StyleSheet,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
 
-import { RentalCarData } from "@/apis/internal.api.type";
 import { useAppTheme } from "@/context/theme-context";
 
 import { Button } from "../button/Button";
@@ -22,6 +20,7 @@ export type RentaCardlItemProps = {
   jumlah_kursi: string;
   transmisi: string;
   bagasi: string;
+  deskripsi: string;
 } & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
   const {
@@ -31,15 +30,16 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
     jumlah_kursi,
     transmisi,
     bagasi,
+    deskripsi,
+    disabled,
     handleOnDetailRentalCard,
     ...rest
   } = props;
-  const router = useRouter();
 
   const { Colors } = useAppTheme();
 
   return (
-    <Pressable {...rest}>
+    <Pressable {...rest} onPress={handleOnDetailRentalCard}>
       {({ pressed }) => (
         <View
           style={{
@@ -49,7 +49,6 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             backgroundColor: Colors.paper,
             borderRadius: 20,
             borderWidth: 0.5,
-            borderColor: Colors.outlineborder,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -58,8 +57,22 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             shadowOpacity: 0.18,
             shadowRadius: 1.0,
             elevation: 1,
+            borderColor:
+              pressed && !disabled ? Colors.badgeMain : Colors.outlineborder,
           }}
         >
+          {pressed && !disabled && (
+            <View
+              style={[
+                style.container,
+                style.mask,
+                {
+                  borderWidth: 0,
+                  backgroundColor: Colors.textsecondary,
+                },
+              ]}
+            />
+          )}
           <View
             style={{
               backgroundColor: Colors.paper,
@@ -86,9 +99,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
               color="textsecondary"
               style={{ textAlign: "justify", marginBottom: 10 }}
             >
-              Rama Trans menyediakan mobil rental dengan layanan prima, armada
-              berkualitas, harga kompetitif, serta kenyamanan dan keamanan
-              perjalanan yang terjamin.
+              {deskripsi}
             </Typography>
             {/* group spesifikasi */}
             <View
@@ -187,3 +198,21 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
     </Pressable>
   );
 }
+
+const style = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    padding: 12,
+    borderRadius: 20,
+    gap: 10,
+  },
+  mask: {
+    width: "100%",
+    height: "100%",
+    zIndex: 2,
+    opacity: 0.15,
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+});

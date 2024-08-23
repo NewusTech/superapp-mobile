@@ -172,9 +172,7 @@ export default function DetailRentalCar() {
               fontSize={14}
               style={{ textAlign: "justify" }}
             >
-              Rama Trans menyediakan mobil rental dengan layanan prima, armada
-              berkualitas, harga kompetitif, serta kenyamanan dan keamanan
-              perjalanan yang terjamin.
+              {rentalCarData?.deskripsi}
             </Typography>
             <Typography
               fontFamily="Poppins-Bold"
