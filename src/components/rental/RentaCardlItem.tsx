@@ -44,7 +44,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
         <View
           style={{
             width: "100%",
-            height: 450,
+            height: 500,
             overflow: "hidden",
             backgroundColor: Colors.paper,
             borderRadius: 20,
@@ -90,9 +90,33 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
               padding: 20,
             }}
           >
-            <Typography fontFamily="Poppins-Bold" fontSize={18}>
-              {type}
-            </Typography>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <Typography
+                fontFamily="Poppins-Bold"
+                fontSize={18}
+                style={{ textAlignVertical: "center" }}
+              >
+                {type}
+              </Typography>
+              <Typography
+                fontSize={14}
+                style={{
+                  backgroundColor: "#F8D36B",
+                  color: "#BF4F3F",
+                  padding: 10,
+                  borderRadius: 10,
+                }}
+              >
+                2 Mobil Tersedia
+              </Typography>
+            </View>
             <Typography
               fontFamily="Poppins-Regular"
               fontSize={12}

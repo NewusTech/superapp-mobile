@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
-import { Button, Loader, Typography, View } from "@/components";
+import { Button, Loader, Separator, Typography, View } from "@/components";
 import { Card } from "@/components/card/Card";
 import { useAppTheme } from "@/context/theme-context";
-import { formatDate } from "@/utils/datetime";
+import { checkExpired } from "@/utils/common";
+import CountdownTimer from "@/utils/CountdownTimer";
+import { formatDate, formatTime } from "@/utils/datetime";
 
 import { useGetOrderRentalQuery } from "../order/api/useGetOrderRentalQuery";
 
@@ -45,9 +47,35 @@ export default function PartialsOrderRental(props: partialOrderRental) {
           progressViewOffset={20}
         />
       }
-      data={orderListRentalQuery.data?.data}
+      data={
+        filterStatus === ""
+          ? orderListRentalQuery.data?.data.filter(
+              (d) => d.status.toLowerCase() !== "menunggu pembayaran"
+            )
+          : orderListRentalQuery.data?.data
+      }
       renderItem={({ item }) => (
         <Card onPress={() => handleToOrderDetail(item.kode_pembayaran)}>
+          {checkExpired(item.expired_at, item.status) && (
+            <View
+              style={{
+                paddingBottom: 8,
+                borderBottomWidth: 0.5,
+                borderColor: Colors.textsecondary,
+                marginBottom: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: Colors.dangerlight,
+                  width: "100%",
+                  padding: 5,
+                }}
+              >
+                <CountdownTimer expirationTime={item.expired_at} />
+              </View>
+            </View>
+          )}
           <Typography fontFamily="Poppins-Bold" fontSize={14}>
             {formatDate(new Date(item.created_at))}
           </Typography>
@@ -58,6 +86,22 @@ export default function PartialsOrderRental(props: partialOrderRental) {
           >
             {item.kode_pembayaran}
           </Typography>
+          <Typography
+            fontFamily="Poppins-Regular"
+            fontSize={12}
+            color={"textsecondary"}
+          >
+            Waktu pemesanan : {formatTime(new Date(item.created_at))} WIB
+          </Typography>
+          <Separator
+            thickness={2}
+            style={{
+              backgroundColor: "transparent",
+              borderTopWidth: 1,
+              borderStyle: "dashed",
+              borderColor: Colors.textsecondary,
+            }}
+          />
           <View
             style={{
               flexDirection: "row",

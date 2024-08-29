@@ -50,6 +50,7 @@ export default function DetailRentCar() {
         tanggal_mulai: new Date(),
         tanggal_selesai: new Date(),
         time: new Date(),
+        catatan: "",
       },
     });
 
@@ -218,6 +219,23 @@ export default function DetailRentCar() {
               <TextInput
                 label="Alamat Keberangkatan *"
                 placeholder="Jl.alamat"
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                value={field.value}
+                borderRadius={20}
+                numberOfLines={5}
+                textAlignVertical="top"
+                multiline={true}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="catatan"
+            render={({ field }) => (
+              <TextInput
+                label="Catatan Untuk Sopir *"
+                placeholder="Masukan alamat secara rinci seperti : blok rumah, gang dan no rumah"
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}

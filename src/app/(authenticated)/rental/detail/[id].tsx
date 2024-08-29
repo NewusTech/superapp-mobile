@@ -64,6 +64,8 @@ export default function DetailRentalCar() {
       nama: "",
       nik: "",
       no_telp: "",
+      username_fb: "",
+      username_ig: "",
     });
   };
 

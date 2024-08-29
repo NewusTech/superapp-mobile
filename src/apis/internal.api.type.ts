@@ -139,6 +139,7 @@ export const rentalCarQuerySchema = z.object({
   time: z.date(),
   alamat_keberangkatan: z.string(),
   all_in: z.number(),
+  catatan: z.string(),
 });
 export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
 export type TravelPointToPointApiParams = {
@@ -219,6 +220,7 @@ export type OrderListTravelResponseSuccess = {
     kota_tujuan: string;
     status: string;
     tanggal: string;
+    expired_at: string;
   }[];
   message: string;
   success: boolean;
@@ -232,6 +234,7 @@ export type OrderListRentalResponseSuccess = {
     tanggal_awal_sewa: string;
     tanggal_akhir_sewa: string;
     status: string;
+    expired_at: string;
   }[];
   message: string;
   success: boolean;

@@ -16,7 +16,14 @@ import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderListTravelQuery } from "@/features/order/api/useGetOrderListTravelQuery";
 import PartialsOrderRental from "@/features/orders/PartialsOrderRental";
 import { TravelTicketItem } from "@/features/travel/components";
-import { formatLocalDate, formatTimeString } from "@/utils/datetime";
+import { checkExpired } from "@/utils/common";
+import CountdownTimer from "@/utils/CountdownTimer";
+import {
+  formatDate,
+  formatLocalDate,
+  formatTime,
+  formatTimeString,
+} from "@/utils/datetime";
 
 export default function OrderTabScreen() {
   const router = useRouter();
@@ -145,7 +152,13 @@ export default function OrderTabScreen() {
                 progressViewOffset={20}
               />
             }
-            data={orderListTravelQuery.data?.data}
+            data={
+              getStatusFilter() === ""
+                ? orderListTravelQuery.data?.data.filter(
+                    (d) => d.status.toLowerCase() !== "menunggu pembayaran"
+                  )
+                : orderListTravelQuery.data?.data
+            }
             renderItem={({ item }) => (
               <TravelTicketItem
                 originCity={item.kota_asal}
@@ -157,52 +170,90 @@ export default function OrderTabScreen() {
                 customHeader={
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      flexDirection: "column",
                     }}
                   >
+                    {checkExpired(item.expired_at, item.status) && (
+                      <View
+                        style={{
+                          paddingBottom: 8,
+                          borderBottomWidth: 0.5,
+                          borderColor: Colors.textsecondary,
+                          marginBottom: 5,
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: Colors.dangerlight,
+                            width: "100%",
+                            padding: 5,
+                          }}
+                        >
+                          <CountdownTimer expirationTime={item.expired_at} />
+                        </View>
+                      </View>
+                    )}
                     <View
                       style={{
-                        alignItems: "flex-start",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <Typography
-                        fontFamily="Poppins-Bold"
-                        fontSize={14}
-                        color={"black"}
-                      >
-                        {formatLocalDate(new Date(item.created_at))}
-                      </Typography>
-                      <Typography
-                        fontFamily="Poppins-Regular"
-                        fontSize={12}
-                        color={"textsecondary"}
-                      >
-                        {item.kode_pesanan}
-                      </Typography>
-                    </View>
-                    <View
-                      style={{
-                        alignItems: "flex-end",
+                        flexDirection: "row",
                         justifyContent: "space-between",
-                        flexDirection: "column",
                       }}
                     >
-                      <Typography
-                        fontFamily="OpenSans-Bold"
-                        fontSize={14}
-                        color={"black"}
+                      <View
+                        style={{
+                          alignItems: "flex-start",
+                          flexDirection: "column",
+                        }}
                       >
-                        Keberangkatan
-                      </Typography>
-                      <Typography
-                        fontFamily="OpenSans-Medium"
-                        fontSize={12}
-                        color={"black"}
+                        <Typography
+                          fontFamily="Poppins-Bold"
+                          fontSize={14}
+                          color={"black"}
+                        >
+                          {formatLocalDate(new Date(item.created_at))}
+                        </Typography>
+                        <Typography
+                          fontFamily="Poppins-Regular"
+                          fontSize={12}
+                          color={"textsecondary"}
+                        >
+                          {item.kode_pesanan}
+                        </Typography>
+                        <Typography
+                          fontFamily="Poppins-Regular"
+                          fontSize={12}
+                          color={"textsecondary"}
+                        >
+                          Waktu pemesanan :{" "}
+                          {formatTime(new Date(item.created_at))} WIB
+                        </Typography>
+                      </View>
+                      <View
+                        style={{
+                          alignItems: "flex-end",
+                          flexDirection: "column",
+                          gap: 5,
+                        }}
                       >
-                        {formatTimeString(item.jam || "00:00:00")}
-                      </Typography>
+                        <Typography
+                          fontFamily="OpenSans-Bold"
+                          fontSize={14}
+                          color={"black"}
+                        >
+                          Keberangkatan
+                        </Typography>
+                        <Typography
+                          fontFamily="OpenSans-Medium"
+                          fontSize={12}
+                          color={"black"}
+                        >
+                          {formatDate(new Date(item.tanggal), {
+                            weekday: "long",
+                          })}
+                          {", "}
+                          {formatTimeString(item.jam || "00:00:00")} WIB
+                        </Typography>
+                      </View>
                     </View>
                   </View>
                 }

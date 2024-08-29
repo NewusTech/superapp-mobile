@@ -78,19 +78,14 @@ export default function LoginScreen() {
   return (
     <PageWrapper backgroundColor="main" isLoading={loginMutation.isPending}>
       <StatusBar barStyle="light-content" />
-      <ImageBackground
-        source={require("@/assets/images/auth-bg-2.jpeg")}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        resizeMode="cover"
-      />
       <ScrollView
         style={style.container}
         contentContainerStyle={{ flexGrow: 1 }}
       >
+        <Image
+          source={require("@/assets/images/auth-bg.png")}
+          style={{ width: "100%", height: 300, position: "absolute" }}
+        />
         <View
           backgroundColor="paper"
           style={[style.content, { paddingBottom: insets.bottom + 37 }]}

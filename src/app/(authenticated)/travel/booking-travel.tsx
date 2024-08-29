@@ -95,7 +95,7 @@ export default function BookingTravelScreen() {
         style={[style.headerBack, { height: insets.top + 170 }]}
       >
         <ImageBackground
-          source={require("@/assets/images/header_banner_travel.png")}
+          source={require("@/assets/images/auth-bg.png")}
           style={style.backgroundImage}
         />
       </View>

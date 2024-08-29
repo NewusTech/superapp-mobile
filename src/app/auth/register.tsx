@@ -1,4 +1,4 @@
-import { ImageBackground, ScrollView, StyleSheet } from "react-native";
+import { Image, ImageBackground, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Controller, useForm } from "react-hook-form";
@@ -65,16 +65,10 @@ export default function RegisterScreen() {
           backgroundColor="main"
           style={[style.container, { paddingTop: insets.top }]}
         >
-          <ImageBackground
-            source={require("@/assets/images/auth-bg-2.jpeg")}
-            style={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-            }}
-            resizeMode="cover"
+          <Image
+            source={require("@/assets/images/auth-bg.png")}
+            style={{ width: "100%", height: 300, position: "absolute" }}
           />
-
           <View
             backgroundColor="paper"
             style={[
@@ -205,8 +199,8 @@ const style = StyleSheet.create({
     justifyContent: "center",
   },
   contentContainer: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
     paddingHorizontal: 35,
     marginTop: "auto",
     // paddingTop: 54,
