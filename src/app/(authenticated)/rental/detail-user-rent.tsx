@@ -5,7 +5,9 @@ import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
-import { Appbar, Button, TextInput, View } from "@/components";
+import { Appbar, Button, TextInput, Typography, View } from "@/components";
+import { IconUpload } from "@/components/icons";
+import InputFile from "@/components/input-file/InputFile";
 import { useAppTheme } from "@/context/theme-context";
 import {
   useRentActions,
@@ -19,6 +21,8 @@ export const userRentSchema = z.object({
   email: z.string().email(),
   no_telp: z.string().min(8, "Nomor Telepon Minimal 8 Digit"),
   alamat: z.string(),
+  username_ig: z.string(),
+  username_fb: z.string(),
 });
 export type UserRent = z.infer<typeof userRentSchema>;
 
@@ -64,6 +68,8 @@ export default function DetailUserRent() {
     setValue("nik", userRent?.nik || "1234567890123456");
     setValue("no_telp", userRent?.no_telp || "1234567890");
     setValue("alamat", userRent?.alamat || "123");
+    setValue("username_fb", userRent?.alamat || "ramatranz");
+    setValue("username_ig", userRent?.alamat || "ramatranz");
   }, [userRent, setValue]);
 
   const emailValue = watch("email");
@@ -87,7 +93,9 @@ export default function DetailUserRent() {
         hasBorder={false}
         backIconPress={() => router.back()}
       />
-      <ScrollView style={{ paddingVertical: 20 }}>
+      <ScrollView
+        style={{ paddingVertical: 20, marginBottom: insets.bottom + 20 }}
+      >
         <View
           borderColor="outlineborder"
           style={[
@@ -95,6 +103,7 @@ export default function DetailUserRent() {
             {
               backgroundColor: Colors.paper,
               borderColor: Colors.outlineborder,
+              marginBottom: insets.bottom + 20,
             },
           ]}
         >
@@ -175,7 +184,41 @@ export default function DetailUserRent() {
               />
             )}
           />
-          <View style={styles.buttonWrapper}>
+          <Controller
+            control={control}
+            name="username_ig"
+            render={({ field }) => (
+              <TextInput
+                label="Username Instagram *"
+                placeholder="ramatranz"
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                value={field.value}
+                borderRadius={20}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="username_fb"
+            render={({ field }) => (
+              <TextInput
+                label="Username Facebook *"
+                placeholder="ramatranz"
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                value={field.value}
+                borderRadius={20}
+              />
+            )}
+          />
+
+          <InputFile label="Masukan Foto KTP" />
+          <InputFile label="Masukan Swafoto" />
+
+          <View
+            style={[styles.buttonWrapper, { marginBottom: insets.bottom + 10 }]}
+          >
             <Button
               disabled={!formState.isValid || !emailRegex.test(emailValue)}
               onPress={handleSubmitForm}

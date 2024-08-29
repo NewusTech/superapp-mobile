@@ -23,7 +23,6 @@ import {
   View,
 } from "@/components";
 import {
-  IconBasket,
   IconBuilding,
   IconCar,
   IconCarSide,
@@ -36,7 +35,6 @@ import {
   ArticleEmpty,
   ArticleItem,
   ArticleItemPlaceholder,
-  articleListPlaceholderData,
 } from "@/features/article/components";
 import { HotelItem } from "@/features/article/components/hotel-item/HotelItem";
 import {
@@ -392,14 +390,14 @@ export default function HomeTabScreen() {
                     title={item.judul}
                     subtitle={item.konten}
                     rating={item.rating}
-                    // onPress={() =>
-                    //   router.push({
-                    //     pathname: "/article/[id]",
-                    //     params: {
-                    //       id: item.id,
-                    //     },
-                    //   })
-                    // }
+                    onPress={() =>
+                      router.push({
+                        pathname: "/wisata/[id]",
+                        params: {
+                          id: item.id,
+                        },
+                      })
+                    }
                   />
                 )
               }
@@ -441,6 +439,7 @@ export default function HomeTabScreen() {
               rating={4.5}
               star={5}
               title="Podomoro Golf View "
+              onPress={() => router.navigate("/penginapan/penginapan-list")}
             />
           </View>
           <View

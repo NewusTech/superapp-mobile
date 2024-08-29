@@ -17,7 +17,7 @@ import { useGetOrderTravelDetail } from "@/features/order/api/useGetOrderTravelD
 import { TravelTicketItem } from "@/features/travel/components";
 import { checkExpired, formatCurrency } from "@/utils/common";
 import CountdownTimer from "@/utils/CountdownTimer";
-import { formatLocalDate } from "@/utils/datetime";
+import { formatLocalDate, formatTime } from "@/utils/datetime";
 
 export default function DetailOrder() {
   const router = useRouter();
@@ -205,6 +205,23 @@ export default function DetailOrder() {
                 }}
               >
                 {orderDetail.pembayaran.kode_pembayaran || "-"}
+              </Typography>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Typography color="textsecondary">Waktu Pemesanan</Typography>
+              <Typography
+                style={{
+                  textAlign: "left",
+                  width: "50%",
+                }}
+              >
+                {formatTime(new Date(orderDetail.pembayaran.created_at))} WIB
               </Typography>
             </View>
             <View
@@ -449,11 +466,12 @@ export default function DetailOrder() {
           orderDetail.pembayaran.status === "Menunggu Pembayaran" && (
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
-        {!orderDetail.pembayaran.payment_link && (
-          <Button onPress={handleOnBeforePayment}>
-            Lanjut Pilih Metode Pembayaran
-          </Button>
-        )}
+        {!orderDetail.pembayaran.payment_link &&
+          orderDetail.pembayaran.status.toLowerCase() !== "kadaluarsa" && (
+            <Button onPress={handleOnBeforePayment}>
+              Lanjut Pilih Metode Pembayaran
+            </Button>
+          )}
       </View>
     </>
   );

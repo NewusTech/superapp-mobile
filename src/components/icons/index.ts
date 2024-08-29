@@ -39,5 +39,6 @@ export * from "./IconStar";
 export * from "./IconSuitcase";
 export * from "./IconSwap";
 export * from "./IconTruckDriver";
+export * from "./IconUpload";
 export * from "./IconUser";
 export * from "./IconUserCard";

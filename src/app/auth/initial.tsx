@@ -24,6 +24,10 @@ export default function InitialScreen() {
       ]}
     >
       <Image
+        source={require("@/assets/images/bg-screen.png")}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+      />
+      <Image
         source={require("@/assets/images/adaptive-icon.png")}
         style={style.logo}
       />

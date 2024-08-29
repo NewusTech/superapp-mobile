@@ -8,7 +8,7 @@ import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderRentalDetailQuery } from "@/features/order/api/useGetOrderRentalDetailQuery";
 import { checkExpired, formatCurrency } from "@/utils/common";
 import CountdownTimer from "@/utils/CountdownTimer";
-import { formatDateDMY, formatLocalDate } from "@/utils/datetime";
+import { formatDateDMY, formatLocalDate, formatTime } from "@/utils/datetime";
 
 export default function OrderRental() {
   const router = useRouter();
@@ -148,6 +148,24 @@ export default function OrderRental() {
                 }}
               >
                 {orderDetail?.kode_pembayaran || "-"}
+              </Typography>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Typography color="textsecondary">Waktu Pemesanan</Typography>
+              <Typography
+                fontFamily="Poppins-Regular"
+                style={{
+                  textAlign: "left",
+                  width: "50%",
+                }}
+              >
+                {formatTime(new Date(orderDetail.created_at))}
               </Typography>
             </View>
             <View
