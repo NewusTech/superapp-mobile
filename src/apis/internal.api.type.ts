@@ -139,7 +139,7 @@ export const rentalCarQuerySchema = z.object({
   time: z.date(),
   alamat_keberangkatan: z.string(),
   all_in: z.number(),
-  catatan: z.string(),
+  catatan_sopir: z.string(),
 });
 export type RentalCarQuery = z.infer<typeof rentalCarQuerySchema>;
 export type TravelPointToPointApiParams = {
@@ -194,22 +194,7 @@ export type PostProcessPaymentPayload = {
   metode_id: string;
 };
 
-export type PostProcessPaymentRentalPayload = {
-  durasi_sewa: number;
-  area: string;
-  tanggal_mulai_sewa: string;
-  tanggal_akhir_sewa: string;
-  jam_keberangkatan: string;
-  alamat_keberangkatan: string;
-  metode_id: number;
-  mobil_rental_id: number;
-  nama: string;
-  nik: string;
-  email: string;
-  no_telp: string;
-  alamat: string;
-  all_in: number;
-};
+export type PostProcessPaymentRentalPayload = any;
 
 export type OrderListTravelResponseSuccess = {
   data: {

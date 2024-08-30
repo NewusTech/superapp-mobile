@@ -336,7 +336,10 @@ export default function TravelPaymentScreen() {
             </View>
           ))}
           <View style={{ marginHorizontal: 10, marginVertical: 15 }}>
-            <Button onPress={handlePressSayaMenyetujiTnc}>
+            <Button
+              onPress={handlePressSayaMenyetujiTnc}
+              style={{ paddingVertical: 10 }}
+            >
               Saya menyetujui Syarat dan Ketentuan yang berlaku
             </Button>
           </View>

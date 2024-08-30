@@ -9,7 +9,6 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PostProcessPaymentRentalPayload } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
@@ -41,6 +40,8 @@ export default function Payment() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     number | null
   >(null);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [tna, setTna] = useState(false);
   const [openModalTnc, setOpenModalTnc] = useState(false);
@@ -82,26 +83,60 @@ export default function Payment() {
     return carPrice * durationPrice + allInPrice;
   };
 
-  const handleProcessPayment = () => {
+  const handleProcessPayment = async () => {
+    setIsLoading(true);
     const time = new Date(rentCarPayload.time);
-    const jam_keberangkatan = `${time.getHours}:${time.getMinutes}`;
-    const processPaymentData: PostProcessPaymentRentalPayload = {
-      durasi_sewa: rentCarPayload.durasi_sewa,
-      area: rentCarPayload.area,
-      tanggal_mulai_sewa: formatDateYMD(rentCarPayload.tanggal_mulai),
-      tanggal_akhir_sewa: formatDateYMD(rentCarPayload.tanggal_selesai),
-      alamat_keberangkatan: rentCarPayload.alamat_keberangkatan,
-      metode_id: selectedPaymentMethod || 1,
-      mobil_rental_id: rentCarData?.id || 1,
-      nama: userRent.nama,
-      nik: userRent.nik,
-      email: userRent.email,
-      no_telp: userRent.no_telp,
-      alamat: userRent.alamat,
-      all_in: rentCarPayload.all_in,
-      jam_keberangkatan,
+    const jam_keberangkatan = `${time.getHours()}:${time.getMinutes()}`;
+
+    // Prepare the FormData
+    const formData = new FormData();
+
+    // Convert numeric values to strings
+    formData.append("durasi_sewa", rentCarPayload.durasi_sewa.toString());
+    formData.append("all_in", rentCarPayload.all_in.toString());
+    formData.append("metode_id", (selectedPaymentMethod || 1).toString());
+    formData.append("mobil_rental_id", (rentCarData?.id || 1).toString());
+
+    // Append other fields
+    formData.append("area", rentCarPayload.area);
+    formData.append(
+      "tanggal_mulai_sewa",
+      formatDateYMD(rentCarPayload.tanggal_mulai)
+    );
+    formData.append(
+      "tanggal_akhir_sewa",
+      formatDateYMD(rentCarPayload.tanggal_selesai)
+    );
+    formData.append(
+      "alamat_keberangkatan",
+      rentCarPayload.alamat_keberangkatan
+    );
+    formData.append("nama", userRent.nama);
+    formData.append("nik", userRent.nik);
+    formData.append("email", userRent.email);
+    formData.append("no_telp", userRent.no_telp);
+    formData.append("alamat", userRent.alamat);
+    formData.append("jam_keberangkatan", jam_keberangkatan);
+    formData.append("catatan_sopir", rentCarPayload.catatan_sopir);
+    formData.append("username_fb", userRent.username_fb);
+    formData.append("username_ig", userRent.username_ig);
+
+    // Menambahkan gambar
+    const imageFileKtp: any = {
+      name: "image_ktp",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: userRent.image_ktp,
     };
-    processPaymentRentalMutation.mutate(processPaymentData, {
+    const imageFilSwafoto: any = {
+      name: "image_swafoto",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: userRent.image_ktp,
+    };
+
+    formData.append("image_ktp", imageFileKtp);
+    formData.append("image_swafoto", imageFilSwafoto);
+
+    processPaymentRentalMutation.mutate(formData, {
       onSuccess: (res) => {
         console.log(res, "res");
         router.dismissAll();
@@ -118,6 +153,8 @@ export default function Payment() {
           message: "Order pesanan gagal, coba setelah beberapa saat",
           variant: "danger",
         });
+        console.error(res);
+        setIsLoading(false);
       },
     });
   };
@@ -201,7 +238,6 @@ export default function Payment() {
             </Typography>
           </View>
         </View>
-
         <Pressable onPress={() => setModalDetailPenyewa(true)}>
           <View
             style={{
@@ -292,7 +328,7 @@ export default function Payment() {
         </View>
         <View style={{ flex: 1 }}>
           <Button
-            disabled={!selectedPaymentMethod || !tna}
+            disabled={!selectedPaymentMethod || !tna || isLoading}
             onPressIn={handleProcessPayment}
           >
             Bayar
@@ -400,7 +436,10 @@ export default function Payment() {
             </View>
           ))}
           <View style={{ marginHorizontal: 10, marginVertical: 15 }}>
-            <Button onPress={handlePressSayaMenyetujiTnc}>
+            <Button
+              onPress={handlePressSayaMenyetujiTnc}
+              style={{ paddingVertical: 10 }}
+            >
               Saya menyetujui Syarat dan Ketentuan yang berlaku
             </Button>
           </View>

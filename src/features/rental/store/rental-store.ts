@@ -26,7 +26,7 @@ const rentalStore = createStore<RentalStore>()((set, get) => ({
     tanggal_mulai: new Date(),
     tanggal_selesai: new Date(),
     time: new Date(),
-    catatan: "",
+    catatan_sopir: "",
   },
   userRentalPayload: {
     nama: "",
@@ -36,6 +36,8 @@ const rentalStore = createStore<RentalStore>()((set, get) => ({
     alamat: "",
     username_fb: "",
     username_ig: "",
+    image_ktp: "",
+    image_swafoto: "",
   },
 
   rentalCarData: undefined,
