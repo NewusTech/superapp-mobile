@@ -21,6 +21,7 @@ export type RentaCardlItemProps = {
   transmisi: string;
   bagasi: string;
   deskripsi: string;
+  width?: any;
 } & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
   const {
@@ -33,6 +34,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
     deskripsi,
     disabled,
     handleOnDetailRentalCard,
+    width,
     ...rest
   } = props;
 
@@ -43,7 +45,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
       {({ pressed }) => (
         <View
           style={{
-            width: "100%",
+            width: width ?? "100%",
             height: 500,
             overflow: "hidden",
             backgroundColor: Colors.paper,
@@ -106,11 +108,11 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
                 {type}
               </Typography>
               <Typography
-                fontSize={14}
+                fontSize={12}
                 style={{
                   backgroundColor: "#F8D36B",
                   color: "#BF4F3F",
-                  padding: 10,
+                  padding: 9,
                   borderRadius: 10,
                 }}
               >

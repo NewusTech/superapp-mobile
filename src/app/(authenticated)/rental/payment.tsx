@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -20,7 +19,9 @@ import {
   View,
 } from "@/components";
 import { IconChevronRight } from "@/components/icons";
+import Modals from "@/components/modal/Modals";
 import ModalSwipe from "@/components/modal/ModalSwipe";
+import { tncTravel } from "@/constants/Constant";
 import { useAppTheme } from "@/context/theme-context";
 import { PaymentComponent } from "@/features/payment/components";
 import { usePostProcessPaymentMutationRental } from "@/features/rental/api/usePostProcessPaymentMutationRental";
@@ -50,6 +51,16 @@ export default function Payment() {
   const rentCarPayload = useRentalBookingPayload();
 
   const processPaymentRentalMutation = usePostProcessPaymentMutationRental();
+
+  const handlePressSayaMenyetujiTnc = () => {
+    setOpenModalTnc(false);
+    setTna(true);
+  };
+
+  const handlePressTna = () => {
+    if (!tna) setOpenModalTnc(true);
+    setTna((prev) => !prev);
+  };
 
   const handleToEditDataPenyewa = () => {
     setModalDetailPenyewa(false);
@@ -237,7 +248,7 @@ export default function Payment() {
           onMethodSelected={setSelectedPaymentMethod}
         />
         <View style={{ marginVertical: 20 }}>
-          <TouchableWithoutFeedback onPress={() => setTna((prev) => !prev)}>
+          <TouchableWithoutFeedback onPress={handlePressTna}>
             <View
               style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
             >
@@ -364,55 +375,37 @@ export default function Payment() {
           </Button>
         </View>
       </ModalSwipe>
-      {openModalTnc && (
-        <View style={styles.containerPopup}>
-          <TouchableWithoutFeedback onPress={() => setOpenModalTnc(false)}>
-            <BlurView
-              intensity={100}
-              blurReductionFactor={100}
-              experimentalBlurMethod="dimezisBlurView"
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: Colors.paper,
-                  width: "auto",
-                  height: "auto",
-                  borderWidth: 1,
-                  borderColor: Colors.outlineborder,
-                  padding: 20,
-                  marginHorizontal: 50,
-                  marginVertical: "auto",
-                  overflow: "hidden",
-                  borderRadius: 10,
-                }}
+      <Modals modalVisible={openModalTnc} setModalVisible={setOpenModalTnc}>
+        <View style={{}}>
+          <Typography fontFamily="Poppins-Bold" style={{ marginBottom: 10 }}>
+            Syarat dan Ketentuan
+          </Typography>
+          {tncTravel.map((data, i) => (
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="textsecondary"
               >
-                <Typography fontFamily="Poppins-Bold">
-                  Syarat dan Ketentuan
-                </Typography>
-                <Typography fontFamily="Poppins-Regular">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Ipsam similique quae, eaque harum accusantium quis pariatur
-                  assumenda. Omnis culpa temporibus cum alias distinctio dolorem
-                  veniam laborum quibusdam sit minima aperiam natus quod nostrum
-                  assumenda nemo, reprehenderit eaque fuga soluta. Accusantium
-                  dolore sunt dolores nulla. Aliquam aut tenetur voluptatem,
-                  facilis laborum debitis alias eaque voluptatum dolores
-                  accusamus numquam officiis doloremque possimus quis autem
-                  perferendis fugiat, molestias odio. Animi totam at inventore
-                  corrupti. Laboriosam laudantium eveniet enim pariatur tenetur
-                  unde molestias omnis officiis sunt quis ipsum labore illo,
-                  earum animi quam eius aspernatur magni, dolores repellat eaque
-                  corporis, eum placeat at ducimus.
-                </Typography>
-              </View>
-            </BlurView>
-          </TouchableWithoutFeedback>
+                {i + 1}.
+              </Typography>
+              <Typography
+                fontFamily="Poppins-Regular"
+                fontSize={12}
+                color="textsecondary"
+                style={{ width: "93%" }}
+              >
+                {data}
+              </Typography>
+            </View>
+          ))}
+          <View style={{ marginHorizontal: 10, marginVertical: 15 }}>
+            <Button onPress={handlePressSayaMenyetujiTnc}>
+              Saya menyetujui Syarat dan Ketentuan yang berlaku
+            </Button>
+          </View>
         </View>
-      )}
+      </Modals>
     </View>
   );
 }

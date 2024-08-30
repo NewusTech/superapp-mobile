@@ -43,7 +43,7 @@ export default function InputFile(props: InputFileProps) {
           fontSize={14}
           style={{ textAlign: "center" }}
         >
-          Supported formates: JPEG, PNG, GIF, MP4, PDF, PSD, AI, Word, PPT
+          Supported formates: JPEG, PNG
         </Typography>
       </View>
     </View>
