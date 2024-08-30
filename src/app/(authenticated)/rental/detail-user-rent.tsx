@@ -5,9 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
-import { Appbar, Button, TextInput, Typography, View } from "@/components";
-import { IconUpload } from "@/components/icons";
-import InputFile from "@/components/input-file/InputFile";
+import { Appbar, Button, TextInput, View } from "@/components";
+import InputFileImage from "@/components/input-file/InputFileImage";
 import { useAppTheme } from "@/context/theme-context";
 import {
   useRentActions,
@@ -23,6 +22,8 @@ export const userRentSchema = z.object({
   alamat: z.string(),
   username_ig: z.string(),
   username_fb: z.string(),
+  image_ktp: z.string(),
+  image_swafoto: z.string(),
 });
 export type UserRent = z.infer<typeof userRentSchema>;
 
@@ -212,9 +213,28 @@ export default function DetailUserRent() {
               />
             )}
           />
-
-          <InputFile label="Masukan Foto KTP" />
-          <InputFile label="Masukan Swafoto" />
+          <Controller
+            control={control}
+            name="image_ktp"
+            render={({ field }) => (
+              <InputFileImage
+                label="Masukan Foto KTP"
+                image={field.value}
+                setImage={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="image_swafoto"
+            render={({ field }) => (
+              <InputFileImage
+                label="Masukan Swafoto"
+                image={field.value}
+                setImage={field.onChange}
+              />
+            )}
+          />
 
           <View
             style={[styles.buttonWrapper, { marginBottom: insets.bottom + 10 }]}

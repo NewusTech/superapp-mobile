@@ -216,15 +216,60 @@ export const postProcessPayment = async (data: PostProcessPaymentPayload) => {
 export const postProcessPaymentRental = async (
   data: PostProcessPaymentRentalPayload
 ) => {
-  const response = await apiClientMock({
-    method: "POST",
-    url: "/api/rental/process-payment",
-    data,
-  });
+  const accessToken = getAccessToken();
+  // const response = await apiClientMock({
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  //   method: "POST",
+  //   url: "/api/rental/process-payment",
+  //   data,
+  // });
+  // return response.data;
+  // try {
+  //   const response = await apiClientMock.post(
+  //     "/api/rental/process-payment",
+  //     data,
+  //     {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     }
+  //   );
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error saat memproses pembayaran:", error);
+  //   throw error;
+  // }
 
-  console.error(response.data + " Tes Log");
+  try {
+    const response = await fetch(`${API_URL}/api/rental/process-payment`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
+      },
+      body: data,
+    });
 
-  return response.data;
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses pembayaran.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses pembayaran: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
 };
 
 export const getOrderListTravel = async (status: string) => {

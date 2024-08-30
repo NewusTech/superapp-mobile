@@ -50,7 +50,7 @@ export default function DetailRentCar() {
         tanggal_mulai: new Date(),
         tanggal_selesai: new Date(),
         time: new Date(),
-        catatan: "",
+        catatan_sopir: "",
       },
     });
 
@@ -231,7 +231,7 @@ export default function DetailRentCar() {
           />
           <Controller
             control={control}
-            name="catatan"
+            name="catatan_sopir"
             render={({ field }) => (
               <TextInput
                 label="Catatan Untuk Sopir *"

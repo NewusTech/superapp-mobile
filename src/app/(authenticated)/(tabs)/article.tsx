@@ -71,14 +71,14 @@ export default function ArticleTabScreen() {
                 title={item.judul}
                 subtitle={item.konten}
                 rating={item.rating}
-                // onPress={() =>
-                //   router.push({
-                //     pathname: "/article/[id]",
-                //     params: {
-                //       id: item.id,
-                //     },
-                //   })
-                // }
+                onPress={() =>
+                  router.push({
+                    pathname: "/wisata/[id]",
+                    params: {
+                      id: item.id,
+                    },
+                  })
+                }
               />
             )}
             style={{ width: "100%" }}
@@ -112,14 +112,14 @@ export default function ArticleTabScreen() {
                 title={item.judul}
                 subtitle={item.konten}
                 rating={item.rating}
-                // onPress={() =>
-                //   router.push({
-                //     pathname: "/article/[id]",
-                //     params: {
-                //       id: item.id,
-                //     },
-                //   })
-                // }
+                onPress={() =>
+                  router.push({
+                    pathname: "/wisata/[id]",
+                    params: {
+                      id: item.id,
+                    },
+                  })
+                }
               />
             )}
             style={{ width: "100%" }}
