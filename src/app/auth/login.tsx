@@ -1,10 +1,4 @@
-import {
-  Image,
-  ImageBackground,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-} from "react-native";
+import { Image, ScrollView, StatusBar, StyleSheet } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

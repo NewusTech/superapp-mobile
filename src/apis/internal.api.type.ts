@@ -220,6 +220,8 @@ export type ResponseSucsessPostRentalPayment = {
     order_id: string;
     payment_url: string;
     kode: number;
+    nomor_rekening: string;
+    bank: string;
   };
   message: string;
 };
@@ -231,6 +233,8 @@ export type ResponseSucsessPostTravellPayment = {
     order_id: string;
     payment_url: string;
     kode: number;
+    bank: string;
+    nomor_rekening: string;
   };
   message: "Berhasil post data";
 };
@@ -298,6 +302,7 @@ export type OrderDetailResponseSuccess = {
       nominal: string;
       link_tiket: string;
       link_invoice: string;
+      no_rek: string;
     };
     penumpang: [
       {

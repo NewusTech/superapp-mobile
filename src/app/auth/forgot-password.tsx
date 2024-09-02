@@ -1,4 +1,4 @@
-import { Dimensions, Image, ImageBackground, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -10,14 +10,9 @@ export default function ForgotPasswordScreen() {
   return (
     <View backgroundColor="main" style={style.container}>
       <StatusBar style="light" />
-      <ImageBackground
-        source={require("@/assets/images/auth-bg-2.jpeg")}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        resizeMode="cover"
+      <Image
+        source={require("@/assets/images/auth-bg.png")}
+        style={{ width: "100%", height: 300, position: "absolute" }}
       />
       <View
         backgroundColor="paper"

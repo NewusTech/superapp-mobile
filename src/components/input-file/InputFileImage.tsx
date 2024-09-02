@@ -21,7 +21,7 @@ export default function InputFileImage(props: InputFileProps) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      quality: 1,
+      quality: 0.2,
     });
 
     console.log(result);

@@ -75,6 +75,15 @@ export default function TravelPaymentScreen() {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
+        if (res.data.kode === 2 && res.data.bank.toLowerCase() === "bri") {
+          router.push({
+            pathname: "/payment/transfer/bri",
+            params: {
+              no_rek: res.data.nomor_rekening,
+            },
+          });
+          return;
+        }
         router.push({
           pathname: "/travel/link-transaction",
           params: {
@@ -316,7 +325,7 @@ export default function TravelPaymentScreen() {
         </View>
       </View>
       <Modals modalVisible={openModal} setModalVisible={setOpenModal}>
-        <View style={{}}>
+        <ScrollView>
           <Typography fontFamily="Poppins-Bold" style={{ marginBottom: 10 }}>
             Syarat dan Ketentuan
           </Typography>
@@ -347,7 +356,7 @@ export default function TravelPaymentScreen() {
               Saya menyetujui Syarat dan Ketentuan yang berlaku
             </Button>
           </View>
-        </View>
+        </ScrollView>
       </Modals>
     </PageWrapper>
   );

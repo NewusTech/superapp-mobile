@@ -76,6 +76,15 @@ export default function DetailOrder() {
     });
   };
 
+  const handleToPaymentTranser = () => {
+    router.push({
+      pathname: "/payment/transfer/bri",
+      params: {
+        no_rek: orderDetail?.pembayaran.no_rek || "000000000000000",
+      },
+    });
+  };
+
   useEffect(() => {
     if (orderDetailQuery.error) {
       Snackbar.show({
@@ -473,6 +482,13 @@ export default function DetailOrder() {
               Lanjut Pilih Metode Pembayaran
             </Button>
           )}
+        {orderDetail.pembayaran.no_rek !== "-" && (
+          <Button onPress={handleToPaymentTranser}>
+            <Typography color="paper" fontFamily="OpenSans-Medium">
+              Lanjutkan Pembayaran {orderDetail.pembayaran.no_rek || "-"}
+            </Typography>
+          </Button>
+        )}
       </View>
     </>
   );
