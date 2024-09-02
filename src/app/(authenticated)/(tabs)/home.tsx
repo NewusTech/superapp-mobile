@@ -123,7 +123,7 @@ export default function HomeTabScreen() {
   const switchImg = (kota: string) => {
     switch (kota) {
       case "lampung":
-        return "https://bandarlampungkota.go.id/new/images/destinasi/462_tugugajah.jpg";
+        return "https://upload.wikimedia.org/wikipedia/id/thumb/9/9e/Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG/640px-Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG";
 
       case "palembang":
         return "https://investasiproperti.id/wp-content/uploads/2023/06/jembatan-ampera-di-palembang-800x503.jpg";
@@ -153,7 +153,7 @@ export default function HomeTabScreen() {
         return "https://asset.kompas.com/crops/_NRrco8g6CTluqwWLyguXb4SRhg=/98x0:944x564/750x500/data/photo/2021/12/02/61a8d64decf69.jpg";
 
       default:
-        return "https://bandarlampungkota.go.id/new/images/destinasi/462_tugugajah.jpg";
+        return "https://www.djkn.kemenkeu.go.id/files/images/2020/08/gerbang_kota_metro.jpg";
     }
   };
 

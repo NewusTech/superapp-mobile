@@ -9,10 +9,12 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ResponseSucsessPostTravellPayment } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
   Checkbox,
+  Loader,
   Snackbar,
   Typography,
   View,
@@ -137,7 +139,7 @@ export default function Payment() {
     formData.append("image_swafoto", imageFilSwafoto);
 
     processPaymentRentalMutation.mutate(formData, {
-      onSuccess: (res) => {
+      onSuccess: (res: ResponseSucsessPostTravellPayment) => {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
@@ -145,6 +147,7 @@ export default function Payment() {
           pathname: "/travel/link-transaction",
           params: {
             link: res.data.payment_url,
+            kode_pesanan: res.data.order_id,
           },
         });
       },
@@ -167,6 +170,21 @@ export default function Payment() {
         hasBorder={false}
         backIconPress={() => router.back()}
       />
+      {isLoading && (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: Colors.paper,
+          }}
+        >
+          <Loader />
+        </View>
+      )}
       <ScrollView style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
         <View
           borderColor="outlineborder"

@@ -194,7 +194,46 @@ export type PostProcessPaymentPayload = {
   metode_id: string;
 };
 
+export type ResponseSucsessPostRental = {
+  success: true;
+  data: {
+    jadwal_id: number;
+    master_titik_jemput_id: number;
+    titik_antar_id: number;
+    nama: string;
+    no_telp: string;
+    email: string;
+    nik: string;
+    user_id: number;
+    status: string;
+    kode_pesanan: string;
+    updated_at: string;
+    created_at: string;
+    id: number;
+    expired_at: string;
+  };
+  message: string;
+};
+export type ResponseSucsessPostRentalPayment = {
+  success: true;
+  data: {
+    order_id: string;
+    payment_url: string;
+    kode: number;
+  };
+  message: string;
+};
+
 export type PostProcessPaymentRentalPayload = any;
+export type ResponseSucsessPostTravellPayment = {
+  success: true;
+  data: {
+    order_id: string;
+    payment_url: string;
+    kode: number;
+  };
+  message: "Berhasil post data";
+};
 
 export type OrderListTravelResponseSuccess = {
   data: {
@@ -291,15 +330,18 @@ export type OrderRentalDetailResponseSuccess = {
     kode_pembayaran: string;
     mobil_type: string;
     metode: string;
+    link_tiket: string;
+    link_invoice: string;
     nominal: string;
+    payment_link: string | null;
+    expired_at: string;
+    no_rek: string;
     area: string;
     tanggal_awal_sewa: string;
     tanggal_akhir_sewa: string;
     status: string;
     durasi_sewa: number;
     alamat_keberangkatan: string;
-    payment_link: string;
-    expired_at: string;
   };
   message: string;
   success: boolean;

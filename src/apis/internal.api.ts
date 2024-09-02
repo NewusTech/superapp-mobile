@@ -217,31 +217,6 @@ export const postProcessPaymentRental = async (
   data: PostProcessPaymentRentalPayload
 ) => {
   const accessToken = getAccessToken();
-  // const response = await apiClientMock({
-  //   headers: {
-  //     "Content-Type": "multipart/form-data",
-  //   },
-  //   method: "POST",
-  //   url: "/api/rental/process-payment",
-  //   data,
-  // });
-  // return response.data;
-  // try {
-  //   const response = await apiClientMock.post(
-  //     "/api/rental/process-payment",
-  //     data,
-  //     {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     }
-  //   );
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Error saat memproses pembayaran:", error);
-  //   throw error;
-  // }
-
   try {
     const response = await fetch(`${API_URL}/api/rental/process-payment`, {
       method: "POST",

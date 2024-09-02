@@ -40,5 +40,12 @@ export const checkExpired = (expirationTime: string, status: string) => {
   if (status !== "Menunggu Pembayaran") {
     return false;
   }
-  return new Date(expirationTime).getTime() - new Date().getTime() > 0;
+  const currentTime = new Date().getTime();
+  const expirationDate = new Date(expirationTime).getTime();
+
+  console.log("Current Time:", new Date(currentTime).toISOString());
+  console.log("Expiration Time:", new Date(expirationDate).toISOString());
+  console.log("Time Difference:", expirationDate - currentTime);
+
+  return expirationDate - currentTime > 0;
 };

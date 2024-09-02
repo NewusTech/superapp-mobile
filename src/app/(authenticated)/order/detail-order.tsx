@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { RefreshControl, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Iconify } from "react-native-iconify";
 
@@ -45,6 +45,7 @@ export default function DetailOrder() {
       pathname: "/travel/link-transaction",
       params: {
         link: orderDetail?.pembayaran.payment_link,
+        kode_pesanan: orderDetail?.pesanan.kode_pesanan,
       },
     });
   };
@@ -476,4 +477,3 @@ export default function DetailOrder() {
     </>
   );
 }
-const styles = StyleSheet.create({});

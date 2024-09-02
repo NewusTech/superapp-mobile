@@ -24,10 +24,10 @@ import {
 } from "@/features/rental/store/rental-store";
 
 export const RentalImgDump: { imgUrl: ImageProps["source"] }[] = [
-  { imgUrl: require("@/assets/images/default_rent_car_2.png") },
-  { imgUrl: require("@/assets/images/default_rent_car_2.png") },
-  { imgUrl: require("@/assets/images/default_rent_car_2.png") },
-  { imgUrl: require("@/assets/images/default_rent_car_2.png") },
+  { imgUrl: require("@/assets/images/rental/rent_car_1.png") },
+  { imgUrl: require("@/assets/images/rental/rent_car_2.jpg") },
+  { imgUrl: require("@/assets/images/rental/rent_car_3.jpg") },
+  { imgUrl: require("@/assets/images/rental/rent_car_4.jpg") },
 ];
 
 export default function DetailRentalCar() {
@@ -66,6 +66,8 @@ export default function DetailRentalCar() {
       no_telp: "",
       username_fb: "",
       username_ig: "",
+      image_ktp: "",
+      image_swafoto: "",
     });
   };
 
@@ -166,7 +168,7 @@ export default function DetailRentalCar() {
           </View>
           <View style={{ padding: 20, marginBottom: 20 }}>
             <Typography fontFamily="Poppins-Bold" fontSize={18}>
-              Toyota Hiace Premio
+              {rentalCarData?.type}
             </Typography>
             <Typography
               fontFamily="Poppins-Regular"

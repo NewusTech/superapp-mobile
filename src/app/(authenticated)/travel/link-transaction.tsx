@@ -1,31 +1,36 @@
 /* eslint-disable simple-import-sort/imports */
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
-import * as Linking from "expo-linking";
-import { getPesananResponse } from "@/features/travel/store/travel-store";
 
 const WebViewScreen = () => {
-  const params = useLocalSearchParams<{ link: string | any }>();
+  const params = useLocalSearchParams<{
+    link: string | any;
+    kode_pesanan: string;
+  }>();
   console.log("url", params?.link);
 
-  const extractTransactionId = (url: string) => {
-    const urlObj = new URL(url);
-    const urlParams = new URLSearchParams(urlObj.search);
-    return urlParams.get("transaction_id"); // Ganti 'transaction_id' dengan nama parameter yang sesuai dari URL redirect Midtrans
-  };
+  const router = useRouter(); // Mendapatkan router untuk navigasi
+  const hasNavigated = useRef(false); // Ref untuk melacak apakah navigasi sudah dilakukan
 
-  const pesananResponse = getPesananResponse();
-
-  const onNavigationStateChange = (navState: any) => {
+  const onNavigationStateChange = async (navState: any) => {
     if (
       navState.url.includes("admin-superapps.newus.id") ||
-      navState.url.includes("example.com")
+      (navState.url.includes("example.com") && !hasNavigated.current) // Pastikan hanya dijalankan sekali
     ) {
-      // const deepLinkUrl = Linking.createURL(`/payment/${pesananResponse?.data?.kode_pesanan}`)
-      const deepLinkUrl = Linking.createURL(`/(authenticated)/(tabs)/order`);
-      Linking.openURL(deepLinkUrl);
+      hasNavigated.current = true; // Tandai navigasi telah dilakukan
+
+      // Tunggu dismiss selesai sebelum push navigasi
+      await router.dismissAll();
+
+      if (params.kode_pesanan) {
+        router.push(
+          `/(authenticated)/order/detail/order-rental?kode_pesanan=${params.kode_pesanan}`
+        );
+      } else {
+        router.push(`/(authenticated)/(tabs)/order?active_tab=riwayat`);
+      }
     }
   };
 

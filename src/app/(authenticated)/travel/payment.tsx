@@ -3,7 +3,10 @@ import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PostProcessPaymentPayload } from "@/apis/internal.api.type";
+import {
+  PostProcessPaymentPayload,
+  ResponseSucsessPostRentalPayment,
+} from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
@@ -68,7 +71,7 @@ export default function TravelPaymentScreen() {
     };
 
     processPaymentMutation.mutate(processPaymentData, {
-      onSuccess: (res) => {
+      onSuccess: (res: ResponseSucsessPostRentalPayment) => {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
@@ -76,6 +79,7 @@ export default function TravelPaymentScreen() {
           pathname: "/travel/link-transaction",
           params: {
             link: res.data.payment_url,
+            kode_pesanan: params.kode_pesanan,
           },
         });
       },

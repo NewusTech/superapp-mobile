@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -33,6 +33,10 @@ export default function PartialsOrderRental(props: partialOrderRental) {
     });
   };
 
+  const handleRefresh = () => {
+    orderListRentalQuery.refetch();
+  };
+
   useEffect(() => {
     orderListRentalQuery.refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,7 +47,7 @@ export default function PartialsOrderRental(props: partialOrderRental) {
       refreshControl={
         <RefreshControl
           refreshing={orderListRentalQuery.isRefetching}
-          onRefresh={() => orderListRentalQuery.refetch()}
+          onRefresh={handleRefresh}
           progressViewOffset={20}
         />
       }
@@ -72,7 +76,10 @@ export default function PartialsOrderRental(props: partialOrderRental) {
                   padding: 5,
                 }}
               >
-                <CountdownTimer expirationTime={item.expired_at} />
+                <CountdownTimer
+                  expirationTime={item.expired_at}
+                  handleAfterExpired={handleRefresh}
+                />
               </View>
             </View>
           )}
@@ -137,19 +144,16 @@ export default function PartialsOrderRental(props: partialOrderRental) {
             }}
           >
             <Typography
-              fontFamily="Poppins-Regular"
-              fontSize={11}
+              fontFamily="Poppins-Bold"
+              fontSize={12}
               color={"paper"}
               style={{
-                backgroundColor:
+                color:
                   item.status === "Sukses"
                     ? Colors.success
                     : item.status.toLocaleLowerCase() === "menunggu pembayaran"
                       ? Colors.textsecondary
                       : Colors.dangerbase,
-                borderRadius: 100,
-                padding: 5,
-                paddingHorizontal: 10,
               }}
             >
               {item.status}
