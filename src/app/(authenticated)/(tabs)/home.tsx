@@ -123,7 +123,7 @@ export default function HomeTabScreen() {
   const switchImg = (kota: string) => {
     switch (kota) {
       case "lampung":
-        return "https://bandarlampungkota.go.id/new/images/destinasi/462_tugugajah.jpg";
+        return "https://upload.wikimedia.org/wikipedia/id/thumb/9/9e/Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG/640px-Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG";
 
       case "palembang":
         return "https://investasiproperti.id/wp-content/uploads/2023/06/jembatan-ampera-di-palembang-800x503.jpg";
@@ -153,7 +153,7 @@ export default function HomeTabScreen() {
         return "https://asset.kompas.com/crops/_NRrco8g6CTluqwWLyguXb4SRhg=/98x0:944x564/750x500/data/photo/2021/12/02/61a8d64decf69.jpg";
 
       default:
-        return "https://bandarlampungkota.go.id/new/images/destinasi/462_tugugajah.jpg";
+        return "https://www.djkn.kemenkeu.go.id/files/images/2020/08/gerbang_kota_metro.jpg";
     }
   };
 
@@ -192,7 +192,7 @@ export default function HomeTabScreen() {
         //   />
         // }
       >
-        <View style={[styles.headerContainer, { height: haightHeaderContent }]}>
+        <View style={[styles.headerContainer, { height: "100%" }]}>
           <ImageBackground
             source={require("@/assets/images/hear_banner_home.png")}
             style={[
@@ -202,6 +202,7 @@ export default function HomeTabScreen() {
                 height: haightHeaderContent,
                 gap: 10,
                 paddingBottom: 40,
+                justifyContent: "center",
               },
             ]}
           >
@@ -252,221 +253,230 @@ export default function HomeTabScreen() {
               </View>
             </View>
           </ImageBackground>
-        </View>
-        <View
-          style={{
-            backgroundColor: Colors.paper,
-            borderTopRightRadius: 40,
-            borderTopLeftRadius: 40,
-            paddingTop: 20,
-            top: -50,
-            position: "relative",
-            width: "100%",
-          }}
-        >
-          <View style={{}}>
-            <View
-              style={{
-                paddingLeft: 20,
-                marginBottom: 10,
-                flexDirection: "column",
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <Image source={require("@/assets/images/map1.png")} />
-                <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                  Rute
-                </Typography>
-              </View>
-              <Typography
-                fontFamily="Poppins-Regular"
-                fontSize={12}
-                color="textsecondary"
-              >
-                Nikmati Rute Perjalanan Kami dari Jakarta ke Bandar Lampung dan
-                Palembang.
-              </Typography>
-            </View>
-            <View style={styles.tabContainer}>
-              <Tab
-                tabs={[
-                  ...branchList.map((b) => {
-                    return {
-                      key: b.title,
-                      label: b.title,
-                    };
-                  }),
-                ]}
-                activeTab={activeFilter}
-                onPress={(key) => setActiveFilter(key as string)}
-                variant="button"
-              />
-            </View>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={ruteListQueryFilter}
-              renderItem={({ item, index }) =>
-                ruteListQuery.isFetching ? (
-                  <ArticleItemPlaceholder />
-                ) : (
-                  <RuteItem
-                    badgePromo
-                    width={Dimensions.get("window").width / 2.3}
-                    imgSource={{
-                      uri: item.img,
-                    }}
-                    title={`${item.kota_asal} - ${item.kota_tujuan}`}
-                    price={formatCurrency(item.harga)}
-                    onPress={() => {
-                      setBookingPayload({
-                        date: new Date(),
-                        from: item.kota_asal,
-                        to: item.kota_tujuan,
-                        seats: 1,
-                      });
-                      router.push("/travel/booking-travel");
-                    }}
-                  />
-                )
-              }
-              style={{ width: "100%" }}
-              ListEmptyComponent={() => <RuteItemEmpty />}
-              contentContainerStyle={styles.listArticleContainer}
-              snapToStart
-              decelerationRate={"normal"}
-              snapToInterval={Dimensions.get("window").width / 2.3 + 19}
-            />
-          </View>
-          <View style={{ marginTop: 10 }}>
-            <View
-              style={{
-                paddingLeft: 20,
-                marginBottom: 10,
-                flexDirection: "column",
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                  Jelajahi Wisata Bersama Kami
-                </Typography>
-                <Image source={require("@/assets/images/emoticon_star.png")} />
-              </View>
-              <Typography
-                fontFamily="Poppins-Regular"
-                fontSize={12}
-                color="textsecondary"
-              >
-                Nikmati Perjalanan dengan Kami ke berabagai wisata pilihan anda.
-              </Typography>
-            </View>
-            <View style={styles.tabContainer}>
-              <Tab
-                tabs={[
-                  ...branchList.map((b) => {
-                    return {
-                      key: b.title,
-                      label: b.title,
-                    };
-                  }),
-                ]}
-                activeTab={activeFilter}
-                onPress={(key) => setActiveFilter(key as string)}
-                variant="button"
-              />
-            </View>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={pariwisataListQueryData}
-              renderItem={({ item, index }) =>
-                articleListQuery.isFetching ? (
-                  <ArticleItemPlaceholder />
-                ) : (
-                  <ArticleItem
-                    width={Dimensions.get("window").width / 2.3 + index}
-                    badgeLocation={item.lokasi}
-                    imgSource={{ uri: item.image_url }}
-                    title={item.judul}
-                    subtitle={item.konten}
-                    rating={item.rating}
-                    onPress={() =>
-                      router.push({
-                        pathname: "/wisata/[id]",
-                        params: {
-                          id: item.id,
-                        },
-                      })
-                    }
-                  />
-                )
-              }
-              style={{ width: "100%" }}
-              ListEmptyComponent={() => <ArticleEmpty />}
-              contentContainerStyle={styles.listArticleContainer}
-              snapToStart
-              decelerationRate={"normal"}
-              snapToInterval={Dimensions.get("window").width / 2.3 + 19}
-            />
-          </View>
-          <View style={{ marginTop: 10, paddingLeft: 20 }}>
-            <View
-              style={{
-                marginBottom: 10,
-                flexDirection: "column",
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 10, paddingRight: 20 }}>
-                <Typography fontFamily="Poppins-Bold" fontSize={16}>
-                  Temukan Penginapan Ideal Bersama Kami!{" "}
-                  <Image source={require("@/assets/images/bedroom.png")} />
-                </Typography>
-              </View>
-              <Typography
-                fontFamily="Poppins-Regular"
-                fontSize={12}
-                color="textsecondary"
-              >
-                Nikmati Pengalaman Menginap yang Tak Terlupakan di Berbagai
-                Lokasi Pilihan.
-              </Typography>
-            </View>
-            <HotelItem
-              badge="Apartemen"
-              width={Dimensions.get("window").width - 40}
-              imgSource={require("@/assets/images/tmp_img.png")}
-              location="Bogor, Jawa Barat"
-              rating={4.5}
-              star={5}
-              title="Podomoro Golf View "
-              onPress={() => router.navigate("/penginapan/penginapan-list")}
-            />
-          </View>
           <View
             style={{
-              marginBottom: insets.bottom,
-              marginTop: 20,
-              marginHorizontal: 20,
-              gap: 10,
+              backgroundColor: Colors.paper,
+              borderTopRightRadius: 40,
+              borderTopLeftRadius: 40,
+              paddingTop: 20,
+              top: -35,
+              position: "relative",
+              width: "100%",
             }}
           >
-            <Typography fontFamily="Poppins-Bold" fontSize={16}>
-              Berbagai promo menarik dari kami..
-            </Typography>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={PromoItemList}
-              renderItem={({ item }) => (
-                <PromoItem imgUrl={item.imgUrl} width={326} borderRadius={20} />
-              )}
-              style={{ width: "100%" }}
-              ListEmptyComponent={() => <ArticleEmpty />}
-              snapToStart
-              decelerationRate={"normal"}
-              snapToInterval={336}
-              contentContainerStyle={{ gap: 10 }}
-            />
+            <View style={{}}>
+              <View
+                style={{
+                  paddingLeft: 20,
+                  marginBottom: 10,
+                  flexDirection: "column",
+                }}
+              >
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <Image source={require("@/assets/images/map1.png")} />
+                  <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                    Rute
+                  </Typography>
+                </View>
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={12}
+                  color="textsecondary"
+                >
+                  Nikmati Rute Perjalanan Kami dari Jakarta ke Bandar Lampung
+                  dan Palembang.
+                </Typography>
+              </View>
+              <View style={styles.tabContainer}>
+                <Tab
+                  tabs={[
+                    ...branchList.map((b) => {
+                      return {
+                        key: b.title,
+                        label: b.title,
+                      };
+                    }),
+                  ]}
+                  activeTab={activeFilter}
+                  onPress={(key) => setActiveFilter(key as string)}
+                  variant="button"
+                />
+              </View>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={ruteListQueryFilter}
+                renderItem={({ item, index }) =>
+                  ruteListQuery.isFetching ? (
+                    <ArticleItemPlaceholder />
+                  ) : (
+                    <RuteItem
+                      badgePromo
+                      width={Dimensions.get("window").width / 2.3}
+                      imgSource={{
+                        uri: item.img,
+                      }}
+                      title={`${item.kota_asal} - ${item.kota_tujuan}`}
+                      price={formatCurrency(item.harga)}
+                      onPress={() => {
+                        setBookingPayload({
+                          date: new Date(),
+                          from: item.kota_asal,
+                          to: item.kota_tujuan,
+                          seats: 1,
+                        });
+                        router.push("/travel/booking-travel");
+                      }}
+                    />
+                  )
+                }
+                style={{ width: "100%" }}
+                ListEmptyComponent={() => <RuteItemEmpty />}
+                contentContainerStyle={styles.listArticleContainer}
+                snapToStart
+                decelerationRate={"normal"}
+                snapToInterval={Dimensions.get("window").width / 2.3 + 19}
+              />
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <View
+                style={{
+                  paddingLeft: 20,
+                  marginBottom: 10,
+                  flexDirection: "column",
+                }}
+              >
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                    Jelajahi Wisata Bersama Kami
+                  </Typography>
+                  <Image
+                    source={require("@/assets/images/emoticon_star.png")}
+                  />
+                </View>
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={12}
+                  color="textsecondary"
+                >
+                  Nikmati Perjalanan dengan Kami ke berabagai wisata pilihan
+                  anda.
+                </Typography>
+              </View>
+              <View style={styles.tabContainer}>
+                <Tab
+                  tabs={[
+                    ...branchList.map((b) => {
+                      return {
+                        key: b.title,
+                        label: b.title,
+                      };
+                    }),
+                  ]}
+                  activeTab={activeFilter}
+                  onPress={(key) => setActiveFilter(key as string)}
+                  variant="button"
+                />
+              </View>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={pariwisataListQueryData}
+                renderItem={({ item, index }) =>
+                  articleListQuery.isFetching ? (
+                    <ArticleItemPlaceholder />
+                  ) : (
+                    <ArticleItem
+                      width={Dimensions.get("window").width / 2.3 + index}
+                      badgeLocation={item.lokasi}
+                      imgSource={{ uri: item.image_url }}
+                      title={item.judul}
+                      subtitle={item.konten}
+                      rating={item.rating}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/wisata/[id]",
+                          params: {
+                            id: item.id,
+                          },
+                        })
+                      }
+                    />
+                  )
+                }
+                style={{ width: "100%" }}
+                ListEmptyComponent={() => <ArticleEmpty />}
+                contentContainerStyle={styles.listArticleContainer}
+                snapToStart
+                decelerationRate={"normal"}
+                snapToInterval={Dimensions.get("window").width / 2.3 + 19}
+              />
+            </View>
+            <View style={{ marginTop: 10, paddingLeft: 20 }}>
+              <View
+                style={{
+                  marginBottom: 10,
+                  flexDirection: "column",
+                }}
+              >
+                <View
+                  style={{ flexDirection: "row", gap: 10, paddingRight: 20 }}
+                >
+                  <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                    Temukan Penginapan Ideal Bersama Kami!{" "}
+                    <Image source={require("@/assets/images/bedroom.png")} />
+                  </Typography>
+                </View>
+                <Typography
+                  fontFamily="Poppins-Regular"
+                  fontSize={12}
+                  color="textsecondary"
+                >
+                  Nikmati Pengalaman Menginap yang Tak Terlupakan di Berbagai
+                  Lokasi Pilihan.
+                </Typography>
+              </View>
+              <HotelItem
+                badge="Apartemen"
+                width={Dimensions.get("window").width - 40}
+                imgSource={require("@/assets/images/tmp_img.png")}
+                location="Bogor, Jawa Barat"
+                rating={4.5}
+                star={5}
+                title="Podomoro Golf View "
+                onPress={() => router.navigate("/penginapan/penginapan-list")}
+              />
+            </View>
+            <View
+              style={{
+                marginBottom: insets.bottom,
+                marginTop: 20,
+                marginHorizontal: 20,
+                gap: 10,
+              }}
+            >
+              <Typography fontFamily="Poppins-Bold" fontSize={16}>
+                Berbagai promo menarik dari kami..
+              </Typography>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={PromoItemList}
+                renderItem={({ item }) => (
+                  <PromoItem
+                    imgUrl={item.imgUrl}
+                    width={326}
+                    borderRadius={20}
+                  />
+                )}
+                style={{ width: "100%" }}
+                ListEmptyComponent={() => <ArticleEmpty />}
+                snapToStart
+                decelerationRate={"normal"}
+                snapToInterval={336}
+                contentContainerStyle={{ gap: 10 }}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ import {
   View,
 } from "@/components";
 import { IconCalendar, IconChevronDown, IconClock } from "@/components/icons";
+import Modals from "@/components/modal/Modals";
 import { TimeInput } from "@/components/time-input/TimeInput";
 import { useAppTheme } from "@/context/theme-context";
 import {
@@ -50,9 +51,10 @@ export default function DetailRentCar() {
         tanggal_mulai: new Date(),
         tanggal_selesai: new Date(),
         time: new Date(),
-        catatan_sopir: "",
       },
     });
+
+  const [openDetailAllIn, setOpenDetailAllIn] = useState(false);
 
   const maxDayRentDuration =
     watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 7;
@@ -92,6 +94,12 @@ export default function DetailRentCar() {
   const durationWatch = watch("durasi_sewa");
 
   const tanggalMulai = watch("tanggal_mulai");
+
+  const onHandleOpenAllIn = () => {
+    const allIn = watch("all_in");
+    setValue("all_in", allIn ? 0 : 1);
+    if (allIn === 0) setOpenDetailAllIn(true);
+  };
 
   useEffect(() => {
     if (areaWatch === "luar kota" && durationWatch < 4) {
@@ -246,9 +254,7 @@ export default function DetailRentCar() {
               />
             )}
           />
-          <TouchableWithoutFeedback
-            onPress={() => setValue("all_in", watch("all_in") ? 0 : 1)}
-          >
+          <TouchableWithoutFeedback onPress={onHandleOpenAllIn}>
             <View
               style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
             >
@@ -328,6 +334,23 @@ export default function DetailRentCar() {
           </Button>
         </View>
       </View>
+      <Modals
+        modalVisible={openDetailAllIn}
+        setModalVisible={setOpenDetailAllIn}
+      >
+        <Typography>
+          Dengan layanan{" "}
+          <Typography fontFamily="Poppins-Bold">"ALL IN"</Typography> Anda tidak
+          perlu khawatir tentang biaya tambahan selama perjalanan.
+          <Typography fontFamily="Poppins-Bold">
+            {" "}
+            Semua biaya seperti tol, tiket kapal, dan bahan bakar (BBM)
+          </Typography>{" "}
+          sudah termasuk dalam satu harga yang Anda bayarkan. Ini berarti Anda
+          bisa menikmati perjalanan tanpa harus memikirkan pengeluaran ekstra,
+          sehingga lebih nyaman dan praktis.
+        </Typography>
+      </Modals>
     </View>
   );
 }

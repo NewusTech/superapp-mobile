@@ -43,10 +43,10 @@ export default function RegisterScreen() {
 
         router.replace("/auth/login");
       },
-      onError: (error) => {
-        const serverErrorString = error.response?.data?.error;
+      onError: (error: any) => {
+        const serverErrorString = error.response?.data?.message;
         Snackbar.show({
-          message: `Register gagal${typeof serverErrorString === "string" && `, (${serverErrorString})`}`,
+          message: `Register gagal ${typeof serverErrorString === "string" && `, (${serverErrorString})`}`,
           variant: "danger",
         });
       },

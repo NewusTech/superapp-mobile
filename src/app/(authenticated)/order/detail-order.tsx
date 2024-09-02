@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { RefreshControl, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Iconify } from "react-native-iconify";
 
@@ -45,6 +45,7 @@ export default function DetailOrder() {
       pathname: "/travel/link-transaction",
       params: {
         link: orderDetail?.pembayaran.payment_link,
+        kode_pesanan: orderDetail?.pesanan.kode_pesanan,
       },
     });
   };
@@ -71,6 +72,15 @@ export default function DetailOrder() {
         link: orderDetail?.pembayaran.link_invoice,
         title: "Invoice",
         kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran,
+      },
+    });
+  };
+
+  const handleToPaymentTranser = () => {
+    router.push({
+      pathname: "/payment/transfer/bri",
+      params: {
+        no_rek: orderDetail?.pembayaran.no_rek || "000000000000000",
       },
     });
   };
@@ -472,8 +482,14 @@ export default function DetailOrder() {
               Lanjut Pilih Metode Pembayaran
             </Button>
           )}
+        {orderDetail.pembayaran.no_rek !== "-" && (
+          <Button onPress={handleToPaymentTranser}>
+            <Typography color="paper" fontFamily="OpenSans-Medium">
+              Lanjutkan Pembayaran {orderDetail.pembayaran.no_rek || "-"}
+            </Typography>
+          </Button>
+        )}
       </View>
     </>
   );
 }
-const styles = StyleSheet.create({});

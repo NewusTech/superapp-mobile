@@ -64,13 +64,13 @@ export default function DetailUserRent() {
   });
 
   useEffect(() => {
-    setValue("nama", userRent?.nama || "tes");
-    setValue("email", userRent?.email || "tes@tes.com");
-    setValue("nik", userRent?.nik || "1234567890123456");
-    setValue("no_telp", userRent?.no_telp || "1234567890");
-    setValue("alamat", userRent?.alamat || "123");
-    setValue("username_fb", userRent?.alamat || "ramatranz");
-    setValue("username_ig", userRent?.alamat || "ramatranz");
+    setValue("nama", userRent?.nama || "");
+    setValue("email", userRent?.email || "");
+    setValue("nik", userRent?.nik || "");
+    setValue("no_telp", userRent?.no_telp || "");
+    setValue("alamat", userRent?.alamat || "");
+    setValue("username_fb", userRent?.alamat || "");
+    setValue("username_ig", userRent?.alamat || "");
   }, [userRent, setValue]);
 
   const emailValue = watch("email");

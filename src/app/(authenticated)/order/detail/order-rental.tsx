@@ -1,6 +1,7 @@
 import { RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Iconify } from "react-native-iconify";
 
 import { Appbar, Button, SectionWrapper, Typography, View } from "@/components";
 import { Card } from "@/components/card/Card";
@@ -31,6 +32,38 @@ export default function OrderRental() {
       pathname: "/travel/link-transaction",
       params: {
         link: orderDetail?.payment_link,
+        kode_pesanan: orderDetail?.kode_pembayaran,
+      },
+    });
+  };
+
+  const handleToPaymentTranser = () => {
+    router.push({
+      pathname: "/payment/transfer/bri",
+      params: {
+        no_rek: orderDetail?.no_rek || "000000000000000",
+      },
+    });
+  };
+
+  const handleToViewTiket = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.link_tiket,
+        title: "E-Voucher Rental",
+        kode_pembayaran: orderDetail?.kode_pembayaran,
+      },
+    });
+  };
+
+  const handleToViewInvoice = async () => {
+    router.push({
+      pathname: "/order/view-pdf",
+      params: {
+        link: orderDetail?.link_invoice,
+        title: "Invoice Rental",
+        kode_pembayaran: orderDetail?.kode_pembayaran,
       },
     });
   };
@@ -202,6 +235,46 @@ export default function OrderRental() {
                 {formatCurrency(parseInt(orderDetail?.nominal || "0", 10))}
               </Typography>
             </View>
+            {!orderDetailQuery.isFetching &&
+              orderDetail.status.toLowerCase() === "sukses" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: 10,
+                    gap: 5,
+                  }}
+                >
+                  <Button
+                    style={{
+                      width: 150,
+                      alignItems: "center",
+                      borderColor: Colors.textsecondary,
+                    }}
+                    variant="secondary"
+                    onPress={handleToViewTiket}
+                  >
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.main}
+                    />
+                    <Typography fontFamily="Poppins-Regular" color="main">
+                      E-Voucher
+                    </Typography>
+                  </Button>
+                  <Button style={{ width: 150 }} onPress={handleToViewInvoice}>
+                    <Iconify
+                      icon="mingcute:pdf-line"
+                      size={24}
+                      color={Colors.paper}
+                    />
+                    <Typography fontFamily="Poppins-Regular" color="paper">
+                      Invoice
+                    </Typography>
+                  </Button>
+                </View>
+              )}
           </View>
           {/* perjalanan */}
           <SectionWrapper title="Perjalanan">
@@ -296,6 +369,13 @@ export default function OrderRental() {
           orderDetail?.status === "Menunggu Pembayaran" && (
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
+        {orderDetail.no_rek !== "-" && (
+          <Button onPress={handleToPaymentTranser}>
+            <Typography color="paper" fontFamily="OpenSans-Medium">
+              Lanjutkan Pembayaran {orderDetail.metode || "-"}
+            </Typography>
+          </Button>
+        )}
       </View>
     </>
   );

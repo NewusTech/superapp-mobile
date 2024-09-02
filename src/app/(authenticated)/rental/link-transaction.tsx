@@ -26,7 +26,7 @@ const WebViewScreen = () => {
 
       if (params.kode_pesanan) {
         router.push(
-          `/(authenticated)/order/detail-order?kode_pesanan=${params.kode_pesanan}`
+          `/(authenticated)/order/detail/order-rental?kode_pesanan=${params.kode_pesanan}`
         );
       } else {
         router.push(`/(authenticated)/(tabs)/order?active_tab=riwayat`);

@@ -22,6 +22,7 @@ import { apiClientMock } from "@/apis/internal.api";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
 import InputSwitch from "@/components/input-switch/InputSwitch";
 import { PassengerSeat } from "./passenger/[index]";
+import { ResponseSucsessPostRental } from "@/apis/internal.api.type";
 
 const usePostPesananMutation = () => {
   const { setPesananResponse } = useTravelActions();
@@ -138,7 +139,7 @@ export default function TravelOrderDetailScreen() {
     };
 
     postPesanan(payload, {
-      onSuccess: (data) => {
+      onSuccess: (data: ResponseSucsessPostRental) => {
         router.dismissAll();
         console.log(data.data.kode_pesanan);
         router.push({

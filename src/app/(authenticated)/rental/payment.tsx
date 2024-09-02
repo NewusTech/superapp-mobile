@@ -9,10 +9,12 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ResponseSucsessPostTravellPayment } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
   Checkbox,
+  Loader,
   Snackbar,
   Typography,
   View,
@@ -137,14 +139,24 @@ export default function Payment() {
     formData.append("image_swafoto", imageFilSwafoto);
 
     processPaymentRentalMutation.mutate(formData, {
-      onSuccess: (res) => {
+      onSuccess: (res: ResponseSucsessPostTravellPayment) => {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
+        if (res.data.kode === 2 && res.data.bank.toLowerCase() === "bri") {
+          router.push({
+            pathname: "/payment/transfer/bri",
+            params: {
+              no_rek: res.data.nomor_rekening,
+            },
+          });
+          return;
+        }
         router.push({
-          pathname: "/travel/link-transaction",
+          pathname: "/rental/link-transaction",
           params: {
             link: res.data.payment_url,
+            kode_pesanan: res.data.order_id,
           },
         });
       },
@@ -167,6 +179,21 @@ export default function Payment() {
         hasBorder={false}
         backIconPress={() => router.back()}
       />
+      {isLoading && (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: Colors.paper,
+          }}
+        >
+          <Loader />
+        </View>
+      )}
       <ScrollView style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
         <View
           borderColor="outlineborder"
@@ -412,7 +439,7 @@ export default function Payment() {
         </View>
       </ModalSwipe>
       <Modals modalVisible={openModalTnc} setModalVisible={setOpenModalTnc}>
-        <View style={{}}>
+        <ScrollView>
           <Typography fontFamily="Poppins-Bold" style={{ marginBottom: 10 }}>
             Syarat dan Ketentuan
           </Typography>
@@ -443,7 +470,7 @@ export default function Payment() {
               Saya menyetujui Syarat dan Ketentuan yang berlaku
             </Button>
           </View>
-        </View>
+        </ScrollView>
       </Modals>
     </View>
   );

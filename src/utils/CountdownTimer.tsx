@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Typography } from "@/components";
 
@@ -28,10 +28,26 @@ const CountdownTimer = ({
   };
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const hasExpired = useRef(false); // Ref untuk melacak apakah fungsi sudah dipanggil
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+
+      // Mengecek apakah waktu sudah habis dan apakah fungsi sudah pernah dipanggil
+      if (
+        newTimeLeft.hours === 0 &&
+        newTimeLeft.minutes === 0 &&
+        newTimeLeft.seconds === 0
+      ) {
+        if (!hasExpired.current && handleAfterExpired) {
+          console.log("Executing handleAfterExpired"); // Debugging: log eksekusi fungsi
+          handleAfterExpired(); // Memanggil fungsi hanya satu kali
+          hasExpired.current = true; // Menandai bahwa fungsi sudah dipanggil
+          clearInterval(timer); // Hentikan interval setelah waktu habis
+        }
+      }
     }, 1000);
 
     return () => clearInterval(timer);
