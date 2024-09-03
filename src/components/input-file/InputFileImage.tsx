@@ -10,10 +10,11 @@ export type InputFileProps = {
   label: string;
   image: string;
   setImage: (image: string) => void;
+  aspect?: [number, number];
 };
 
 export default function InputFileImage(props: InputFileProps) {
-  const { label, image, setImage } = props;
+  const { label, image, setImage, aspect } = props;
   const { Colors } = useAppTheme();
 
   const pickImage = async () => {
@@ -22,6 +23,7 @@ export default function InputFileImage(props: InputFileProps) {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 0.2,
+      aspect: aspect ?? undefined,
     });
 
     console.log(result);

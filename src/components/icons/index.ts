@@ -21,6 +21,7 @@ export * from "./IconCross";
 export * from "./IconDimensions";
 export * from "./IconDoorThin";
 export * from "./IconDownload";
+export * from "./IconEdit";
 export * from "./IconExclamantionMark";
 export * from "./IconFamilyRoom";
 export * from "./IconGasPump";

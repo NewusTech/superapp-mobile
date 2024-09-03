@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Image,
+  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -12,14 +13,18 @@ import { z } from "zod";
 import {
   Appbar,
   Button,
+  Loader,
   Snackbar,
   TextInput,
   Typography,
   View,
 } from "@/components";
-import { IconCILogout } from "@/components/icons";
+import { IconCILogout, IconEdit } from "@/components/icons";
+import InputFileImage from "@/components/input-file/InputFileImage";
+import Modals from "@/components/modal/Modals";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetProfile } from "@/features/auth/api/useGetProfile";
+import { useUpdateFotoProfile } from "@/features/auth/api/useUpdateFotoProfile";
 import { useUpdateProfileMutation } from "@/features/auth/api/useUpdateProfile";
 import { handleLogoutSession } from "@/features/auth/services/auth.service";
 import {
@@ -33,14 +38,17 @@ export const profileSchema = z.object({
   nik: z.string(),
   no_telp: z.string(),
   alamat: z.string(),
+  kota: z.string(),
 });
 export type profileType = z.infer<typeof profileSchema>;
 
 export default function ProfileTabScreen() {
   const { Colors } = useAppTheme();
-
   // state
   const [isEdit, setIsEdit] = useState(false);
+  const [openModalEditProfile, setOpenModalEditProfile] = useState(false);
+  const [newFotoProfile, setNewFotoProfile] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // store
   const userProfile = useAuthProfile();
@@ -49,6 +57,7 @@ export default function ProfileTabScreen() {
   // query & mutations
   const userProfileQuery = useGetProfile();
   const updateUserProfileMutation = useUpdateProfileMutation();
+  const updateFotoProfileMutation = useUpdateFotoProfile();
 
   const { control, formState, handleSubmit, setValue } = useForm<profileType>({
     resolver: zodResolver(profileSchema),
@@ -58,6 +67,7 @@ export default function ProfileTabScreen() {
       nama: userProfile?.nama || "",
       nik: userProfile?.nik || "",
       no_telp: userProfile?.no_telp || "",
+      kota: userProfile?.kota || "",
     },
   });
 
@@ -72,6 +82,42 @@ export default function ProfileTabScreen() {
       },
     });
   });
+
+  const handleOnSimpanFotoProfile = () => {
+    setIsLoading(true);
+    // Prepare the FormData
+    const formData = new FormData();
+    // Menambahkan gambar
+    const imageProfile: any = {
+      name: "image_profile",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: newFotoProfile,
+    };
+
+    formData.append("image_url", imageProfile);
+
+    updateFotoProfileMutation.mutate(formData, {
+      onSuccess: (res) => {
+        console.log(res, "res");
+        Snackbar.show({ message: "Update Foto Profile berhasil" });
+        setIsLoading(false);
+        setNewFotoProfile("");
+        setOpenModalEditProfile(false);
+        userProfileQuery.refetch();
+      },
+      onError: (res) => {
+        Snackbar.show({
+          message: "Update Foto Profile gagal, coba setelah beberapa saat",
+          variant: "danger",
+        });
+        console.error(res);
+        setIsLoading(false);
+        setNewFotoProfile("");
+        setOpenModalEditProfile(false);
+        userProfileQuery.refetch();
+      },
+    });
+  };
 
   const onHandleButtonSave = () => {
     onSaveProfile();
@@ -115,10 +161,37 @@ export default function ProfileTabScreen() {
         }
       >
         <View style={style.avatarContainer}>
-          <Image
+          <Pressable
             style={[style.avatarImg, { backgroundColor: Colors.outlineborder }]}
-            source={require("@/assets/images/default-profile.png")}
-          />
+            onPress={() => setOpenModalEditProfile(true)}
+          >
+            <View
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                alignItems: "flex-end",
+                zIndex: 2,
+                padding: 12,
+              }}
+            >
+              <View
+                style={{
+                  width: 14,
+                  height: 14,
+                  padding: 2,
+                  borderRadius: 100,
+                  backgroundColor: Colors.paper,
+                }}
+              >
+                <IconEdit color="main" width={10} height={10} />
+              </View>
+            </View>
+            <Image
+              style={{ width: "100%", height: "100%" }}
+              source={{ uri: userProfileQuery.data?.data?.image_url }}
+            />
+          </Pressable>
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Button onPress={onHandleButtonReset} variant="secondary">
               {isEdit ? "Batal" : "Ubah"}
@@ -184,6 +257,21 @@ export default function ProfileTabScreen() {
         />
         <Controller
           control={control}
+          name="kota"
+          render={({ field }) => (
+            <TextInput
+              label="Kota *"
+              maxLength={150}
+              placeholder="Kota"
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              editable={isEdit}
+            />
+          )}
+        />
+        <Controller
+          control={control}
           name="alamat"
           render={({ field }) => (
             <TextInput
@@ -211,6 +299,29 @@ export default function ProfileTabScreen() {
           </Typography>
         </View>
       </TouchableWithoutFeedback>
+      <Modals
+        modalVisible={openModalEditProfile}
+        setModalVisible={setOpenModalEditProfile}
+      >
+        <View style={{ flexDirection: "column", gap: 10 }}>
+          <InputFileImage
+            label="Masukan Foto Profile"
+            image={newFotoProfile}
+            setImage={setNewFotoProfile}
+            aspect={[1, 1]}
+          />
+          <Button
+            disabled={newFotoProfile === "" || isLoading}
+            onPress={handleOnSimpanFotoProfile}
+          >
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <Typography color="white">Simpan Foto Profile</Typography>
+            )}
+          </Button>
+        </View>
+      </Modals>
     </View>
   );
 }
@@ -229,6 +340,7 @@ const style = StyleSheet.create({
     height: 80,
     width: 80,
     borderRadius: 99,
+    overflow: "hidden",
   },
   logoutButton: {
     height: 48,

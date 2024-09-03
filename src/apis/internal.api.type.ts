@@ -20,6 +20,8 @@ export type PostLoginResponseSuccess = {
     token: string;
     type: "bearer";
     updated_at: string;
+    image_url: string;
+    kota: string;
   };
 };
 export type PostLoginResponseError = {
@@ -51,6 +53,7 @@ export const postUpdateProfileSchema = z.object({
   nik: z.string(),
   no_telp: z.string(),
   alamat: z.string(),
+  kota: z.string(),
 });
 export type PostUpdateProfileData = z.infer<typeof postUpdateProfileSchema>;
 
