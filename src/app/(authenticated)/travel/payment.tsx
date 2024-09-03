@@ -272,7 +272,7 @@ export default function TravelPaymentScreen() {
                   color="main"
                   onPress={() => setOpenModal(true)}
                 >
-                  Sytarat & Ketentuan
+                  Syarat & Ketentuan
                 </Typography>{" "}
                 Rama Tranz
               </Typography>

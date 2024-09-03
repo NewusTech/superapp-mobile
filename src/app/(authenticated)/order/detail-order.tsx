@@ -473,22 +473,28 @@ export default function DetailOrder() {
         }}
       >
         {orderDetail.pembayaran.payment_link &&
-          orderDetail.pembayaran.status === "Menunggu Pembayaran" && (
+          orderDetail.pembayaran.status.toLowerCase() ===
+            "menunggu pembayaran" && (
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
         {!orderDetail.pembayaran.payment_link &&
-          orderDetail.pembayaran.status.toLowerCase() !== "kadaluarsa" && (
+          orderDetail.pembayaran.status.toLowerCase() !== "gagal" && (
             <Button onPress={handleOnBeforePayment}>
               Lanjut Pilih Metode Pembayaran
             </Button>
           )}
-        {orderDetail.pembayaran.no_rek !== "-" && (
-          <Button onPress={handleToPaymentTranser}>
-            <Typography color="paper" fontFamily="OpenSans-Medium">
-              Lanjutkan Pembayaran {orderDetail.pembayaran.no_rek || "-"}
-            </Typography>
-          </Button>
-        )}
+        {orderDetail.pembayaran.no_rek !== "-" &&
+          orderDetail.pembayaran.status.toLowerCase() ===
+            "menunggu pembayaran" &&
+          orderDetail.pembayaran.metode &&
+          orderDetail.pembayaran.metode?.toLowerCase() !==
+            "payment gateway" && (
+            <Button onPress={handleToPaymentTranser}>
+              <Typography color="paper" fontFamily="OpenSans-Medium">
+                Lanjutkan Pembayaran {orderDetail.pembayaran.metode || "-"}
+              </Typography>
+            </Button>
+          )}
       </View>
     </>
   );

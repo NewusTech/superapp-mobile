@@ -42,6 +42,7 @@ import {
   RuteItemEmpty,
 } from "@/features/article/components/rute-item/RuteItem";
 import { useAuthProfile } from "@/features/auth/store/auth-store";
+import { useGetPariwisata } from "@/features/pariwisata/api/useGetPariwisata";
 import { useGetTravelBranch } from "@/features/travel/api/useGetTravelBranch";
 import { useGetTravelRute } from "@/features/travel/api/useGetTravelRutes";
 import { useTravelActions } from "@/features/travel/store/travel-store";
@@ -50,52 +51,52 @@ import { useRoute } from "@react-navigation/native";
 
 import { PromoItemList } from "../travel/booking-travel";
 
-export const pariwisataListQueryData = [
-  {
-    slug: "pantai-rio-beach",
-    judul: "Pantai Rio Beach",
-    lokasi: "Kalianda",
-    sub_judul: "Snorkling & Explore",
-    rating: 5,
-    konten: "<p> lorem ipsum dolor sit amet. </p>",
-    image_url:
-      "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
-    id: 1,
-  },
-  {
-    slug: "tegal-mas-island",
-    judul: "Tegal Mas Island",
-    lokasi: "Pesawaran",
-    sub_judul: "Snorkling & Explore",
-    rating: 4,
-    konten: "<p> lorem ipsum dolor sit amet. </p>",
-    image_url:
-      "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
-    id: 2,
-  },
-  {
-    slug: "pantai-rio-beach",
-    judul: "Pantai Rio Beach",
-    lokasi: "Kalianda",
-    sub_judul: "Snorkling & Explore",
-    rating: 5,
-    konten: "<p> lorem ipsum dolor sit amet. </p>",
-    image_url:
-      "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
-    id: 3,
-  },
-  {
-    slug: "tegal-mas-island",
-    judul: "Tegal Mas Island",
-    lokasi: "Pesawaran",
-    sub_judul: "Snorkling & Explore",
-    rating: 4,
-    konten: "<p> lorem ipsum dolor sit amet. </p>",
-    image_url:
-      "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
-    id: 4,
-  },
-];
+// export const pariwisataListQueryData = [
+//   {
+//     slug: "pantai-rio-beach",
+//     judul: "Pantai Rio Beach",
+//     lokasi: "Kalianda",
+//     sub_judul: "Snorkling & Explore",
+//     rating: 5,
+//     konten: "<p> lorem ipsum dolor sit amet. </p>",
+//     image_url:
+//       "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
+//     id: 1,
+//   },
+//   {
+//     slug: "tegal-mas-island",
+//     judul: "Tegal Mas Island",
+//     lokasi: "Pesawaran",
+//     sub_judul: "Snorkling & Explore",
+//     rating: 4,
+//     konten: "<p> lorem ipsum dolor sit amet. </p>",
+//     image_url:
+//       "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
+//     id: 2,
+//   },
+//   {
+//     slug: "pantai-rio-beach",
+//     judul: "Pantai Rio Beach",
+//     lokasi: "Kalianda",
+//     sub_judul: "Snorkling & Explore",
+//     rating: 5,
+//     konten: "<p> lorem ipsum dolor sit amet. </p>",
+//     image_url:
+//       "https://akcdn.detik.net.id/community/media/visual/2024/06/22/pantai-rio-by-the-beach_169.jpeg",
+//     id: 3,
+//   },
+//   {
+//     slug: "tegal-mas-island",
+//     judul: "Tegal Mas Island",
+//     lokasi: "Pesawaran",
+//     sub_judul: "Snorkling & Explore",
+//     rating: 4,
+//     konten: "<p> lorem ipsum dolor sit amet. </p>",
+//     image_url:
+//       "https://liborantrip.com/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-01-at-10.21.57-1.jpeg",
+//     id: 4,
+//   },
+// ];
 
 export default function HomeTabScreen() {
   const router = useRouter();
@@ -108,7 +109,7 @@ export default function HomeTabScreen() {
 
   const userProfile = useAuthProfile();
 
-  const articleListQuery = useGetArticleList();
+  const getPariwisataQuery = useGetPariwisata();
 
   const ruteListQuery = useGetTravelRute();
 
@@ -171,9 +172,9 @@ export default function HomeTabScreen() {
       img: switchImg(data.kota_asal.toLowerCase()),
     }));
 
-  // const handleRefresh = useCallback(() => {
-  //   articleListQuery.refetch();
-  // }, [articleListQuery]);
+  const handleRefresh = useCallback(() => {
+    getPariwisataQuery.refetch();
+  }, [getPariwisataQuery]);
 
   useEffect(() => {
     // handleRefresh();
@@ -184,13 +185,13 @@ export default function HomeTabScreen() {
     <>
       <ScrollView
         style={{ flexGrow: 1, backgroundColor: Colors.paper }}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={articleListQuery.isRefetching}
-        //     onRefresh={handleRefresh}
-        //     progressViewOffset={20}
-        //   />
-        // }
+        refreshControl={
+          <RefreshControl
+            refreshing={getPariwisataQuery.isRefetching}
+            onRefresh={handleRefresh}
+            progressViewOffset={20}
+          />
+        }
       >
         <View style={[styles.headerContainer, { height: "100%" }]}>
           <ImageBackground
@@ -381,9 +382,9 @@ export default function HomeTabScreen() {
               <FlatList
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                data={pariwisataListQueryData}
+                data={getPariwisataQuery.data?.data}
                 renderItem={({ item, index }) =>
-                  articleListQuery.isFetching ? (
+                  getPariwisataQuery.isFetching ? (
                     <ArticleItemPlaceholder />
                   ) : (
                     <ArticleItem
@@ -395,10 +396,7 @@ export default function HomeTabScreen() {
                       rating={item.rating}
                       onPress={() =>
                         router.push({
-                          pathname: "/wisata/[id]",
-                          params: {
-                            id: item.id,
-                          },
+                          pathname: "/wisata/" + item.slug,
                         })
                       }
                     />
