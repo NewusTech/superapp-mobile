@@ -16,8 +16,11 @@ import {
   GetArticleResponseSuccess,
   GetDoorToDoorApiResponseSuccess,
   GetDoorToDoorParams,
+  GetPariwisataApiResponseSuccess,
+  GetPariwisataBySlugApiResponseSuccess,
   GetPaymentMethodResponseSuccess,
   GetPaymentStatusResponseSuccess,
+  GetRentalBookeDatesApiResponseSuccess,
   GetTravelBranchResponseSuccess,
   GetTravelRutesResponseSuccess,
   OrderDetailResponseSuccess,
@@ -308,6 +311,34 @@ export const getDoorToDoorApi = async (params: GetDoorToDoorParams) => {
     method: "GET",
     url: "/api/door-to-door",
     params,
+  });
+
+  return response.data;
+};
+
+export const getRentalBookDatesApi = async (params: { mobil_id: string }) => {
+  const response = await apiClientMock<GetRentalBookeDatesApiResponseSuccess>({
+    method: "GET",
+    url: "/api/rental/booked-dates",
+    params,
+  });
+
+  return response.data;
+};
+
+export const getPariwisataApi = async () => {
+  const response = await apiClientMock<GetPariwisataApiResponseSuccess>({
+    method: "GET",
+    url: "/api/pariwisata",
+  });
+
+  return response.data;
+};
+
+export const getPariwisataBySlugApi = async (slug: string) => {
+  const response = await apiClientMock<GetPariwisataBySlugApiResponseSuccess>({
+    method: "GET",
+    url: "/api/pariwisata/" + slug,
   });
 
   return response.data;

@@ -324,7 +324,7 @@ export default function Payment() {
                   color="main"
                   onPress={() => setOpenModalTnc(true)}
                 >
-                  Sytarat & Ketentuan
+                  Syarat & Ketentuan
                 </Typography>{" "}
                 Rama Tranz
               </Typography>

@@ -20,6 +20,7 @@ import { IconCalendar, IconChevronDown, IconClock } from "@/components/icons";
 import Modals from "@/components/modal/Modals";
 import { TimeInput } from "@/components/time-input/TimeInput";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetBookDatesQuery } from "@/features/rental/api/useGetBookDatesQuery";
 import {
   useRentActions,
   useRentalCarData,
@@ -40,6 +41,16 @@ export default function DetailRentCar() {
 
   const { setRentalPayload } = useRentActions();
 
+  const getBookDatesQuery = useGetBookDatesQuery(
+    rentalCarData?.id.toString() || "1"
+  );
+
+  const bookDatesData = getBookDatesQuery.isFetching
+    ? []
+    : getBookDatesQuery.data?.data || [];
+
+  console.log(bookDatesData);
+
   const { control, formState, handleSubmit, setValue, watch } =
     useForm<SewaRent>({
       resolver: zodResolver(rentalCarQuerySchema),
@@ -56,8 +67,27 @@ export default function DetailRentCar() {
 
   const [openDetailAllIn, setOpenDetailAllIn] = useState(false);
 
-  const maxDayRentDuration =
+  const areaWatch = watch("area").toLocaleLowerCase();
+  const durationWatch = watch("durasi_sewa");
+
+  const tanggalMulai = watch("tanggal_mulai");
+
+  let maxDayRentDuration =
     watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 7;
+
+  const calculateMaxRentDuration = () => {
+    for (let i = 0; i < maxDayRentDuration; i++) {
+      const checkDate = plusDay(tanggalMulai, i).toISOString().split("T")[0];
+      if (bookDatesData.includes(checkDate)) {
+        return i - 1; // Return durasi maksimal yang bisa dipilih
+      }
+    }
+    return maxDayRentDuration; // Tidak ada tanggal terpesan dalam durasi yang dipilih
+  };
+
+  if (tanggalMulai) {
+    maxDayRentDuration = calculateMaxRentDuration();
+  }
 
   const handleSubmitForm = handleSubmit((data) => {
     setRentalPayload(data);
@@ -65,11 +95,18 @@ export default function DetailRentCar() {
     router.push("/rental/payment");
   });
 
-  const dummyDisableDate = ["2024-8-24", "2024-8-25", "2024-8-27", "2024-8-28"];
+  // const dummyDisableDate = [
+  //   "2024-8-24",
+  //   "2024-8-25",
+  //   "2024-8-27",
+  //   "2024-8-28",
+  //   "2024-9-19",
+  //   "2024-9-20",
+  // ];
 
-  const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
-    title: i + (watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 1),
-  }));
+  // const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
+  //   title: i + (watch("area").toLocaleLowerCase() === "luar kota" ? 4 : 1),
+  // }));
 
   const areList = [
     {
@@ -90,10 +127,39 @@ export default function DetailRentCar() {
     return carPrice * durationPrice + allInPrice;
   };
 
-  const areaWatch = watch("area").toLocaleLowerCase();
-  const durationWatch = watch("durasi_sewa");
+  // Fungsi untuk mengecek apakah tanggal dalam rentang tanggal yang dipesan
+  const isDateInDisabledRange = (
+    startDate: Date,
+    duration: number,
+    disabledDates: any[]
+  ) => {
+    for (let i = 0; i < duration; i++) {
+      const checkDate = plusDay(startDate, i).toISOString().split("T")[0];
+      if (disabledDates.includes(checkDate)) {
+        return true;
+      }
+    }
+    return false;
+  };
 
-  const tanggalMulai = watch("tanggal_mulai");
+  // Fungsi untuk mendapatkan durasi maksimal berdasarkan tanggal yang telah dipesan
+  const getMaxRentDuration = (
+    startDate: Date,
+    maxDuration: number,
+    disabledDates: any[]
+  ) => {
+    for (let i = 0; i < maxDuration; i++) {
+      const checkDate = plusDay(startDate, i).toISOString().split("T")[0];
+      if (disabledDates.includes(checkDate)) {
+        return i; // Return durasi maksimal
+      }
+    }
+    return maxDuration; // Tidak ada tanggal terpesan dalam durasi yang dipilih
+  };
+
+  const rentDuration = Array.from({ length: maxDayRentDuration }, (v, i) => ({
+    title: i + (areaWatch.toLowerCase() === "luar kota" ? 4 : 1),
+  }));
 
   const onHandleOpenAllIn = () => {
     const allIn = watch("all_in");
@@ -108,8 +174,35 @@ export default function DetailRentCar() {
     }
   }, [areaWatch, durationWatch, setValue]);
 
+  // useEffect(() => {
+  //   setValue("tanggal_selesai", plusDay(tanggalMulai, durationWatch));
+  // }, [tanggalMulai, durationWatch, setValue]);
+
   useEffect(() => {
-    setValue("tanggal_selesai", plusDay(tanggalMulai, durationWatch));
+    if (!tanggalMulai) return;
+
+    // Hitung tanggal selesai berdasarkan durasi sewa
+    const tanggalSelesai = plusDay(tanggalMulai, durationWatch);
+    setValue("tanggal_selesai", tanggalSelesai);
+
+    // Cek apakah tanggal sewa berada dalam rentang tanggal yang telah dipesan
+    if (isDateInDisabledRange(tanggalMulai, durationWatch, bookDatesData)) {
+      alert("Pilih jadwal lain karena tanggal telah terpesan."); // Notifikasi
+      setValue("durasi_sewa", 0); // Reset durasi sewa jika tanggal terpesan
+    } else {
+      const maxDuration = getMaxRentDuration(
+        tanggalMulai,
+        maxDayRentDuration,
+        bookDatesData
+      );
+      if (durationWatch > maxDuration) {
+        alert(
+          `Durasi sewa maksimal hanya ${maxDuration} hari karena tanggal terpesan.`
+        );
+        setValue("durasi_sewa", maxDuration); // Set durasi maksimal
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tanggalMulai, durationWatch, setValue]);
 
   return (
@@ -161,7 +254,7 @@ export default function DetailRentCar() {
                 }
                 onChange={(date) => field.onChange(date)}
                 value={field.value}
-                disabledDates={dummyDisableDate}
+                disabledDates={bookDatesData}
               />
             )}
           />
@@ -329,7 +422,10 @@ export default function DetailRentCar() {
           </Typography>
         </View>
         <View style={{ flex: 1 }}>
-          <Button disabled={!formState.isValid} onPress={handleSubmitForm}>
+          <Button
+            disabled={!formState.isValid || durationWatch < 1}
+            onPress={handleSubmitForm}
+          >
             Proses ke Pembayaran
           </Button>
         </View>

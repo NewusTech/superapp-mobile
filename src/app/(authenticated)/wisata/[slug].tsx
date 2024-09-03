@@ -6,7 +6,7 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import RenderHTML, { defaultSystemFonts } from "react-native-render-html";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -15,6 +15,7 @@ import { Loader, Typography, View } from "@/components";
 import { IconChevronLeft } from "@/components/icons";
 import RentaCardlItem from "@/components/rental/RentaCardlItem";
 import { useAppTheme } from "@/context/theme-context";
+import { useGetPariwisataSlugQuery } from "@/features/pariwisata/api/useGetPariwisataSlugQuery";
 import { useGetRentalCarQuery } from "@/features/rental/api/useGetRentalCarQuery";
 import { useRentActions } from "@/features/rental/store/rental-store";
 
@@ -22,11 +23,15 @@ export default function DetailWisata() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const params = useLocalSearchParams<{ slug: string }>();
+
   const { Colors } = useAppTheme();
 
   const { setRentalCarData } = useRentActions();
 
   const rentalCarQuery = useGetRentalCarQuery();
+
+  const detailPariwisataQuery = useGetPariwisataSlugQuery(params.slug);
 
   const handleRentCar = (data: RentalCarData) => {
     setRentalCarData(data);
@@ -91,7 +96,7 @@ export default function DetailWisata() {
           </Pressable>
         </View>
         <Image
-          source={require("@/assets/images/default-pariwisata.png")}
+          source={{ uri: detailPariwisataQuery.data?.data.image_url || "" }}
           style={{ width: "100%", height: 320 }}
         />
         <View
@@ -107,13 +112,13 @@ export default function DetailWisata() {
             fontSize={18}
             numberOfLines={1}
           >
-            Wisata Tegal Mas Island
+            {detailPariwisataQuery.data?.data.judul}
           </Typography>
           <RenderHTML
             systemFonts={[...defaultSystemFonts, "Poppins-Regular"]}
             contentWidth={Dimensions.get("screen").width - 48}
             source={{
-              html: "Tegal Mas Island adalah pulau wisata di Teluk Lampung, Lampung, yang terkenal dengan pantai berpasir putih, air laut jernih, dan pemandangan alam indah. Pulau ini menawarkan aktivitas snorkeling, diving, serta penginapan unik, menjadikannya destinasi favorit untuk liburan eksotis yang mudah diakses dari Bandar Lampung",
+              html: detailPariwisataQuery.data?.data.konten || "",
             }}
           />
           {/*  */}

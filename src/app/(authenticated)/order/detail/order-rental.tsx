@@ -366,16 +366,18 @@ export default function OrderRental() {
         }}
       >
         {orderDetail?.payment_link &&
-          orderDetail?.status === "Menunggu Pembayaran" && (
+          orderDetail?.status.toLowerCase() === "menunggu pembayaran" && (
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
-        {orderDetail.no_rek !== "-" && (
-          <Button onPress={handleToPaymentTranser}>
-            <Typography color="paper" fontFamily="OpenSans-Medium">
-              Lanjutkan Pembayaran {orderDetail.metode || "-"}
-            </Typography>
-          </Button>
-        )}
+        {orderDetail.no_rek !== "-" &&
+          orderDetail?.status.toLowerCase() === "menunggu pembayaran" &&
+          orderDetail.metode.toLowerCase() !== "payment gateway" && (
+            <Button onPress={handleToPaymentTranser}>
+              <Typography color="paper" fontFamily="OpenSans-Medium">
+                Lanjutkan Pembayaran {orderDetail.metode || "-"}
+              </Typography>
+            </Button>
+          )}
       </View>
     </>
   );

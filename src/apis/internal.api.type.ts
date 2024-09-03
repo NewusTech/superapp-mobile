@@ -371,3 +371,42 @@ export type GetDoorToDoorApiResponseSuccess = {
   message: string;
   success: boolean;
 };
+
+export type GetRentalBookeDatesApiResponseSuccess = {
+  data: string[];
+  message: string;
+  success: boolean;
+};
+
+export type GetPariwisataApiResponseSuccess = {
+  data: {
+    id: number;
+    judul: string;
+    slug: string;
+    lokasi: string;
+    rating: number;
+    konten: string;
+    image_url: string;
+    created_at: string;
+    updated_at: string;
+    sub_judul: string;
+  }[];
+  message: string;
+  success: boolean;
+};
+export type GetPariwisataBySlugApiResponseSuccess = {
+  data: {
+    id: number;
+    judul: string;
+    slug: string;
+    lokasi: string;
+    rating: number;
+    konten: string;
+    image_url: string;
+    created_at: string;
+    updated_at: string;
+    sub_judul: string;
+  };
+  message: string;
+  success: boolean;
+};
