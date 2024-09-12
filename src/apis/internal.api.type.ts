@@ -100,6 +100,8 @@ export type GetTravelRutesResponseSuccess = {
     created_at: string;
     updated_at: string;
     waktu_keberangkatan: string;
+    image_url: string;
+    deskripsi: string | null;
   }[];
   message: string;
   success: boolean;
@@ -225,6 +227,9 @@ export type ResponseSucsessPostRentalPayment = {
     kode: number;
     nomor_rekening: string;
     bank: string;
+    kode_pembayaran: string;
+    harga: number;
+    metode: string;
   };
   message: string;
 };
@@ -287,6 +292,7 @@ export type RentalCarData = {
   updated_at: string;
   biaya_all_in: string;
   bagasi: string;
+  images: { image_url: string }[];
 };
 export type RentalCarListResponseSuccess = {
   data: RentalCarData[];
@@ -306,6 +312,7 @@ export type OrderDetailResponseSuccess = {
       link_tiket: string;
       link_invoice: string;
       no_rek: string;
+      bukti_url: null | string;
     };
     penumpang: [
       {
@@ -350,6 +357,14 @@ export type OrderRentalDetailResponseSuccess = {
     status: string;
     durasi_sewa: number;
     alamat_keberangkatan: string;
+    jam_keberangkatan: string;
+    nama: string;
+    nik: string;
+    alamat: string;
+    no_telp: string;
+    email: string;
+    all_in: number;
+    bukti_url: null | string;
   };
   message: string;
   success: boolean;

@@ -34,7 +34,7 @@ export default function OrderTabScreen() {
 
   const getStatusFilter = () => {
     return activeTab.toLocaleLowerCase() === "menunggu pembayaran"
-      ? "menunggu"
+      ? "menunggu pembayaran"
       : statusFilter === "Status"
         ? ""
         : statusFilter === "Gagal"

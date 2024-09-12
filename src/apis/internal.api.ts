@@ -374,3 +374,80 @@ export const getPariwisataBySlugApi = async (slug: string) => {
 
   return response.data;
 };
+
+export const postBuktiTransferTravel = async (data: {
+  data: any;
+  kode_pembayaran: string;
+}) => {
+  console.error(data);
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(
+      `${API_URL}/api/pembayaran/upload-bukti/${data.kode_pembayaran}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+        body: data.data,
+      }
+    );
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses pembayaran.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses pembayaran: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};
+export const postBuktiTransferRental = async (data: {
+  data: any;
+  kode_pembayaran: string;
+}) => {
+  console.error(data);
+  const accessToken = getAccessToken();
+  try {
+    const response = await fetch(
+      `${API_URL}/api/rental/pembayaran/upload-bukti/${data.kode_pembayaran}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+        body: data.data,
+      }
+    );
+
+    // Periksa apakah respons sukses (status 2xx)
+    if (!response.ok) {
+      // Jika tidak sukses, ambil pesan error
+      const errorData = await response.json();
+      // Buat error baru dengan pesan dari respons
+      throw new Error(errorData.message || "Gagal memproses pembayaran.");
+    }
+    // Respons sukses, kembalikan data JSON
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Tangani error di sini
+    console.error(
+      `Error saat memproses pembayaran: ${error.message} - ${error.data}`
+    );
+    // Kamu bisa mengembalikan error atau menampilkannya ke UI
+    throw error;
+  }
+};

@@ -9,7 +9,7 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ResponseSucsessPostTravellPayment } from "@/apis/internal.api.type";
+import { ResponseSucsessPostRentalPayment } from "@/apis/internal.api.type";
 import {
   Appbar,
   Button,
@@ -139,7 +139,7 @@ export default function Payment() {
     formData.append("image_swafoto", imageFilSwafoto);
 
     processPaymentRentalMutation.mutate(formData, {
-      onSuccess: (res: ResponseSucsessPostTravellPayment) => {
+      onSuccess: (res: ResponseSucsessPostRentalPayment) => {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
@@ -148,6 +148,8 @@ export default function Payment() {
             pathname: "/payment/transfer/bri",
             params: {
               no_rek: res.data.nomor_rekening,
+              kode_pemesanan: res.data.kode_pembayaran,
+              tipe: "rental",
             },
           });
           return;

@@ -25,6 +25,8 @@ export default function RentalCarLists() {
     router.push(`/rental/detail/${data.id}`);
   };
 
+  console.log(rentalCarQuery.data?.data[0].images[0].image_url);
+
   return (
     <>
       <Appbar
@@ -55,6 +57,7 @@ export default function RentalCarLists() {
                   jumlah_kursi={item.jumlah_kursi}
                   transmisi={item.transmisi}
                   deskripsi={item.deskripsi}
+                  image_url={{ uri: item.images[0].image_url || "" }}
                   handleOnDetailRentalCard={() => handleRentCar(item)}
                 />
               );

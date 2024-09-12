@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Image,
+  ImageSourcePropType,
   Pressable,
   PressableProps,
   StyleSheet,
@@ -22,6 +23,7 @@ export type RentaCardlItemProps = {
   bagasi: string;
   deskripsi: string;
   width?: any;
+  image_url: ImageSourcePropType;
 } & PressableProps;
 export default function RentaCardlItem(props: RentaCardlItemProps) {
   const {
@@ -33,8 +35,10 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
     bagasi,
     deskripsi,
     disabled,
+    image_url,
     handleOnDetailRentalCard,
     width,
+
     ...rest
   } = props;
 
@@ -46,7 +50,7 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
         <View
           style={{
             width: width ?? "100%",
-            height: 500,
+            height: 450,
             overflow: "hidden",
             backgroundColor: Colors.paper,
             borderRadius: 20,
@@ -83,13 +87,14 @@ export default function RentaCardlItem(props: RentaCardlItemProps) {
             }}
           >
             <Image
-              source={require("@/assets/images/default_rent_car.png")}
-              style={{ objectFit: "contain" }}
+              source={image_url}
+              style={{ width: "100%", height: "100%", resizeMode: "cover" }}
             />
           </View>
           <View
             style={{
               padding: 20,
+              flexDirection: "column",
             }}
           >
             <View

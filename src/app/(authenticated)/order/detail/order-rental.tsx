@@ -1,12 +1,23 @@
-import { RefreshControl } from "react-native";
+import { useState } from "react";
+import { Image, RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Iconify } from "react-native-iconify";
 
-import { Appbar, Button, SectionWrapper, Typography, View } from "@/components";
+import {
+  Appbar,
+  Button,
+  Loader,
+  SectionWrapper,
+  Snackbar,
+  Typography,
+  View,
+} from "@/components";
 import { Card } from "@/components/card/Card";
+import InputFileImage from "@/components/input-file/InputFileImage";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderRentalDetailQuery } from "@/features/order/api/useGetOrderRentalDetailQuery";
+import { usePostUploadBuktiPembayaranRentalMutation } from "@/features/order/api/usePostUploadBuktiPembayaranRentalMutation";
 import { checkExpired, formatCurrency } from "@/utils/common";
 import CountdownTimer from "@/utils/CountdownTimer";
 import { formatDateDMY, formatLocalDate, formatTime } from "@/utils/datetime";
@@ -19,8 +30,14 @@ export default function OrderRental() {
     kode_pesanan: string;
   }>();
 
+  const [fileBukti, setFileBukti] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const orderDetailQuery = useGetOrderRentalDetailQuery(params.kode_pesanan);
   const orderDetail = orderDetailQuery.data?.data;
+
+  const uploadBuktiTransferMutation =
+    usePostUploadBuktiPembayaranRentalMutation();
 
   const handleRefresh = () => {
     orderDetailQuery.refetch();
@@ -42,6 +59,8 @@ export default function OrderRental() {
       pathname: "/payment/transfer/bri",
       params: {
         no_rek: orderDetail?.no_rek || "000000000000000",
+        kode_pemesanan: orderDetail?.kode_pembayaran,
+        tipe: "rental",
       },
     });
   };
@@ -66,6 +85,45 @@ export default function OrderRental() {
         kode_pembayaran: orderDetail?.kode_pembayaran,
       },
     });
+  };
+
+  const handleUploadBuktiTransfer = () => {
+    setIsLoading(true);
+
+    // Prepare the FormData
+    const formData = new FormData();
+
+    // Menambahkan gambar
+    const bukti: any = {
+      name: "image_bukti_transfer",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: fileBukti,
+    };
+
+    formData.append("bukti", bukti);
+
+    uploadBuktiTransferMutation.mutate(
+      {
+        data: formData,
+        kode_pembayaran: orderDetail?.kode_pembayaran || "",
+      },
+      {
+        onSuccess: (res: any) => {
+          console.log(res, "res");
+          Snackbar.show({ message: "Berhasil upload bukti pembayaran" });
+          handleRefresh();
+          setIsLoading(false);
+        },
+        onError: (res) => {
+          Snackbar.show({
+            message: "Upload bukti transfer gagal, " + res.message,
+            variant: "danger",
+          });
+          console.error(res);
+          setIsLoading(false);
+        },
+      }
+    );
   };
 
   if (!orderDetail) return router.back();
@@ -136,9 +194,11 @@ export default function OrderRental() {
               color={
                 orderDetail?.status === "Sukses"
                   ? "success"
-                  : orderDetail?.status === "Menunggu Pembayaran"
-                    ? "textsecondary"
-                    : "dangerbase"
+                  : orderDetail?.status === "Gagal"
+                    ? "dangerbase"
+                    : orderDetail.status === "Menunggu Verifikasi"
+                      ? "main"
+                      : "textsecondary"
               }
               fontSize={14}
             >
@@ -354,6 +414,50 @@ export default function OrderRental() {
               </View>
             </Card>
           </SectionWrapper>
+
+          {orderDetail.status.toLowerCase() !== "gagal" && (
+            <SectionWrapper title="Bukti Pembayaran">
+              {orderDetail.bukti_url && (
+                <Image
+                  source={{
+                    uri: orderDetail.bukti_url,
+                  }}
+                  style={{
+                    height: 250,
+                    width: "100%",
+                    borderRadius: 20,
+                  }}
+                />
+              )}
+              {!orderDetail.bukti_url && (
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    flexDirection: "column",
+                    gap: 10,
+                  }}
+                >
+                  <InputFileImage
+                    label="Upload Bukti Pembayaran"
+                    image={fileBukti}
+                    setImage={setFileBukti}
+                  />
+                  <Button
+                    onPress={handleUploadBuktiTransfer}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader color="paper" />
+                    ) : (
+                      <Typography color="paper">
+                        Upload bukti transfter
+                      </Typography>
+                    )}
+                  </Button>
+                </View>
+              )}
+            </SectionWrapper>
+          )}
         </View>
         {/*  */}
       </ScrollView>

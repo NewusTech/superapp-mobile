@@ -55,7 +55,7 @@ export default function ArticleTabScreen() {
                 badgeLocation={item.lokasi}
                 imgSource={{ uri: item.image_url }}
                 title={item.judul}
-                subtitle={item.konten}
+                subtitle={item.sub_judul}
                 rating={item.rating}
                 onPress={() =>
                   router.push({
