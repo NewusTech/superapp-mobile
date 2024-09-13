@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { Appbar, Snackbar, Typography, View } from "@/components";
+import { Appbar, Button, Snackbar, Typography, View } from "@/components";
 import { Card } from "@/components/card/Card";
 import { IconChevronDown } from "@/components/icons";
 import { useAppTheme } from "@/context/theme-context";
@@ -52,6 +52,8 @@ const viaIbank = [
 export default function TransferBri() {
   const params = useLocalSearchParams<{
     no_rek: string;
+    kode_pemesanan: string;
+    tipe: "rental" | "travel";
   }>();
   const { Colors } = useAppTheme();
   const router = useRouter();
@@ -64,6 +66,25 @@ export default function TransferBri() {
 
   const panIbank = useRef(new Animated.Value(0)).current;
   const [openIbank, setOpenIbank] = useState(false);
+
+  const handleToDetail = () => {
+    if (params.tipe === "travel") {
+      router.replace({
+        pathname: "/(authenticated)/order/detail-order",
+        params: {
+          kode_pesanan: params.kode_pemesanan,
+        },
+      });
+    }
+    if (params.tipe === "rental") {
+      router.replace({
+        pathname: "/order/detail/order-rental",
+        params: {
+          kode_pesanan: params.kode_pemesanan,
+        },
+      });
+    }
+  };
 
   const handleOnpenAtm = () => {
     if (openAtm) {
@@ -309,6 +330,10 @@ export default function TransferBri() {
             </Animated.View>
           </View>
         </Card>
+
+        <Button style={{}} onPress={handleToDetail}>
+          Kembali Ke Histori
+        </Button>
       </ScrollView>
     </View>
   );

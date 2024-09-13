@@ -100,11 +100,9 @@ import { PromoItemList } from "../travel/booking-travel";
 
 export default function HomeTabScreen() {
   const router = useRouter();
-  const route = useRoute();
   const insets = useSafeAreaInsets();
   const { Colors } = useAppTheme();
 
-  const scrollViewRef = useRef(null);
   const haightHeaderContent = Dimensions.get("window").height / 2.3;
 
   const userProfile = useAuthProfile();
@@ -119,44 +117,42 @@ export default function HomeTabScreen() {
 
   const [activeFilter, setActiveFilter] = useState("Lampung");
 
-  const [scollViewEnable, setScollViewEnable] = useState(false);
+  // const switchImg = (kota: string) => {
+  //   switch (kota) {
+  //     case "lampung":
+  //       return "https://upload.wikimedia.org/wikipedia/id/thumb/9/9e/Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG/640px-Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG";
 
-  const switchImg = (kota: string) => {
-    switch (kota) {
-      case "lampung":
-        return "https://upload.wikimedia.org/wikipedia/id/thumb/9/9e/Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG/640px-Tugu_Adipura_%28Tugu_Gajah%29_Bandar_Lampung.JPG";
+  //     case "palembang":
+  //       return "https://investasiproperti.id/wp-content/uploads/2023/06/jembatan-ampera-di-palembang-800x503.jpg";
 
-      case "palembang":
-        return "https://investasiproperti.id/wp-content/uploads/2023/06/jembatan-ampera-di-palembang-800x503.jpg";
+  //     case "jakarta":
+  //       return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKGttJIb19rPnSrEA8WeZM45k8yUJugVJDOw&s";
 
-      case "jakarta":
-        return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKGttJIb19rPnSrEA8WeZM45k8yUJugVJDOw&s";
+  //     case "bogor":
+  //       return "https://bobobox.com/blog/wp-content//uploads/2023/09/julukan-kota-bogor.webp";
 
-      case "bogor":
-        return "https://bobobox.com/blog/wp-content//uploads/2023/09/julukan-kota-bogor.webp";
+  //     case "karawang":
+  //       return "https://awsimages.detik.net.id/community/media/visual/2023/10/05/tugu-padi-icon-perkotaan-karawang_169.jpeg?w=600&q=90";
 
-      case "karawang":
-        return "https://awsimages.detik.net.id/community/media/visual/2023/10/05/tugu-padi-icon-perkotaan-karawang_169.jpeg?w=600&q=90";
+  //     case "cikarang":
+  //       return "https://cdn.idntimes.com/content-images/post/20230131/2020-02-18-7e57646b7de3972a21d81f2a1b79e41a_600x400.jpg";
 
-      case "cikarang":
-        return "https://cdn.idntimes.com/content-images/post/20230131/2020-02-18-7e57646b7de3972a21d81f2a1b79e41a_600x400.jpg";
+  //     case "cileungsi":
+  //       return "https://rumahsaya.bca.co.id/media/rumahsaya/Images/Web/c998ab73-255b-ef11-910e-005056aa44b9";
 
-      case "cileungsi":
-        return "https://rumahsaya.bca.co.id/media/rumahsaya/Images/Web/c998ab73-255b-ef11-910e-005056aa44b9";
+  //     case "cibinong":
+  //       return "https://cdn.antaranews.com/cache/1200x800/2021/12/24/IMG_20211224_183657_1.jpg";
 
-      case "cibinong":
-        return "https://cdn.antaranews.com/cache/1200x800/2021/12/24/IMG_20211224_183657_1.jpg";
+  //     case "daya murni":
+  //       return "https://awsimages.detik.net.id/community/media/visual/2023/10/05/tugu-padi-icon-perkotaan-karawang_169.jpeg?w=600&q=90";
 
-      case "daya murni":
-        return "https://awsimages.detik.net.id/community/media/visual/2023/10/05/tugu-padi-icon-perkotaan-karawang_169.jpeg?w=600&q=90";
+  //     case "depok":
+  //       return "https://asset.kompas.com/crops/_NRrco8g6CTluqwWLyguXb4SRhg=/98x0:944x564/750x500/data/photo/2021/12/02/61a8d64decf69.jpg";
 
-      case "depok":
-        return "https://asset.kompas.com/crops/_NRrco8g6CTluqwWLyguXb4SRhg=/98x0:944x564/750x500/data/photo/2021/12/02/61a8d64decf69.jpg";
-
-      default:
-        return "https://www.djkn.kemenkeu.go.id/files/images/2020/08/gerbang_kota_metro.jpg";
-    }
-  };
+  //     default:
+  //       return "https://www.djkn.kemenkeu.go.id/files/images/2020/08/gerbang_kota_metro.jpg";
+  //   }
+  // };
 
   const branchList = useMemo(() => {
     if (!travelBranchQuery.data) return [];
@@ -169,7 +165,6 @@ export default function HomeTabScreen() {
     .filter((data) => data.kota_asal === activeFilter)
     .map((data) => ({
       ...data,
-      img: switchImg(data.kota_asal.toLowerCase()),
     }));
 
   const handleRefresh = useCallback(() => {
@@ -315,7 +310,7 @@ export default function HomeTabScreen() {
                       badgePromo
                       width={Dimensions.get("window").width / 2.3}
                       imgSource={{
-                        uri: item.img,
+                        uri: item.image_url,
                       }}
                       title={`${item.kota_asal} - ${item.kota_tujuan}`}
                       price={formatCurrency(item.harga)}

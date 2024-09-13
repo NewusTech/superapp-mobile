@@ -34,10 +34,6 @@ export default function DetailRentalCar() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const params = useLocalSearchParams<{
-    id: string;
-  }>();
-
   const { Colors } = useAppTheme();
 
   const [activePopupImg, setActivePopupImg] = useState(false);
@@ -112,13 +108,13 @@ export default function DetailRentalCar() {
             </View>
             <FlatList
               scrollEnabled={false}
-              data={RentalImgDump.slice(0, 1)} // Only render the main image
+              data={rentalCarData?.images.slice(0, 1)} // Only render the main image
               renderItem={({ item }) => (
                 <RenderImg
-                  imgUrl={item.imgUrl}
+                  imgUrl={{ uri: item.image_url }}
                   height={200}
                   width={"100%"}
-                  onPressImg={() => handleSelectedImg(item.imgUrl)}
+                  onPressImg={() => handleSelectedImg(item.image_url || "")}
                 />
               )}
               style={style.mainImageContainer}
@@ -126,11 +122,13 @@ export default function DetailRentalCar() {
             <FlatList
               horizontal
               scrollEnabled={false}
-              data={RentalImgDump.slice(0, 3)} // Only render the main image
+              data={rentalCarData?.images.slice(0, 3)} // Only render the main image
               renderItem={({ item, index }) =>
                 index === 2 ? (
                   <ImageBackground
-                    source={RentalImgDump.slice(0, -1)[0].imgUrl}
+                    source={{
+                      uri: rentalCarData?.images.slice(0, -1)[0].image_url,
+                    }}
                     style={{
                       height: 120,
                       width: Dimensions.get("window").width / 3.07,
@@ -157,8 +155,8 @@ export default function DetailRentalCar() {
                   <RenderImg
                     height={120}
                     width={Dimensions.get("window").width / 3.07}
-                    imgUrl={item.imgUrl}
-                    onPressImg={() => handleSelectedImg(item.imgUrl)}
+                    imgUrl={{ uri: item.image_url }}
+                    onPressImg={() => handleSelectedImg(item.image_url)}
                   />
                 )
               }
@@ -465,10 +463,9 @@ export default function DetailRentalCar() {
                 }}
               >
                 <Image
-                  // source={{
-                  //   uri: activeImg,
-                  // }}
-                  source={activeImg}
+                  source={{
+                    uri: activeImg,
+                  }}
                   style={{ height: "100%" }}
                 />
               </View>

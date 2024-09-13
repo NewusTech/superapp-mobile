@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import { RefreshControl, ScrollView } from "react-native";
+import { Image, RefreshControl, ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Iconify } from "react-native-iconify";
 
 import {
   Appbar,
   Button,
+  Loader,
   SectionWrapper,
   Snackbar,
   Typography,
   View,
 } from "@/components";
 import { IconCarSide, IconPinSharp, IconSeat } from "@/components/icons";
+import InputFileImage from "@/components/input-file/InputFileImage";
 import { useAppTheme } from "@/context/theme-context";
 import { useGetOrderTravelDetail } from "@/features/order/api/useGetOrderTravelDetail";
+import { usePostUploadBuktiPembayranMutation } from "@/features/order/api/usePostUploadBuktiPembayranMutation";
 import { TravelTicketItem } from "@/features/travel/components";
 import { checkExpired, formatCurrency } from "@/utils/common";
 import CountdownTimer from "@/utils/CountdownTimer";
@@ -27,8 +30,51 @@ export default function DetailOrder() {
     kode_pesanan: string;
   }>();
 
+  const [fileBukti, setFileBukti] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const orderDetailQuery = useGetOrderTravelDetail(params.kode_pesanan);
   const orderDetail = orderDetailQuery.data?.data;
+
+  const uploadBuktiTransferMutation = usePostUploadBuktiPembayranMutation();
+
+  const handleUploadBuktiTransfer = () => {
+    setIsLoading(true);
+
+    // Prepare the FormData
+    const formData = new FormData();
+
+    // Menambahkan gambar
+    const bukti: any = {
+      name: "image_bukti_transfer",
+      type: "image/jpeg", // Pastikan MIME type sesuai
+      uri: fileBukti,
+    };
+
+    formData.append("bukti", bukti);
+
+    uploadBuktiTransferMutation.mutate(
+      {
+        data: formData,
+        kode_pembayaran: orderDetail?.pembayaran.kode_pembayaran || "",
+      },
+      {
+        onSuccess: (res: any) => {
+          console.log(res, "res");
+          Snackbar.show({ message: "Berhasil upload bukti pembayaran" });
+          handleRefresh();
+          setIsLoading(false);
+        },
+        onError: (res) => {
+          Snackbar.show({
+            message: "Upload bukti transfer gagal, " + res.message,
+            variant: "danger",
+          });
+          console.error(res);
+          setIsLoading(false);
+        },
+      }
+    );
+  };
 
   const handleOnBeforePayment = () => {
     router.push({
@@ -81,6 +127,8 @@ export default function DetailOrder() {
       pathname: "/payment/transfer/bri",
       params: {
         no_rek: orderDetail?.pembayaran.no_rek || "000000000000000",
+        kode_pemesanan: params.kode_pesanan,
+        tipe: "travel",
       },
     });
   };
@@ -170,9 +218,11 @@ export default function DetailOrder() {
               color={
                 orderDetail?.pembayaran.status === "Sukses"
                   ? "success"
-                  : orderDetail?.pembayaran.status === "Menunggu Pembayaran"
-                    ? "textsecondary"
-                    : "dangerbase"
+                  : orderDetail?.pembayaran.status === "Gagal"
+                    ? "dangerbase"
+                    : orderDetail.pembayaran.status === "Menunggu Verifikasi"
+                      ? "main"
+                      : "textsecondary"
               }
               fontSize={14}
             >
@@ -461,6 +511,50 @@ export default function DetailOrder() {
               </View>
             ))}
           </SectionWrapper>
+
+          {orderDetail.pembayaran.status.toLowerCase() !== "gagal" && (
+            <SectionWrapper title="Bukti Pembayaran">
+              {orderDetail.pembayaran.bukti_url && (
+                <Image
+                  source={{
+                    uri: orderDetail.pembayaran.bukti_url,
+                  }}
+                  style={{
+                    height: 250,
+                    width: "100%",
+                    borderRadius: 20,
+                  }}
+                />
+              )}
+              {!orderDetail.pembayaran.bukti_url && (
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    flexDirection: "column",
+                    gap: 10,
+                  }}
+                >
+                  <InputFileImage
+                    label="Upload Bukti Pembayaran"
+                    image={fileBukti}
+                    setImage={setFileBukti}
+                  />
+                  <Button
+                    onPress={handleUploadBuktiTransfer}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader color="paper" />
+                    ) : (
+                      <Typography color="paper">
+                        Upload bukti transfter
+                      </Typography>
+                    )}
+                  </Button>
+                </View>
+              )}
+            </SectionWrapper>
+          )}
         </View>
         {/*  */}
       </ScrollView>
@@ -478,7 +572,9 @@ export default function DetailOrder() {
             <Button onPress={handleOnToPayment}>Lanjutkan Pembayaran</Button>
           )}
         {!orderDetail.pembayaran.payment_link &&
-          orderDetail.pembayaran.status.toLowerCase() !== "gagal" && (
+          orderDetail.pembayaran.status.toLowerCase() !== "gagal" &&
+          orderDetail.pembayaran.metode?.split("-")[0].toLowerCase() !==
+            "transfer" && (
             <Button onPress={handleOnBeforePayment}>
               Lanjut Pilih Metode Pembayaran
             </Button>
@@ -491,7 +587,7 @@ export default function DetailOrder() {
             "payment gateway" && (
             <Button onPress={handleToPaymentTranser}>
               <Typography color="paper" fontFamily="OpenSans-Medium">
-                Lanjutkan Pembayaran {orderDetail.pembayaran.metode || "-"}
+                Lihat Cara Pembayaran {orderDetail.pembayaran.metode || "-"}
               </Typography>
             </Button>
           )}

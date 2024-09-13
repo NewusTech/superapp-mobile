@@ -1,11 +1,17 @@
-import { ActivityIndicator, ActivityIndicatorProps } from "react-native";
+import { ActivityIndicator } from "react-native";
 
+import { AppColorUnion } from "@/constants/Colors";
 import { useAppTheme } from "@/context/theme-context";
 
-export function Loader(props: ActivityIndicatorProps) {
-  const { size = 44 } = props;
+export type LoaderProp = {
+  color?: AppColorUnion;
+  size?: number;
+};
+
+export function Loader(props: LoaderProp) {
+  const { size = 44, color = "main" } = props;
 
   const { Colors } = useAppTheme();
 
-  return <ActivityIndicator color={Colors.main} size={size} />;
+  return <ActivityIndicator color={Colors[color]} size={size} />;
 }

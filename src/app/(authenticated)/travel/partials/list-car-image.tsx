@@ -11,15 +11,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Appbar, Typography, View } from "@/components";
 import RenderImg from "@/components/image/RenderImg";
-import { useTravelSchedule } from "@/features/travel/store/travel-store";
-
-import { RentalImgDump } from "../../rental/detail/[id]";
+import { useRentalCarData } from "@/features/rental/store/rental-store";
 
 export default function ListCarImage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const travelSchedule = useTravelSchedule();
+  const rentalCarData = useRentalCarData();
 
   const [activePopupImg, setActivePopupImg] = useState(false);
 
@@ -34,14 +32,14 @@ export default function ListCarImage() {
     <View backgroundColor="paper" style={style.container}>
       <Appbar title={"Foto Lainnya"} backIconPress={() => router.back()} />
       <FlatList
-        data={RentalImgDump}
+        data={rentalCarData?.images}
         renderItem={({ item }) => {
           return (
             <RenderImg
-              imgUrl={item.imgUrl}
+              imgUrl={{ uri: item.image_url }}
               height={200}
               width={"100%"}
-              onPressImg={() => handleSelectedImg(item.imgUrl)}
+              onPressImg={() => handleSelectedImg(item.image_url)}
             />
           );
         }}
@@ -81,10 +79,9 @@ export default function ListCarImage() {
                 }}
               >
                 <Image
-                  // source={{
-                  //   uri: activeImg,
-                  // }}
-                  source={activeImg}
+                  source={{
+                    uri: activeImg,
+                  }}
                   style={{ height: "100%" }}
                 />
               </View>

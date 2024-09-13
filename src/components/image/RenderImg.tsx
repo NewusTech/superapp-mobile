@@ -1,6 +1,7 @@
 import {
   Image,
   ImageProps,
+  ImageSourcePropType,
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -12,7 +13,7 @@ const RenderImg = ({
   borderRadius = 0,
   onPressImg,
 }: {
-  imgUrl: ImageProps["source"];
+  imgUrl: ImageProps["source"] | ImageSourcePropType;
   height: any;
   width: any;
   borderRadius?: any;

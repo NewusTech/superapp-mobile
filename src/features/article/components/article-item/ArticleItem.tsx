@@ -128,8 +128,7 @@ export function ArticleItem(props: ArticleItemProps) {
                 color="textsecondary"
                 numberOfLines={1}
               >
-                {/* {subtitle} */}
-                Snorkeling & Explore
+                {subtitle}
               </Typography>
               <View
                 style={{

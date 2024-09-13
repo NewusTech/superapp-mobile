@@ -151,9 +151,11 @@ export default function PartialsOrderRental(props: partialOrderRental) {
                 color:
                   item.status === "Sukses"
                     ? Colors.success
-                    : item.status.toLocaleLowerCase() === "menunggu pembayaran"
-                      ? Colors.textsecondary
-                      : Colors.dangerbase,
+                    : item.status === "Gagal"
+                      ? Colors.dangerbase
+                      : item.status === "Menunggu Verifikasi"
+                        ? Colors.main
+                        : Colors.textsecondary,
               }}
             >
               {item.status}

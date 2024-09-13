@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   PostProcessPaymentPayload,
   ResponseSucsessPostRentalPayment,
+  ResponseSucsessPostTravellPayment,
 } from "@/apis/internal.api.type";
 import {
   Appbar,
@@ -71,7 +72,7 @@ export default function TravelPaymentScreen() {
     };
 
     processPaymentMutation.mutate(processPaymentData, {
-      onSuccess: (res: ResponseSucsessPostRentalPayment) => {
+      onSuccess: (res: ResponseSucsessPostTravellPayment) => {
         console.log(res, "res");
         router.dismissAll();
         Snackbar.show({ message: "Order pesanan berhasil" });
@@ -89,6 +90,7 @@ export default function TravelPaymentScreen() {
           params: {
             link: res.data.payment_url,
             kode_pesanan: params.kode_pesanan,
+            tipe: "travel",
           },
         });
       },
